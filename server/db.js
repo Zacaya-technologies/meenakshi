@@ -21,7 +21,15 @@ if (process.env.PGHOST || process.env.DATABASE_URL) {
 }
 
 if (mode === 'sqlite') {
-    const dbPath = path.join(__dirname, '../tile_marketplace.sqlite');
+    // Resolve the DB file robustly across runtimes: locally it lives next to
+    // the server dir; in a serverless bundle (Vercel) the traced copy ships at
+    // the function root. Try several candidate locations.
+    const candidates = [
+        path.join(process.cwd(), 'tile_marketplace.sqlite'),
+        path.join(__dirname, '../tile_marketplace.sqlite'),
+        path.join(__dirname, 'tile_marketplace.sqlite')
+    ];
+    const dbPath = candidates.find(p => fs.existsSync(p)) || candidates[0];
     sqliteDb = new sqlite3.Database(dbPath);
     // Enforce the ON DELETE CASCADE / SET NULL clauses declared in the schema
     // (e.g. deleting a category cascades to its children and product_categories
