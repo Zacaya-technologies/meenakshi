@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-blue: #1EA7FD;
+  --brand-deep: #0D7FD9;
+  --brand-navy: #0F172A;
+  --brand-navy2: #1E293B;
+  --brand-chrome: #0B1120;
+  --brand-slate: #8DA2C4;
+
+  /* Header stack geometry — the mega panel and any sticky sidebar read these,
+     so the three rows stay in sync if their heights ever change. */
+  --utility-h: 36px;
+  --main-h: 80px;
+  --rail-h: 52px;
+  --header-h: calc(var(--main-h) + var(--rail-h));
+
+  /* Mega panel is a fixed band, not a content-sized popup (matches the brief:
+     500–650px). Content taller than this scrolls inside the panel. */
+  --mega-min-h: 500px;
+  --mega-max-h: 650px;
+}
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* Visible keyboard focus everywhere — never removed, only restyled. */
+  :focus-visible {
+    outline: 2px solid var(--brand-blue);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Custom scrollbar (subtle) */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(30, 167, 253, 0.35);
+    border-radius: 8px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(30, 167, 253, 0.55);
+  }
+}
+
+@layer utilities {
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Slim scrollbar for the inside of the mega panel / drawer */
+  .scrollbar-mega {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(30, 167, 253, 0.45) transparent;
+  }
+  .scrollbar-mega::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scrollbar-mega::-webkit-scrollbar-thumb {
+    background: rgba(30, 167, 253, 0.4);
+    border-radius: 6px;
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Fades the ends of the horizontally scrollable category rail so the user can
+     tell there is more to scroll to. */
+  .rail-fade-l {
+    mask-image: linear-gradient(to right, transparent 0, #000 28px);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 28px);
+  }
+  .rail-fade-r {
+    mask-image: linear-gradient(to left, transparent 0, #000 28px);
+    -webkit-mask-image: linear-gradient(to left, transparent 0, #000 28px);
+  }
+  .rail-fade-both {
+    mask-image: linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+  }
+}
+
+/* Honour the OS "reduce motion" setting: transitions collapse to near-instant
+   instead of being animated. Framer Motion is handled separately in JS. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

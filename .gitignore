@@ -1,0 +1,7 @@
+node_modules/
+*.log
+.DS_Store
+.env
+tile_marketplace.sqlite
+.next/
+server.pid

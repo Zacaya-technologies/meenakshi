@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meenakshi Build World | Enterprise Building Materials Marketplace</title>
+    <meta name="description" content="India's Premier Enterprise Tile Marketplace featuring Italian Statuario Marble Slabs, Vitrified Slabs, Outdoor Anti-skid pavers, Wood Porcelain planks, 3D Room Visualizer, and Tile Box Calculator.">
+    <meta name="keywords" content="tiles, vitrified slabs, porcelain tiles, Italian marble, kajaria, somany, simpolo, room visualizer, tile calculator, floor tiles, wall tiles">
+
+    <!-- Bootstrap 5 CSS Grid & Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+
+    <!-- Primary Enterprise Luxury Stylesheet & Visualizer -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body>
+
+    <!-- Header & Dynamic Mega Menu Mount -->
+    <div id="main-header-mount"></div>
+
+    <!-- Main Dynamic Router Viewport -->
+    <main id="app-main-content">
+        <!-- SPA View Templates Rendered Dynamically -->
+    </main>
+
+    <!-- Global Instant Search Modal -->
+    <div class="search-modal" id="global-search-modal">
+        <div class="search-box-container">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-gold font-heading fs-5"><i class="ri-search-line"></i> Instant Tile Search</span>
+                <button class="btn btn-dark btn-sm" onclick="toggleSearchModal()"><i class="ri-close-line fs-5"></i></button>
+            </div>
+            
+            <div class="search-input-wrapper">
+                <i class="ri-search-line text-gold fs-5"></i>
+                <input type="text" id="global-search-input" placeholder="Search Statuario, Wood Plank, Vitrified, 600x1200..." oninput="handleLiveSearchInput(this.value)">
+                <i class="ri-mic-line text-secondary fs-5 cursor-pointer" title="Voice Search Ready"></i>
+                <i class="ri-image-line text-secondary fs-5 cursor-pointer" title="Visual Image Search Ready"></i>
+            </div>
+
+            <div class="search-suggestions" id="search-suggestions-list">
+                <!-- Auto suggestions populated live from API -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="brand-logo mb-3">
+                        <div class="logo-icon">L</div>
+                        <div class="logo-text">
+                            MEENAKSHI
+                            <span class="logo-subtext">EMPIRE MARKETPLACE</span>
+                        </div>
+                    </div>
+                    <p class="text-secondary small">India's leading database-driven enterprise B2B & B2C marketplace for architectural ceramic tiles, Italian marble vitrified slabs, and outdoor paver systems.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Shop Categories</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" onclick="navigateTo('/shop?category=living-room-tiles')">Living Room Tiles</a></li>
+                        <li><a href="#" onclick="navigateTo('/shop?category=vitrified-slabs')">Italian Vitrified Slabs</a></li>
+                        <li><a href="#" onclick="navigateTo('/shop?category=bedroom-tiles')">Wood Porcelain Planks</a></li>
+                        <li><a href="#" onclick="navigateTo('/shop?category=outdoor-parking-tiles')">Outdoor 20mm Pavers</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Interactive Tools</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" onclick="navigateTo('/visualizer')">3D Room Visualizer</a></li>
+                        <li><a href="#" onclick="navigateTo('/calculator')">Tile & Box Calculator</a></li>
+                        <li><a href="#" onclick="navigateTo('/compare')">Product Comparison</a></li>
+                        <li><a href="#" onclick="navigateTo('/architect-zone')">Architect Commercial RFQ</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Portals</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" onclick="navigateTo('/customer-dash')">Customer Orders</a></li>
+                        <li><a href="#" onclick="navigateTo('/dealer-dash')">B2B Dealer Credit Portal</a></li>
+                        <li><a href="#" onclick="navigateTo('/admin')">Master Admin CMS</a></li>
+                        <li><a href="/sitemap.xml" target="_blank">Dynamic XML Sitemap</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                &copy; 2026 Meenakshi Build World. All Rights Reserved. Fully Database-Driven Architecture.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Quick Order Widget -->
+    <a href="https://wa.me/919876543210?text=Hi%20Meenakshi%20Build%20World%20Sales%20Team%2C%20I%20am%20looking%20for%20a%20quotation%20on%20vitrified%20tiles." target="_blank" class="whatsapp-float" title="Instant WhatsApp Support">
+        <i class="ri-whatsapp-line"></i>
+    </a>
+
+    <!-- Application Components -->
+    <script src="/js/api.js"></script>
+    <script src="/js/gsap-animations.js"></script>
+    <script src="/js/components/navbar.js"></script>
+    <script src="/js/components/hero.js"></script>
+    <script src="/js/components/filter.js"></script>
+    <script src="/js/components/visualizer.js"></script>
+    <script src="/js/components/calculator.js"></script>
+    <script src="/js/components/product-detail.js"></script>
+    <script src="/js/components/compare.js"></script>
+    <script src="/js/components/cart.js"></script>
+    <script src="/js/components/customer-dash.js"></script>
+    <script src="/js/components/dealer-dash.js"></script>
+    <script src="/js/components/admin-panel.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>
