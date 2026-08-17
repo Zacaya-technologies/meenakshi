@@ -4,25 +4,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import Link from 'next/link';
 import { API, FALLBACK_IMG, formatPrice } from '@/lib/api';
-import { ALL_PRODUCTS, COLUMN_DEFS, MENU_CONTENT, columnHeading } from '@/lib/menuData';
-import { Icon } from '@/components/ui/Icons';
-
-const COLUMN_ICONS = {
-  mapPin: Icon.mapPin,
-  ruler: Icon.ruler,
-  palette: Icon.palette,
-  stack: Icon.stack,
-  contrast: Icon.contrast
-};
-
-// A facet click lands on the shop grid pre-filtered, scoped to the category
-// the panel was opened from. Client-side navigation only — no reload.
-function facetUrl(slug, param, value) {
-  const params = new URLSearchParams();
-  if (slug && slug !== ALL_PRODUCTS) params.set('category', slug);
-  params.append(param, value);
-  return `/shop?${params.toString()}`;
-}
+import { groupHeading } from '@/lib/menuData';
+import { Icon, AnyIcon } from '@/components/ui/Icons';
 
 export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeepOpen }) {
   const reduceMotion = useReducedMotion();
@@ -53,21 +36,11 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
   }, [open, activeSlug]);
 
   const live = activeSlug ? cache.current[activeSlug] : null;
-
-  // Static hierarchy renders immediately; live DB facets replace it per column
-  // as soon as they arrive, so the panel is never blank on first hover.
-  const columns = useMemo(() => {
-    const fallback = MENU_CONTENT[activeSlug]?.columns || MENU_CONTENT[ALL_PRODUCTS].columns;
-    if (!live?.columns) return fallback;
-    const merged = { ...fallback };
-    Object.entries(live.columns).forEach(([key, values]) => {
-      if (Array.isArray(values) && values.length) merged[key] = values;
-    });
-    return merged;
-  }, [live, activeSlug]);
+  const columns = live?.columns || [];
+  const isLoading = loadingSlug === activeSlug && !live;
 
   const latest = live?.latestProducts || [];
-  const isLoadingLatest = loadingSlug === activeSlug && !latest.length;
+  const isLoadingLatest = isLoading || (loadingSlug === activeSlug && !latest.length);
   const categoryName = activeItem?.name || 'All Products';
   const viewAllUrl = activeItem?.url || '/shop';
 
@@ -107,9 +80,9 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
             initial={reduceMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: reduceMotion ? 0 : 0.18, ease: 'easeOut' }}
-            className="grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-3 xl:grid-cols-6 xl:gap-x-8"
+            className="grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-3 xl:grid-cols-7 xl:gap-x-6"
           >
-            {/* Column 1 — View All + By Space */}
+            {/* Column 1 — View All + first facet group (Area) */}
             <div className="min-w-0">
               <Link
                 href={viewAllUrl}
@@ -120,33 +93,34 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
                 View All {categoryName}
               </Link>
 
-              <ColumnHeading icon="mapPin">
-                {columnHeading(categoryName, COLUMN_DEFS[0])}
-              </ColumnHeading>
-              <FacetList
-                values={columns[COLUMN_DEFS[0].key]}
-                slug={activeSlug}
-                param={COLUMN_DEFS[0].param}
-                onNavigate={onClose}
-              />
+              {columns[0] && (
+                <>
+                  <ColumnHeading icon={columns[0].icon}>{groupHeading(categoryName, columns[0].label)}</ColumnHeading>
+                  <FacetList items={columns[0].items} isLoading={isLoading} onNavigate={onClose} />
+                </>
+              )}
             </div>
 
-            {/* Columns 2–5 — Size / Design / Type / Color */}
-            {COLUMN_DEFS.slice(1).map(def => (
-              <div key={def.key} className="min-w-0">
-                <ColumnHeading icon={def.icon}>
-                  {columnHeading(categoryName, def)}
-                </ColumnHeading>
-                <FacetList
-                  values={columns[def.key]}
-                  slug={activeSlug}
-                  param={def.param}
-                  onNavigate={onClose}
-                />
+            {/* Columns 2–6 — remaining facet groups (Size / Design / Type / Finish / Color) */}
+            {columns.slice(1).map(col => (
+              <div key={col.key} className="min-w-0">
+                <ColumnHeading icon={col.icon}>{groupHeading(categoryName, col.label)}</ColumnHeading>
+                <FacetList items={col.items} isLoading={isLoading} onNavigate={onClose} />
               </div>
             ))}
 
-            {/* Column 6 — Latest products */}
+            {isLoading && columns.length === 0 && Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="min-w-0">
+                <div className="mb-2.5 h-3 w-24 animate-pulse rounded bg-white/[0.08]" />
+                <div className="flex flex-col gap-2">
+                  {Array.from({ length: 6 }).map((__, j) => (
+                    <div key={j} className="h-3 w-full animate-pulse rounded bg-white/[0.05]" />
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            {/* Last column — Latest products */}
             <div className="col-span-2 min-w-0 rounded-2xl border border-white/[0.07] bg-white/[0.035] p-4 md:col-span-3 xl:col-span-1">
               <h4 className="mb-3 flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-brand-blue">
                 <Icon.fire className="h-4 w-4" /> Latest Products
@@ -191,9 +165,6 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="truncate text-[13px] font-semibold text-white">{p.name}</div>
-                        {p.tile_size && (
-                          <div className="text-[11px] text-brand-slate">{p.tile_size}</div>
-                        )}
                         <div className="text-[13px] font-bold text-brand-blue">
                           {formatPrice(p)}
                           <span className="ml-1 text-[10px] font-normal text-brand-slate">/sq.ft</span>
@@ -213,30 +184,29 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
 }
 
 function ColumnHeading({ icon, children }) {
-  const C = COLUMN_ICONS[icon] || Icon.grid;
   return (
     <h4 className="mb-2.5 flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-brand-blue">
-      <C className="h-4 w-4" />
+      <AnyIcon id={icon} className="h-4 w-4" />
       <span className="truncate">{children}</span>
     </h4>
   );
 }
 
-function FacetList({ values, slug, param, onNavigate }) {
-  const items = (values || []).slice(0, 12);
-  if (!items.length) {
-    return <p className="text-[13px] text-brand-slate/60">Coming soon</p>;
+function FacetList({ items, isLoading, onNavigate }) {
+  const list = items || [];
+  if (!list.length) {
+    return <p className="text-[13px] text-brand-slate/60">{isLoading ? '' : 'Coming soon'}</p>;
   }
   return (
     <ul className="flex flex-col">
-      {items.map(value => (
-        <li key={value}>
+      {list.map(item => (
+        <li key={item.id}>
           <Link
-            href={facetUrl(slug, param, value)}
+            href={item.url}
             onClick={onNavigate}
             className="block border-b border-dashed border-white/[0.07] py-[6px] text-[13px] text-brand-slate transition-all duration-200 hover:pl-1.5 hover:text-brand-blue"
           >
-            {value}
+            {item.name}
           </Link>
         </li>
       ))}

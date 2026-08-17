@@ -82,16 +82,20 @@ export default function SearchModal({ open, onClose }) {
               <div className="mt-3 flex flex-col">
                 {suggestions.map(s => (
                   <button
-                    key={s.id}
-                    onClick={() => go(`/product/${s.slug}`)}
+                    key={`${s.kind}-${s.id}`}
+                    onClick={() => go(s.url)}
                     className="flex items-center gap-4 rounded-xl px-3 py-2.5 text-left transition hover:bg-brand-light dark:hover:bg-white/5"
                   >
                     <img src={s.image || FALLBACK_IMG} alt={s.name} className="h-12 w-12 rounded-lg object-cover" />
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-semibold text-ink dark:text-white">{s.name}</div>
-                      <div className="text-xs text-slate-400">{s.tile_size}</div>
+                      <div className="text-xs text-slate-400">{s.kind === 'category' ? `Browse ${s.group_name || 'category'}` : s.size}</div>
                     </div>
-                    <span className="text-sm font-bold text-brand-blue">{formatPrice(s)}</span>
+                    {s.kind === 'product' ? (
+                      <span className="text-sm font-bold text-brand-blue">{formatPrice(s)}</span>
+                    ) : (
+                      <span className="rounded-full bg-brand-blue/10 px-2.5 py-1 text-[11px] font-bold text-brand-blue">Category</span>
+                    )}
                   </button>
                 ))}
               </div>

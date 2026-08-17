@@ -5,8 +5,19 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useApp } from '@/lib/store';
 import { API } from '@/lib/api';
-import { NAV_ITEMS } from '@/lib/menuData';
+import { ALL_PRODUCTS } from '@/lib/menuData';
 import { Icon, NavIcon } from '@/components/ui/Icons';
+
+const BOOTSTRAP_NAV = [{ name: 'All Products', slug: ALL_PRODUCTS, url: '/shop', icon: 'grid' }];
+
+// Plain nav links (not mega-menu triggers, not categories) appended after the
+// DB-driven category rail.
+const STATIC_LINKS = [
+  { name: 'All Tiles', url: '/all-tiles' },
+  { name: 'Brands', url: '/brands' },
+  { name: 'Collections', url: '/collections' },
+  { name: 'Offers', url: '/shop?featured=1' }
+];
 import MegaMenu from './MegaMenu';
 import MobileDrawer from './MobileDrawer';
 import SearchModal from './SearchModal';
@@ -24,7 +35,7 @@ export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const [menuItems, setMenuItems] = useState(NAV_ITEMS);
+  const [menuItems, setMenuItems] = useState(BOOTSTRAP_NAV);
   const [megaOpen, setMegaOpen] = useState(false);
   const [activeSlug, setActiveSlug] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -53,22 +64,15 @@ export default function Header() {
     return () => mq.removeEventListener('change', apply);
   }, []);
 
-  // Live nav from the API when available; the static list renders instantly and
-  // is replaced only if the request succeeds, so the rail never goes empty.
+  // Nav rail is 100% database-driven (categories.icon supplies the glyph key) —
+  // the bootstrap "All Products" item renders instantly and is replaced the
+  // moment the request resolves, so the rail never goes empty or stale.
   useEffect(() => {
     let cancelled = false;
     API.getMenu()
       .then(res => {
         if (cancelled || !res?.success || !Array.isArray(res.topNav) || !res.topNav.length) return;
-        const byslug = new Map(NAV_ITEMS.map(i => [i.slug, i]));
-        setMenuItems(
-          res.topNav.map(t => ({
-            name: t.name,
-            slug: t.slug,
-            url: t.url,
-            icon: byslug.get(t.slug)?.icon || 'grid'
-          }))
-        );
+        setMenuItems(res.topNav.map(t => ({ name: t.name, slug: t.slug, url: t.url, icon: t.icon || 'grid' })));
       })
       .catch(() => {});
     return () => { cancelled = true; };
@@ -420,6 +424,16 @@ export default function Header() {
                     </button>
                   );
                 })}
+
+                {STATIC_LINKS.map(link => (
+                  <Link
+                    key={link.url}
+                    href={link.url}
+                    className="relative inline-flex shrink-0 items-center whitespace-nowrap px-3.5 py-3.5 text-[13.5px] font-semibold text-white/85 transition-colors duration-200 hover:text-brand-blue"
+                  >
+                    {link.name}
+                  </Link>
+                ))}
               </nav>
             </div>
           </div>
