@@ -1,12 +1,13 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { API } from '@/lib/api';
 import ProductCard from './ProductCard';
 import QuickView from './QuickView';
 import FilterSidebar from './FilterSidebar';
+import MobileSheet from './MobileSheet';
 import { Icon } from '@/components/ui/Icons';
 
 const SORTS = [
@@ -17,7 +18,13 @@ const SORTS = [
   { value: 'popular', label: 'Most Popular' }
 ];
 
-export default function ShopClient({ defaultCategory }) {
+const FACET_KEYS = ['area', 'application', 'size', 'design', 'type', 'finish', 'color', 'brand', 'collection', 'in_stock'];
+
+// Renders the full shop grid + filter sidebar. `presetFilters` seeds the
+// starting scope for a taxonomy landing page (e.g. { category: 'floor-tiles' }
+// for /floor-tiles, or { category: 'floor-tiles', design: 'marble' } for
+// /floor-tiles/marble) — the sidebar remains fully interactive on top of it.
+export default function ShopClient({ presetFilters = {}, breadcrumb, heading, description, banner }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -26,22 +33,25 @@ export default function ShopClient({ defaultCategory }) {
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({ total: 0, page: 1, pages: 1 });
   const [quickView, setQuickView] = useState(null);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [mobileSortOpen, setMobileSortOpen] = useState(false);
 
-  // Parse filters from URL
+  // Parse filters from URL, falling back to the route's preset scope.
   const filters = useMemo(() => {
     const params = new URLSearchParams(searchParams.toString());
     const out = {};
-    const multi = ['material', 'finish', 'color', 'pattern', 'size', 'area', 'brand'];
-    multi.forEach(k => {
+    FACET_KEYS.forEach(k => {
       const v = params.getAll(k);
       if (v.length) out[k] = v;
+      else if (presetFilters[k]) out[k] = Array.isArray(presetFilters[k]) ? presetFilters[k] : [presetFilters[k]];
     });
-    // Category from URL param wins; otherwise use the route-level default (for /category/[slug])
     if (params.get('category')) out.category = params.get('category');
-    else if (defaultCategory) out.category = defaultCategory;
+    else if (presetFilters.category) out.category = presetFilters.category;
     if (params.get('q')) out.q = params.get('q');
+    if (params.get('min_price')) out.min_price = params.get('min_price');
+    if (params.get('max_price')) out.max_price = params.get('max_price');
     return out;
-  }, [searchParams, defaultCategory]);
+  }, [searchParams, presetFilters]);
 
   const sort = searchParams.get('sort') || '';
   const page = parseInt(searchParams.get('page') || '1', 10);
@@ -57,7 +67,7 @@ export default function ShopClient({ defaultCategory }) {
     return params.toString();
   }, [filters]);
 
-  // Load facets once
+  // Load facets once per category scope
   useEffect(() => {
     let cancelled = false;
     API.getFacets(filters.category || '')
@@ -85,83 +95,98 @@ export default function ShopClient({ defaultCategory }) {
     return () => { cancelled = true; };
   }, [buildQuery, sort, page]);
 
+  const pushParams = useCallback((mutator) => {
+    const params = new URLSearchParams(searchParams.toString());
+    mutator(params);
+    router.push(`/shop?${params.toString()}`);
+  }, [router, searchParams]);
+
   const toggleFilter = useCallback(
     (key, value) => {
-      const params = new URLSearchParams(searchParams.toString());
-      const current = params.getAll(key);
-      const next = current.includes(value) ? current.filter(v => v !== value) : [...current, value];
-      params.delete(key);
-      next.forEach(v => params.append(key, v));
-      params.delete('page');
-      router.push(`/shop?${params.toString()}`);
+      pushParams(params => {
+        const current = params.getAll(key);
+        const next = current.includes(value) ? current.filter(v => v !== value) : [...current, value];
+        params.delete(key);
+        next.forEach(v => params.append(key, v));
+        params.delete('page');
+      });
     },
-    [router, searchParams]
+    [pushParams]
   );
 
+  const setPriceRange = useCallback((min, max) => {
+    pushParams(params => {
+      if (min) params.set('min_price', min); else params.delete('min_price');
+      if (max) params.set('max_price', max); else params.delete('max_price');
+      params.delete('page');
+    });
+  }, [pushParams]);
+
   const clearFilters = useCallback(() => {
-    if (defaultCategory) {
-      // Stay scoped to the route-level category
-      const params = new URLSearchParams();
-      params.set('category', defaultCategory);
-      if (filters.q) params.set('q', filters.q);
-      router.push(`/shop?${params.toString()}`);
-      return;
-    }
     const params = new URLSearchParams();
-    if (filters.category) params.set('category', filters.category);
+    if (presetFilters.category) params.set('category', presetFilters.category);
+    Object.entries(presetFilters).forEach(([k, v]) => {
+      if (k === 'category') return;
+      (Array.isArray(v) ? v : [v]).forEach(val => params.append(k, val));
+    });
     if (filters.q) params.set('q', filters.q);
     router.push(`/shop?${params.toString()}`);
-  }, [router, filters, defaultCategory]);
+  }, [router, filters, presetFilters]);
 
   const setSort = (val) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (val) params.set('sort', val);
-    else params.delete('sort');
-    router.push(`/shop?${params.toString()}`);
+    pushParams(params => { if (val) params.set('sort', val); else params.delete('sort'); });
   };
 
   const goPage = (p) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (p > 1) params.set('page', p);
-    else params.delete('page');
-    router.push(`/shop?${params.toString()}`);
+    pushParams(params => { if (p > 1) params.set('page', p); else params.delete('page'); });
   };
 
-  // Category title from facets
+  // Category title from facets (or the route's own heading override)
   const categoryName = useMemo(() => {
-    const cat = facets?.categories?.find(c => c.slug === filters.category);
-    return cat?.name || (filters.q ? `Search: "${filters.q}"` : 'All Products');
-  }, [facets, filters]);
+    if (heading) return heading;
+    if (facets?.category?.name) return facets.category.name;
+    return filters.q ? `Search: "${filters.q}"` : 'All Products';
+  }, [facets, filters, heading]);
 
   const activeCount = Object.entries(filters).reduce((acc, [k, v]) => {
-    if (k === 'category' || k === 'q') return acc;
+    if (k === 'category' || k === 'q' || k === 'min_price' || k === 'max_price') return acc;
     return acc + (Array.isArray(v) ? v.length : 0);
   }, 0);
 
   return (
     <div className="mx-auto max-w-[1380px] px-6 py-8">
+      {/* Optional category banner (admin-managed banner_url) */}
+      {banner && (
+        <div className="mb-6 overflow-hidden rounded-3xl">
+          <img src={banner} alt="" className="h-40 w-full object-cover sm:h-52" />
+        </div>
+      )}
+
       {/* Breadcrumb */}
-      <nav className="mb-4 flex items-center gap-1.5 text-xs text-slate-400">
-        <Link href="/" className="transition hover:text-brand-blue">Home</Link>
-        <Icon.arrowRight className="h-3.5 w-3.5" />
-        <Link href="/shop" className="transition hover:text-brand-blue">Shop</Link>
-        {filters.category && (
-          <>
-            <Icon.arrowRight className="h-3.5 w-3.5" />
-            <span className="font-semibold text-ink dark:text-white">{categoryName}</span>
-          </>
-        )}
+      <nav className="mb-4 flex flex-wrap items-center gap-1.5 text-xs text-slate-400">
+        {(breadcrumb || [{ name: 'Home', url: '/' }, { name: 'Shop', url: '/shop' }]).map((crumb, i, arr) => (
+          <span key={crumb.url} className="flex items-center gap-1.5">
+            {i > 0 && <Icon.arrowRight className="h-3.5 w-3.5" />}
+            {i === arr.length - 1 ? (
+              <span className="font-semibold text-ink dark:text-white">{crumb.name}</span>
+            ) : (
+              <Link href={crumb.url} className="transition hover:text-brand-blue">{crumb.name}</Link>
+            )}
+          </span>
+        ))}
       </nav>
 
       {/* Title + count + sort */}
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-heading text-3xl font-extrabold text-ink dark:text-white">{categoryName}</h1>
+          {description && <p className="mt-1.5 max-w-2xl text-sm text-slate-500 dark:text-slate-400">{description}</p>}
           <p className="mt-1 text-sm text-slate-400">
             <strong className="text-brand-blue">{pagination.total}</strong> products
           </p>
         </div>
-        <div className="flex items-center gap-2.5">
+        {/* Desktop sort */}
+        <div className="hidden items-center gap-2.5 lg:flex">
           <span className="text-xs text-slate-400">Sort by</span>
           <select
             value={sort}
@@ -175,13 +200,66 @@ export default function ShopClient({ defaultCategory }) {
         </div>
       </div>
 
+      {/* Mobile filter/sort toolbar */}
+      <div className="mb-5 flex gap-2.5 lg:hidden">
+        <button
+          onClick={() => setMobileFiltersOpen(true)}
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl border-[1.5px] border-border bg-white py-3 text-sm font-bold text-ink dark:bg-navy2 dark:text-white dark:border-white/10"
+        >
+          <Icon.filter className="h-4 w-4 text-brand-blue" /> Filters
+          {activeCount > 0 && <span className="rounded-full bg-brand-blue px-1.5 py-0.5 text-[10px] font-extrabold text-white">{activeCount}</span>}
+        </button>
+        <button
+          onClick={() => setMobileSortOpen(true)}
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl border-[1.5px] border-border bg-white py-3 text-sm font-bold text-ink dark:bg-navy2 dark:text-white dark:border-white/10"
+        >
+          <Icon.stack className="h-4 w-4 text-brand-blue" /> {SORTS.find(s => s.value === sort)?.label || 'Sort'}
+        </button>
+      </div>
+
       <div className="grid grid-cols-1 gap-7 lg:grid-cols-[300px_1fr] lg:items-start">
-        <FilterSidebar
-          facets={facets || { categories: [], brands: [], materials: [], finishes: [], colors: [], sizes: [], applications: [], availability: [] }}
-          selected={filters}
-          onToggle={toggleFilter}
-          onClear={clearFilters}
-        />
+        <div className="hidden lg:block">
+          <FilterSidebar
+            facets={facets || { groups: [], brands: [], priceRange: { min: 0, max: 500 } }}
+            selected={filters}
+            onToggle={toggleFilter}
+            onPriceChange={setPriceRange}
+            onClear={clearFilters}
+          />
+        </div>
+
+        <MobileSheet open={mobileFiltersOpen} onClose={() => setMobileFiltersOpen(false)} title="Filters">
+          <FilterSidebar
+            facets={facets || { groups: [], brands: [], priceRange: { min: 0, max: 500 } }}
+            selected={filters}
+            onToggle={toggleFilter}
+            onPriceChange={setPriceRange}
+            onClear={clearFilters}
+          />
+          <button
+            onClick={() => setMobileFiltersOpen(false)}
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep py-3 text-sm font-bold text-white shadow-glow"
+          >
+            Show {pagination.total} Results
+          </button>
+        </MobileSheet>
+
+        <MobileSheet open={mobileSortOpen} onClose={() => setMobileSortOpen(false)} title="Sort By">
+          <div className="flex flex-col gap-1">
+            {SORTS.map(s => (
+              <button
+                key={s.value}
+                onClick={() => { setSort(s.value); setMobileSortOpen(false); }}
+                className={`flex min-h-[48px] items-center justify-between rounded-xl px-4 text-left text-sm font-semibold transition ${
+                  sort === s.value ? 'bg-brand-blue/10 text-brand-blue' : 'text-ink dark:text-white'
+                }`}
+              >
+                {s.label}
+                {sort === s.value && <Icon.starFill className="h-4 w-4" />}
+              </button>
+            ))}
+          </div>
+        </MobileSheet>
 
         <div>
           {activeCount > 0 && (
@@ -242,4 +320,3 @@ export default function ShopClient({ defaultCategory }) {
     </div>
   );
 }
-

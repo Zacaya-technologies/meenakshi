@@ -65,7 +65,10 @@ router.post('/register', async (req, res) => {
         }
 
         const password_hash = await bcrypt.hash(password, 10);
-        const userRole = (role === 'dealer' || role === 'admin') ? role : 'customer';
+        // Public self-registration can only ever create customer accounts — dealer/admin
+        // accounts are provisioned separately (seeded, or created by an admin) so a
+        // caller can't hand themselves elevated access by passing role in the body.
+        const userRole = 'customer';
 
         const resDb = await db.query(`
             INSERT INTO users (name, email, password_hash, role, phone, company_name, gstin)

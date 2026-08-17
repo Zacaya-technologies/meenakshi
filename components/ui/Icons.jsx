@@ -51,6 +51,8 @@ export const Icon = {
   star: ({ className }) => <P className={className}><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2z"/></P>,
   eye: ({ className }) => <P className={className}><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></P>,
   filter: ({ className }) => <P className={className}><path d="M4 6h16M7 12h10M10 18h4"/></P>,
+  collection: ({ className }) => <P className={className}><rect x="4" y="4" width="12" height="12" rx="2"/><path d="M8 4V2.5A1.5 1.5 0 0 1 9.5 1h11A1.5 1.5 0 0 1 22 2.5v11a1.5 1.5 0 0 1-1.5 1.5H19"/></P>,
+  package: ({ className }) => <P className={className}><path d="m7.5 4.5 9 0 5 5v11a1.5 1.5 0 0 1-1.5 1.5h-16A1.5 1.5 0 0 1 2.5 20.5v-11l5-5z"/><path d="M2.5 9.5h19"/><path d="M12 4.5V14"/><path d="M8 14h8"/></P>,
   starFill: ({ className }) => (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
       <path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2z"/>
@@ -79,6 +81,14 @@ const NAV_ICONS = {
 
 export function NavIcon({ id, className }) {
   const C = NAV_ICONS[id] || Icon.grid;
+  return <C className={className} />;
+}
+
+// Looks up any glyph in the full Icon set by key (unlike NavIcon, not limited
+// to the main-nav subset) — used for the DB-driven facet group icons
+// (mapPin/ruler/palette/stack/brush/contrast) coming back from category_groups.
+export function AnyIcon({ id, className }) {
+  const C = Icon[id] || Icon.grid;
   return <C className={className} />;
 }
 

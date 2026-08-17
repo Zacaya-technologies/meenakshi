@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { API } from '@/lib/api';
 import HeroBanner from '@/components/home/HeroBanner';
+import CategoryGrid from '@/components/home/CategoryGrid';
 import ProductCard from '@/components/shop/ProductCard';
 import QuickView from '@/components/shop/QuickView';
 import { Icon } from '@/components/ui/Icons';
@@ -46,6 +47,8 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      <CategoryGrid />
 
       {/* Featured Products */}
       <section className="mx-auto max-w-shell px-4 py-16 sm:px-6">
