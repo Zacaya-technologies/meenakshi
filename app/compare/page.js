@@ -6,12 +6,11 @@ import { FALLBACK_IMG, formatPrice } from '@/lib/api';
 import { Icon } from '@/components/ui/Icons';
 
 const ATTRS = [
-  { key: 'type', label: 'Type' },
+  { key: 'material', label: 'Material' },
   { key: 'finish', label: 'Finish' },
-  { key: 'design', label: 'Design' },
+  { key: 'pattern', label: 'Pattern' },
   { key: 'color', label: 'Color' },
-  { key: 'size', label: 'Tile Size' },
-  { key: 'area', label: 'Area' },
+  { key: 'tile_size', label: 'Tile Size' },
   { key: 'brand_name', label: 'Brand' },
   { key: 'stock', label: 'Stock' }
 ];

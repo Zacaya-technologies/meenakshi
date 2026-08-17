@@ -29,10 +29,10 @@ export default function Footer() {
           <div>
             <h4 className="mb-4 font-heading text-sm font-bold text-brand-blue">Shop Categories</h4>
             <ul className="flex flex-col gap-2.5 text-sm text-slate-400">
-              <li><button onClick={() => go('/floor-tiles')} className="transition hover:text-brand-blue">Floor Tiles</button></li>
-              <li><button onClick={() => go('/wall-tiles')} className="transition hover:text-brand-blue">Wall Tiles</button></li>
-              <li><button onClick={() => go('/floor-tiles/marble')} className="transition hover:text-brand-blue">Marble Floor Tiles</button></li>
-              <li><button onClick={() => go('/floor-tiles/outdoor')} className="transition hover:text-brand-blue">Outdoor Floor Tiles</button></li>
+              <li><button onClick={() => go('/category/floor-tiles')} className="transition hover:text-brand-blue">Floor / Living Room Tiles</button></li>
+              <li><button onClick={() => go('/category/marble')} className="transition hover:text-brand-blue">Italian Vitrified Slabs & Marble</button></li>
+              <li><button onClick={() => go('/category/bedroom')} className="transition hover:text-brand-blue">Wood Porcelain Planks</button></li>
+              <li><button onClick={() => go('/category/outdoor')} className="transition hover:text-brand-blue">Outdoor 20mm Pavers</button></li>
             </ul>
           </div>
 

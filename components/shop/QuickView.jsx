@@ -61,7 +61,7 @@ export default function QuickView({ product, onClose }) {
                   </span>
                 )}
                 <h3 className="font-heading text-2xl font-bold text-ink dark:text-white">{product.name}</h3>
-                <p className="mb-3 mt-1 text-sm text-slate-400">{product.brand_name} • {product.size}</p>
+                <p className="mb-3 mt-1 text-sm text-slate-400">{product.brand_name} • {product.tile_size}</p>
 
                 <div className="flex items-baseline gap-2">
                   <span className="font-heading text-3xl font-extrabold text-brand-blue">{formatPrice(product)}</span>

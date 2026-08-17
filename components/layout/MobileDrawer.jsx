@@ -4,8 +4,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { API } from '@/lib/api';
-import { ALL_PRODUCTS, groupHeading } from '@/lib/menuData';
-import { Icon, NavIcon, AnyIcon } from '@/components/ui/Icons';
+import { ALL_PRODUCTS, COLUMN_DEFS, MENU_CONTENT, columnHeading } from '@/lib/menuData';
+import { Icon, NavIcon } from '@/components/ui/Icons';
 
 export default function MobileDrawer({ open, onClose, menuItems }) {
   const router = useRouter();
@@ -46,7 +46,7 @@ export default function MobileDrawer({ open, onClose, menuItems }) {
     setOpenSlug(slug);
     if (liveData[slug]) return;
     const res = await API.getCategoryMenu(slug);
-    if (res?.success) setLiveData(prev => ({ ...prev, [slug]: res.columns || [] }));
+    if (res?.success) setLiveData(prev => ({ ...prev, [slug]: res.columns || {} }));
   }, [openSlug, liveData]);
 
   const go = useCallback((url) => {
@@ -111,7 +111,10 @@ export default function MobileDrawer({ open, onClose, menuItems }) {
           >
             {drawerItems.map(item => {
               const isOpen = openSlug === item.slug;
-              const columns = liveData[item.slug] || [];
+              const columns =
+                liveData[item.slug]
+                || MENU_CONTENT[item.slug]?.columns
+                || MENU_CONTENT[ALL_PRODUCTS].columns;
 
               return (
                 <div key={item.slug} className="border-b border-white/[0.07]">
@@ -138,32 +141,23 @@ export default function MobileDrawer({ open, onClose, menuItems }) {
                         <Icon.grid className="h-4 w-4" /> View All {item.name}
                       </button>
 
-                      {columns.length === 0 && openSlug === item.slug && !liveData[item.slug] && (
-                        <div className="space-y-2 px-1 py-2">
-                          {Array.from({ length: 3 }).map((_, i) => (
-                            <div key={i} className="h-10 animate-pulse rounded-xl bg-white/[0.05]" />
-                          ))}
-                        </div>
-                      )}
-
                       {/* Second level: one accordion per facet group, mirroring
-                          the desktop columns. */}
-                      {columns.map(col => {
-                        const items = col.items || [];
-                        if (!items.length) return null;
-                        const groupId = `${item.slug}:${col.key}`;
+                          the six desktop columns. */}
+                      {COLUMN_DEFS.map(def => {
+                        const values = columns[def.key] || [];
+                        if (!values.length) return null;
+                        const groupId = `${item.slug}:${def.key}`;
                         const groupOpen = openGroup === groupId;
 
                         return (
-                          <div key={col.key} className="mb-1.5 overflow-hidden rounded-xl bg-white/[0.04]">
+                          <div key={def.key} className="mb-1.5 overflow-hidden rounded-xl bg-white/[0.04]">
                             <button
                               onClick={() => setOpenGroup(groupOpen ? null : groupId)}
                               aria-expanded={groupOpen}
                               className="flex min-h-[44px] w-full items-center justify-between gap-2 px-3.5 text-left"
                             >
-                              <span className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.14em] text-brand-blue">
-                                <AnyIcon id={col.icon} className="h-3.5 w-3.5" />
-                                {groupHeading(item.name, col.label)}
+                              <span className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-brand-blue">
+                                {columnHeading(item.name, def)}
                               </span>
                               <Icon.chevronDown
                                 className={`h-4 w-4 shrink-0 text-white/40 transition-transform duration-200 ${groupOpen ? 'rotate-180' : ''}`}
@@ -172,13 +166,18 @@ export default function MobileDrawer({ open, onClose, menuItems }) {
 
                             <Collapse open={groupOpen} reduceMotion={reduceMotion}>
                               <ul className="px-3.5 pb-3">
-                                {items.map(it => (
-                                  <li key={it.id}>
+                                {values.slice(0, 14).map(value => (
+                                  <li key={value}>
                                     <button
-                                      onClick={() => go(it.url)}
+                                      onClick={() => {
+                                        const q = new URLSearchParams();
+                                        if (item.slug !== ALL_PRODUCTS) q.set('category', item.slug);
+                                        q.append(def.param, value);
+                                        go(`/shop?${q.toString()}`);
+                                      }}
                                       className="block min-h-[44px] w-full border-b border-dashed border-white/[0.07] text-left text-[13px] text-brand-slate transition active:text-brand-blue"
                                     >
-                                      {it.name}
+                                      {value}
                                     </button>
                                   </li>
                                 ))}

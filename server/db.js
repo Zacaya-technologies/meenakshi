@@ -23,10 +23,6 @@ if (process.env.PGHOST || process.env.DATABASE_URL) {
 if (mode === 'sqlite') {
     const dbPath = path.join(__dirname, '../tile_marketplace.sqlite');
     sqliteDb = new sqlite3.Database(dbPath);
-    // Enforce the ON DELETE CASCADE / SET NULL clauses declared in the schema
-    // (e.g. deleting a category cascades to its children and product_categories
-    // links) — SQLite ignores these by default unless foreign_keys is turned on.
-    sqliteDb.run('PRAGMA foreign_keys = ON');
     console.log(`[Database] Initialized SQLite Database at ${dbPath}`);
 }
 
