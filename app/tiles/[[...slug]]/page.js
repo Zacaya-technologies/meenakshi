@@ -2,8 +2,7 @@ import { Suspense } from 'react';
 import { notFound, redirect } from 'next/navigation';
 import ShopClient from '@/components/shop/ShopClient';
 import BreadcrumbSchema from '@/components/shop/BreadcrumbSchema';
-
-const API_BASE = process.env.API_PROXY_TARGET || 'http://localhost:3000';
+import { serverFetch } from '@/lib/server-api';
 
 // One reusable, fully database-driven category template. The URL decides what
 // is displayed: /tiles/living-room-tiles, /tiles/bedroom-tiles,
@@ -12,7 +11,7 @@ const API_BASE = process.env.API_PROXY_TARGET || 'http://localhost:3000';
 // created in the admin panel are reachable the instant they are added.
 async function fetchResolved(path) {
   try {
-    const res = await fetch(`${API_BASE}/api/v1/categories/resolve?path=${encodeURIComponent(path)}`, { cache: 'no-store' });
+    const res = await serverFetch(`/api/v1/categories/resolve?path=${encodeURIComponent(path)}`);
     if (!res.ok) return null;
     const data = await res.json();
     return data.success ? data : null;

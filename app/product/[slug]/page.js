@@ -1,11 +1,10 @@
 import { Suspense } from 'react';
 import ProductDetailClient from '@/components/shop/ProductDetailClient';
-
-const API_BASE = process.env.API_PROXY_TARGET || 'http://localhost:3000';
+import { serverFetch } from '@/lib/server-api';
 
 async function fetchProduct(slug) {
   try {
-    const res = await fetch(`${API_BASE}/api/v1/products/${slug}`, { cache: 'no-store' });
+    const res = await serverFetch(`/api/v1/products/${slug}`);
     if (!res.ok) return null;
     const data = await res.json();
     return data.success ? data : null;
