@@ -11,7 +11,7 @@ import { serverFetch } from '@/lib/server-api';
 // created in the admin panel are reachable the instant they are added.
 async function fetchResolved(path) {
   try {
-    const res = await serverFetch(`/api/v1/categories/resolve?path=${encodeURIComponent(path)}`);
+    const res = await serverFetch(`/api/v1/categories/resolve?slugPath=${encodeURIComponent(path)}`);
     if (!res.ok) return null;
     const data = await res.json();
     return data.success ? data : null;

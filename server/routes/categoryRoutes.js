@@ -110,8 +110,8 @@ router.get('/tree', authenticateToken, requireRole('admin'), async (req, res) =>
     }
 });
 
-// GET /api/v1/categories/resolve?path=a/b/c — resolves an arbitrary-depth slug
-// path used by the /tiles/[...slug] catch-all template (e.g.
+// GET /api/v1/categories/resolve?slugPath=a/b/c — resolves an arbitrary-depth slug
+// slugPath used by the /tiles/[...slug] catch-all template (e.g.
 // /tiles/living-room-tiles/bedroom-tiles/bedroom-floor-tiles). The first segment
 // is a main category; each following segment may be a child facet OR its own
 // main category (rooms link down into their floor/wall children). Breadcrumb
@@ -119,9 +119,9 @@ router.get('/tree', authenticateToken, requireRole('admin'), async (req, res) =>
 // created in the admin panel is reachable here immediately.
 router.get('/resolve', async (req, res) => {
     try {
-        const { path } = req.query;
-        if (!path) return res.status(400).json({ success: false, message: 'path query param is required' });
-        const segs = String(path).split('/').filter(Boolean);
+        const slugPath = req.query.slugPath;
+        if (!slugPath) return res.status(400).json({ success: false, message: 'slugPath query param is required' });
+        const segs = String(slugPath).split('/').filter(Boolean);
         if (!segs.length || segs.length > 6) return res.status(400).json({ success: false, message: 'Invalid category path' });
 
         // All child categories of a "scope" category, plus any main category
