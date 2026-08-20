@@ -2,12 +2,11 @@ import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import ShopClient from '@/components/shop/ShopClient';
 import BreadcrumbSchema from '@/components/shop/BreadcrumbSchema';
-
-const API_BASE = process.env.API_PROXY_TARGET || 'http://localhost:3000';
+import { serverFetch } from '@/lib/server-api';
 
 async function fetchCategory(slug) {
   try {
-    const res = await fetch(`${API_BASE}/api/v1/categories/${slug}`, { cache: 'no-store' });
+    const res = await serverFetch(`/api/v1/categories/${slug}`);
     if (!res.ok) return null;
     const data = await res.json();
     return data.success ? data : null;
