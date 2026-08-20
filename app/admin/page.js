@@ -8,15 +8,17 @@ import { Icon, AnyIcon } from '@/components/ui/Icons';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
+  const [analytics, setAnalytics] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const [productsRes, categoriesRes, ordersRes, inquiriesRes] = await Promise.all([
+      const [productsRes, categoriesRes, ordersRes, inquiriesRes, analyticsRes] = await Promise.all([
         API.getProducts('?limit=1'),
         API.getCategories(),
         API.getOrders(),
-        API.getInquiries()
+        API.getInquiries(),
+        API.getAnalytics()
       ]);
       if (cancelled) return;
       const orders = ordersRes.success ? ordersRes.orders : [];
@@ -29,6 +31,7 @@ export default function AdminDashboard() {
         orders: orders.length,
         inquiries: inquiriesRes.success ? inquiriesRes.inquiries.length : 0
       });
+      if (analyticsRes.success) setAnalytics(analyticsRes);
     })();
     return () => { cancelled = true; };
   }, []);
@@ -78,6 +81,58 @@ export default function AdminDashboard() {
           </Link>
         ))}
       </div>
+
+      {analytics && (
+        <div className="mt-8">
+          <PageHeader title="Category Analytics" subtitle="Live product distribution across every main category and facet." />
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {analytics.mains.map(m => {
+              const max = Math.max(1, ...analytics.mains.map(x => x.product_count));
+              return (
+                <Card key={m.id}>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="truncate font-heading text-sm font-bold text-ink dark:text-white">{m.name}</div>
+                      <div className="mt-0.5 text-[11px] text-slate-400">{m.subcategory_count} subcategor{m.subcategory_count === 1 ? 'y' : 'ies'}</div>
+                    </div>
+                    <span className="shrink-0 rounded-xl bg-brand-light px-3 py-1.5 text-sm font-extrabold text-brand-blue dark:bg-white/5">
+                      {m.product_count}
+                    </span>
+                  </div>
+                  <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-brand-light dark:bg-white/10">
+                    <div className="h-full rounded-full bg-gradient-to-r from-brand-blue to-brand-deep" style={{ width: `${Math.round((m.product_count / max) * 100)}%` }} />
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+
+          <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {analytics.groups.map(g => {
+              const max = Math.max(1, ...g.items.map(i => i.count));
+              return (
+                <Card key={g.group_key}>
+                  <h3 className="mb-3 font-heading text-sm font-extrabold text-ink dark:text-white">{g.group_name}</h3>
+                  <ul className="flex flex-col gap-2">
+                    {g.items.slice(0, 8).map(i => (
+                      <li key={i.slug}>
+                        <div className="mb-1 flex items-center justify-between gap-2 text-xs">
+                          <span className="truncate text-slate-600 dark:text-slate-300">{i.name}</span>
+                          <span className="shrink-0 font-bold text-brand-blue">{i.count}</span>
+                        </div>
+                        <div className="h-1 overflow-hidden rounded-full bg-brand-light dark:bg-white/10">
+                          <div className="h-full rounded-full bg-brand-blue" style={{ width: `${Math.max(4, Math.round((i.count / max) * 100))}%` }} />
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -25,8 +25,8 @@ router.get('/sitemap.xml', async (req, res) => {
             xml += `  <url><loc>${baseUrl}${page}</loc><changefreq>daily</changefreq><priority>0.9</priority></url>\n`;
         }
 
-        for (const c of mainCategories) xml += `  <url><loc>${baseUrl}/${c.slug}</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>\n`;
-        for (const c of facetCategories) xml += `  <url><loc>${baseUrl}/${c.parent_slug}/${c.slug}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>\n`;
+        for (const c of mainCategories) xml += `  <url><loc>${baseUrl}/tiles/${c.slug}</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>\n`;
+        for (const c of facetCategories) xml += `  <url><loc>${baseUrl}/tiles/${c.parent_slug}/${c.slug}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>\n`;
         for (const p of products) xml += `  <url><loc>${baseUrl}/product/${p.slug}</loc><changefreq>daily</changefreq><priority>1.0</priority></url>\n`;
         for (const b of brands) xml += `  <url><loc>${baseUrl}/brand/${b.slug}</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>\n`;
         for (const col of collections) xml += `  <url><loc>${baseUrl}/collection/${col.slug}</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>\n`;

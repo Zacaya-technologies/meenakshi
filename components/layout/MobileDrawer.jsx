@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { API } from '@/lib/api';
-import { ALL_PRODUCTS, groupHeading } from '@/lib/menuData';
+import { groupHeading } from '@/lib/menuData';
 import { Icon, NavIcon, AnyIcon } from '@/components/ui/Icons';
 
 export default function MobileDrawer({ open, onClose, menuItems }) {
@@ -54,12 +54,7 @@ export default function MobileDrawer({ open, onClose, menuItems }) {
     router.push(url);
   }, [onClose, router]);
 
-  const drawerItems = useMemo(() => {
-    const rest = menuItems.filter(i => i.slug !== ALL_PRODUCTS);
-    const all = menuItems.find(i => i.slug === ALL_PRODUCTS)
-      || { name: 'All Products', slug: ALL_PRODUCTS, url: '/shop', icon: 'grid' };
-    return [all, ...rest];
-  }, [menuItems]);
+  const drawerItems = useMemo(() => menuItems, [menuItems]);
 
   const slide = reduceMotion
     ? { duration: 0 }

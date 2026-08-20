@@ -110,6 +110,110 @@ router.get('/tree', authenticateToken, requireRole('admin'), async (req, res) =>
     }
 });
 
+// GET /api/v1/categories/resolve?path=a/b/c — resolves an arbitrary-depth slug
+// path used by the /tiles/[...slug] catch-all template (e.g.
+// /tiles/living-room-tiles/bedroom-tiles/bedroom-floor-tiles). The first segment
+// is a main category; each following segment may be a child facet OR its own
+// main category (rooms link down into their floor/wall children). Breadcrumb
+// URLs use the canonical /tiles/... scheme. Fully database-driven — a category
+// created in the admin panel is reachable here immediately.
+router.get('/resolve', async (req, res) => {
+    try {
+        const { path } = req.query;
+        if (!path) return res.status(400).json({ success: false, message: 'path query param is required' });
+        const segs = String(path).split('/').filter(Boolean);
+        if (!segs.length || segs.length > 6) return res.status(400).json({ success: false, message: 'Invalid category path' });
+
+        // All child categories of a "scope" category, plus any main category
+        // that shares its slug (so /tiles/living-room-tiles/bedroom-tiles/
+        // bedroom-floor-tiles resolves through the main Bedroom Tiles node).
+        const scopeIds = async (cat) => {
+            const ids = [cat.id];
+            if (cat.parent_id) {
+                const twin = await db.queryOne(`SELECT id FROM categories WHERE parent_id IS NULL AND slug = ?`, [cat.slug]);
+                if (twin) ids.push(twin.id);
+            }
+            return ids;
+        };
+
+        let parent = await db.queryOne(`SELECT * FROM categories WHERE parent_id IS NULL AND slug = ?`, [segs[0]]);
+        if (!parent) return res.status(404).json({ success: false, message: 'Category not found' });
+
+        const crumbs = [
+            { name: 'Home', url: '/' },
+            { name: 'Tiles', url: '/tiles' },
+            { name: parent.name, url: `/tiles/${parent.slug}` }
+        ];
+        let current = parent;
+        let crumbMainSlug = parent.slug;
+        let target = null;
+        let group = null;
+
+        for (let i = 1; i < segs.length; i++) {
+            const scopes = await scopeIds(current);
+            const child = await db.queryOne(`
+                SELECT c.*, g.group_key, g.name as group_name
+                FROM categories c LEFT JOIN category_groups g ON c.group_id = g.id
+                WHERE c.parent_id IN (${scopes.map(() => '?').join(',')}) AND c.slug = ?
+            `, [...scopes, segs[i]]);
+            if (child) {
+                crumbs.push({ name: child.name, url: `/tiles/${crumbMainSlug}/${child.slug}` });
+                if (i === segs.length - 1) {
+                    target = child;
+                    group = { key: child.group_key, name: child.group_name };
+                    const ownerMain = await db.queryOne(`SELECT * FROM categories WHERE parent_id IS NULL AND id = ?`, [child.parent_id]);
+                    if (ownerMain) parent = ownerMain;
+                    break;
+                }
+                current = child;
+                // If this child doubles as a main category, deeper crumbs are
+                // canonical under that main (e.g. /tiles/bedroom-tiles/...).
+                const twin = await db.queryOne(`SELECT slug FROM categories WHERE parent_id IS NULL AND slug = ?`, [child.slug]);
+                if (twin) crumbMainSlug = twin.slug;
+                continue;
+            }
+            // Room mains linked to the current main via parent_main_id (e.g.
+            // Bedroom Tiles under Living Room Tiles) are walkable as if they
+            // were children, deep-linking /tiles/living-room-tiles/bedroom-tiles.
+            const linkScope = current.parent_id
+                ? (await db.queryOne(`SELECT id FROM categories WHERE parent_id IS NULL AND slug = ?`, [current.slug])) || current
+                : current;
+            const linked = await db.queryOne(`SELECT * FROM categories WHERE parent_id IS NULL AND parent_main_id = ? AND slug = ?`, [linkScope.id, segs[i]]);
+            if (linked) {
+                crumbs.push({ name: linked.name, url: `/tiles/${linked.slug}` });
+                current = linked;
+                parent = linked;
+                crumbMainSlug = linked.slug;
+                continue;
+            }
+            const main = await db.queryOne(`SELECT * FROM categories WHERE parent_id IS NULL AND slug = ?`, [segs[i]]);
+            if (main) {
+                crumbs.push({ name: main.name, url: `/tiles/${main.slug}` });
+                current = main;
+                parent = main;
+                crumbMainSlug = main.slug;
+                continue;
+            }
+            return res.status(404).json({ success: false, message: 'Category not found' });
+        }
+
+        if (!target) {
+            return res.json({ success: true, kind: 'main', category: parent, breadcrumb: crumbs });
+        }
+        res.json({
+            success: true,
+            kind: 'facet',
+            category: target,
+            parent,
+            group,
+            breadcrumb: crumbs
+        });
+    } catch (err) {
+        console.error('Resolve Category Error:', err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
 // GET /api/v1/categories/:parentSlug - resolve a main category by slug
 router.get('/:parentSlug', async (req, res) => {
     try {

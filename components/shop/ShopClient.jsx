@@ -35,6 +35,15 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
   const [quickView, setQuickView] = useState(null);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [mobileSortOpen, setMobileSortOpen] = useState(false);
+  const [menu, setMenu] = useState(null);
+
+  // Top nav data used to render "Related Categories" at the bottom of every
+  // taxonomy page (dynamic, from the categories table).
+  useEffect(() => {
+    let cancelled = false;
+    API.getMenu().then(res => { if (!cancelled && res.success) setMenu(res); }).catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   // Parse filters from URL, falling back to the route's preset scope.
   const filters = useMemo(() => {
@@ -153,6 +162,41 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
     return acc + (Array.isArray(v) ? v.length : 0);
   }, 0);
 
+  // Subcategory quick-links for a main-category page (the Area/Application
+  // column). Shown only while no facet filter is active.
+  const subcats = useMemo(() => {
+    if (!facets || activeCount > 0) return [];
+    const navGroup = (facets.groups || []).find(g => g.key === 'area' || g.key === 'application');
+    return (navGroup?.items || []).filter(i => i.slug !== filters.category);
+  }, [facets, activeCount, filters.category]);
+
+  // Grouped facet index ("Living Room Tiles By Finish / Size / Design / Type /
+  // Color") mirroring the living-room category directories — one group per
+  // card, each value deep-linked to /tiles/<main>/<facet>. Area/Application
+  // are already shown as the subcategory cards, so they only repeat here when
+  // a main has no area/application column at all.
+  const facetBrowse = useMemo(() => {
+    if (!facets || activeCount > 0 || !filters.category) return [];
+    const isMain = (slug) => menu?.topNav?.some(m => m.slug === slug);
+    return (facets.groups || [])
+      .filter(g => (subcats.length === 0 ? true : g.key !== 'area' && g.key !== 'application'))
+      .map(g => ({
+        key: g.key,
+        name: g.name.replace(/^By\s+/i, ''),
+        items: g.items.map(i => ({
+          name: i.name,
+          count: i.count,
+          url: isMain(i.slug) ? `/tiles/${i.slug}` : `/tiles/${filters.category}/${i.slug}`
+        }))
+      }));
+  }, [facets, activeCount, filters.category, menu, subcats]);
+
+  // Other main categories deep-linked below every taxonomy page.
+  const relatedCategories = useMemo(() => {
+    if (!menu?.topNav || !filters.category) return [];
+    return menu.topNav.filter(m => m.slug !== filters.category);
+  }, [menu, filters.category]);
+
   return (
     <div className="mx-auto max-w-[1380px] px-6 py-8">
       {/* Optional category banner (admin-managed banner_url) */}
@@ -269,10 +313,43 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
             </div>
           )}
 
+          {subcats.length > 0 && (
+            <div className="mb-8">
+              <h2 className="mb-3 font-heading text-lg font-extrabold text-ink dark:text-white">Shop by Subcategory</h2>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
+                {subcats.map(c => (
+                  <Link
+                    key={c.slug}
+                    href={`/tiles/${filters.category}/${c.slug}`}
+                    className="group overflow-hidden rounded-2xl border-[1.5px] border-border bg-white transition hover:border-brand-blue hover:shadow-card dark:bg-navy2 dark:border-white/10"
+                  >
+                    <div className="relative h-24 w-full overflow-hidden bg-brand-light sm:h-28 dark:bg-navy">
+                      {c.image ? (
+                        <img src={c.image} alt={c.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-2xl font-black text-brand-blue/30">
+                          {c.name.slice(0, 2).toUpperCase()}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-between gap-2 px-3 py-2.5">
+                      <span className="truncate text-[13px] font-bold text-ink dark:text-white">{c.name}</span>
+                      {typeof c.count === 'number' && c.count > 0 && (
+                        <span className="shrink-0 rounded-full bg-brand-light px-2 py-0.5 text-[10px] font-extrabold text-brand-blue dark:bg-white/5">
+                          {c.count}
+                        </span>
+                      )}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
           {loading ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="h-[380px] animate-pulse rounded-[20px] bg-slate-100 dark:bg-navy2" />
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 xl:grid-cols-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="h-[340px] animate-pulse rounded-[20px] bg-slate-100 dark:bg-navy2" />
               ))}
             </div>
           ) : products.length === 0 ? (
@@ -285,7 +362,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 xl:grid-cols-4">
               {products.map(p => (
                 <ProductCard key={p.id} product={p} onQuickView={setQuickView} />
               ))}
@@ -311,6 +388,53 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
               >
                 Next →
               </button>
+            </div>
+          )}
+
+          {facetBrowse.length > 0 && (
+            <div className="mt-10 border-t border-border pt-8 dark:border-white/10">
+              <h2 className="mb-5 font-heading text-xl font-extrabold text-ink dark:text-white">Browse {categoryName}</h2>
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                {facetBrowse.map(g => (
+                  <div key={g.key} className="rounded-2xl border-[1.5px] border-border bg-white p-5 dark:bg-navy2 dark:border-white/10">
+                    <h3 className="mb-3 text-[13px] font-extrabold uppercase tracking-wide text-brand-blue">
+                      {categoryName} By {g.name}
+                    </h3>
+                    <ul className="grid grid-cols-1 gap-x-3 gap-y-2 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
+                      {g.items.map(i => (
+                        <li key={i.slug}>
+                          <Link
+                            href={i.url}
+                            className="text-[13px] text-slate-600 transition hover:text-brand-blue dark:text-slate-300"
+                          >
+                            {i.name}
+                            {i.count > 0 && (
+                              <span className="ml-1 text-[11px] text-slate-400">({i.count})</span>
+                            )}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {relatedCategories.length > 0 && (
+            <div className="mt-12 border-t border-border pt-8 dark:border-white/10">
+              <h2 className="mb-3 font-heading text-lg font-extrabold text-ink dark:text-white">Explore Other Tiles</h2>
+              <div className="flex flex-wrap gap-2">
+                {relatedCategories.map(m => (
+                  <Link
+                    key={m.slug}
+                    href={m.url}
+                    className="rounded-full border-[1.5px] border-border bg-white px-4 py-2 text-[13px] font-semibold text-slate-600 transition hover:border-brand-blue hover:text-brand-blue dark:bg-navy2 dark:text-slate-300 dark:border-white/10"
+                  >
+                    {m.name}
+                  </Link>
+                ))}
+              </div>
             </div>
           )}
         </div>

@@ -24,10 +24,7 @@ router.get('/', async (req, res) => {
             ORDER BY display_order ASC, name ASC
         `);
 
-        const topNav = [
-            { name: 'All Products', slug: ALL_PRODUCTS_SLUG, url: '/shop', icon: 'grid', hasMegaMenu: true },
-            ...categories.map(c => ({ name: c.name, slug: c.slug, url: `/${c.slug}`, icon: c.icon || 'grid', image: c.image, hasMegaMenu: true }))
-        ];
+        const topNav = categories.map(c => ({ name: c.name, slug: c.slug, url: `/tiles/${c.slug}`, icon: c.icon || 'grid', image: c.image, hasMegaMenu: true }));
 
         res.json({ success: true, topNav, categories });
     } catch (err) {
@@ -87,14 +84,14 @@ router.get('/:categorySlug', async (req, res) => {
                     id: c.id, name: c.name, slug: c.slug, image: c.image,
                     url: slug === ALL_PRODUCTS_SLUG
                         ? `/shop?${g.group_key}=${c.slug}`
-                        : `/${slug}/${c.slug}`
+                        : `/tiles/${slug}/${c.slug}`
                 }));
                 // Append linked room mains to the "area" column (deep-link to
                 // their own top-level pages so the room taxonomy stays whole).
                 if (g.group_key === 'area' && linkedMains.length) {
                     linkedMains.forEach(c => items.push({
                         id: c.id, name: c.name, slug: c.slug, image: c.image,
-                        url: `/${c.slug}`
+                        url: `/tiles/${c.slug}`
                     }));
                 }
                 return { key: g.group_key, label: g.name, icon: g.icon, param: g.group_key, items };
