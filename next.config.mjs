@@ -15,9 +15,10 @@ const nextConfig = {
       'dotenv'
     ],
     // Ensure the SQLite DB file ships inside the serverless functions that
-    // serve the API (app/api/[...path]) and the SEO routes.
+    // serve the API (app/api/[...path]) and the SEO routes. Bracket segments
+    // in the keys must be escaped (picomatch treats [ ] as character classes).
     outputFileTracingIncludes: {
-      '/api/[...path]': ['./tile_marketplace.sqlite'],
+      '/api/\\[\\.\\.\\.path\\]': ['./tile_marketplace.sqlite'],
       '/sitemap.xml': ['./tile_marketplace.sqlite'],
       '/robots.txt': ['./tile_marketplace.sqlite']
     }
