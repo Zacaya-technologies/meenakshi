@@ -18,7 +18,7 @@ const SORTS = [
   { value: 'popular', label: 'Most Popular' }
 ];
 
-const FACET_KEYS = ['area', 'application', 'size', 'design', 'type', 'finish', 'color', 'brand', 'collection', 'in_stock'];
+const FACET_KEYS = ['area', 'application', 'size', 'design', 'type', 'finish', 'color', 'surface', 'brand', 'collection', 'in_stock'];
 
 // Renders the full shop grid + filter sidebar. `presetFilters` seeds the
 // starting scope for a taxonomy landing page (e.g. { category: 'floor-tiles' }

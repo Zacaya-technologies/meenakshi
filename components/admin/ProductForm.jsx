@@ -6,7 +6,7 @@ import { API } from '@/lib/api';
 import { Card, Button, Field, Input, TextArea, Select, Toggle } from '@/components/admin/AdminUI';
 import { Icon } from '@/components/ui/Icons';
 
-const FACET_GROUP_ORDER = ['area', 'application', 'size', 'design', 'type', 'finish', 'color'];
+const FACET_GROUP_ORDER = ['area', 'application', 'size', 'design', 'type', 'finish', 'color', 'surface'];
 
 export default function ProductForm({ initial, onSubmit, submitLabel }) {
   const router = useRouter();

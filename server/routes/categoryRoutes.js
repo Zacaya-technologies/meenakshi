@@ -252,7 +252,8 @@ router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
     try {
         const {
             name, parent_id, group_id, description, image, banner_url, icon,
-            seo_title, seo_description, status, display_order, slug: slugOverride, parent_main_id
+            seo_title, seo_description, status, display_order, slug: slugOverride, parent_main_id,
+            composite_filters
         } = req.body;
         if (!name) return res.status(400).json({ success: false, message: 'Category name is required' });
 
@@ -265,12 +266,13 @@ router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
 
         const isSqlite = db.getMode() === 'sqlite';
         const resDb = await db.query(`
-            INSERT INTO categories (name, slug, parent_id, group_id, description, image, banner_url, icon, seo_title, seo_description, status, display_order, parent_main_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO categories (name, slug, parent_id, group_id, description, image, banner_url, icon, seo_title, seo_description, status, display_order, parent_main_id, composite_filters)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [
             name, slug, parentId, group_id || null, description || '', image || '', banner_url || '', icon || 'grid',
             seo_title || `${name} | Meenakshi Build World`, seo_description || description || '',
-            status || 'active', display_order || 0, parent_main_id || null
+            status || 'active', display_order || 0, parent_main_id || null,
+            composite_filters ? JSON.stringify(composite_filters) : null
         ]);
         const id = isSqlite ? resDb.insertId : (await db.queryOne(`SELECT id FROM categories WHERE slug = ? AND (parent_id = ? OR (? IS NULL AND parent_id IS NULL))`, [slug, parentId, parentId])).id;
 
@@ -294,7 +296,8 @@ router.put('/:id', authenticateToken, requireRole('admin'), async (req, res) => 
 
         const {
             name, parent_id, group_id, description, image, banner_url, icon,
-            seo_title, seo_description, status, display_order, slug: slugOverride, parent_main_id
+            seo_title, seo_description, status, display_order, slug: slugOverride, parent_main_id,
+            composite_filters
         } = req.body;
 
         const parentId = parent_id !== undefined ? (parent_id || null) : existing.parent_id;
@@ -311,6 +314,13 @@ router.put('/:id', authenticateToken, requireRole('admin'), async (req, res) => 
             slug = await uniqueSlug(slugify(name || existing.name), parentId, groupKey, existing.id);
         }
 
+        // composite_filters is set verbatim (not COALESCEd) whenever the field
+        // is present in the request — an explicit `null`/`{}` clears a category
+        // back to a normal, directly-taggable value.
+        const compositeFiltersValue = composite_filters !== undefined
+            ? (composite_filters && Object.keys(composite_filters).length ? JSON.stringify(composite_filters) : null)
+            : existing.composite_filters;
+
         await db.query(`
             UPDATE categories SET
                 name = COALESCE(?, name),
@@ -326,9 +336,10 @@ router.put('/:id', authenticateToken, requireRole('admin'), async (req, res) => 
                 status = COALESCE(?, status),
                 display_order = COALESCE(?, display_order),
                 parent_main_id = COALESCE(?, parent_main_id),
+                composite_filters = ?,
                 updated_at = CURRENT_TIMESTAMP
             WHERE id = ?
-        `, [name, slug, parentId, group_id, description, image, banner_url, icon, seo_title, seo_description, status, display_order, parent_main_id, req.params.id]);
+        `, [name, slug, parentId, group_id, description, image, banner_url, icon, seo_title, seo_description, status, display_order, parent_main_id, compositeFiltersValue, req.params.id]);
 
         res.json({ success: true, message: 'Category updated', slug });
     } catch (err) {

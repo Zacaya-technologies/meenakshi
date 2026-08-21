@@ -14,7 +14,7 @@ function toArray(v) {
 
 // "area" (Floor/Wall) and "application" (Kitchen/Bathroom) are mutually
 // exclusive per main category — a product only ever has one or the other.
-const FACET_GROUP_KEYS = ['area', 'application', 'size', 'design', 'type', 'finish', 'color'];
+const FACET_GROUP_KEYS = ['area', 'application', 'size', 'design', 'type', 'finish', 'color', 'surface'];
 
 // Correlated subqueries that flatten each product's linked taxonomy + main
 // category into convenience string fields, reused by both the list and
@@ -153,6 +153,27 @@ router.get('/facets', async (req, res) => {
             WHERE c.parent_id IN (${mainIds.map(() => '?').join(',')}) AND c.status = 'active'
             ORDER BY c.display_order ASC, c.name ASC
         `, mainIds);
+
+        // A "composite" category (e.g. "Anti Skid Terrace Tiles") is never
+        // directly tagged to a product — its page is a live AND of atomic
+        // filters (composite_filters). Its badge count must reflect that same
+        // AND, not a direct-tag lookup (which would always read 0).
+        for (const child of children) {
+            if (!child.composite_filters) continue;
+            let filters;
+            try { filters = JSON.parse(child.composite_filters); } catch { continue; }
+            const entries = Object.entries(filters);
+            if (!entries.length) continue;
+            const existsClauses = entries.map(() => `
+                EXISTS (SELECT 1 FROM product_categories pcf JOIN categories ccf ON pcf.category_id = ccf.id
+                        WHERE pcf.product_id = pp.id AND ccf.slug = ?)
+            `).join(' AND ');
+            const row = await db.queryOne(`
+                SELECT COUNT(*) as c FROM products pp
+                WHERE (pp.published = 1 OR pp.published = true) AND ${existsClauses}
+            `, entries.map(([, slug]) => slug));
+            child.product_count = row ? row.c : 0;
+        }
 
         // Room mains linked via parent_main_id are facet-filterable too — e.g.
         // filtering a Living Room page by "Bedroom" deep-links to /bedroom-tiles.

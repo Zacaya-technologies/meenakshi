@@ -7,7 +7,7 @@ import { AnyIcon, Icon } from '@/components/ui/Icons';
 
 const emptyForm = {
   id: null, name: '', slug: '', parent_id: '', group_id: '', description: '', image: '', banner_url: '', icon: 'grid',
-  seo_title: '', seo_description: '', status: 'active', display_order: 0, parent_main_id: ''
+  seo_title: '', seo_description: '', status: 'active', display_order: 0, parent_main_id: '', composite_filters: {}
 };
 
 export default function AdminCategoriesPage() {
@@ -50,7 +50,8 @@ export default function AdminCategoriesPage() {
       id: cat.id, name: cat.name, slug: cat.slug || '', parent_id: cat.parent_id || '', group_id: cat.group_id || '',
       description: cat.description || '', image: cat.image || '', banner_url: cat.banner_url || '', icon: cat.icon || 'grid',
       seo_title: cat.seo_title || '', seo_description: cat.seo_description || '',
-      status: cat.status || 'active', display_order: cat.display_order || 0, parent_main_id: cat.parent_main_id || ''
+      status: cat.status || 'active', display_order: cat.display_order || 0, parent_main_id: cat.parent_main_id || '',
+      composite_filters: cat.composite_filters ? (() => { try { return JSON.parse(cat.composite_filters); } catch { return {}; } })() : {}
     }
   });
 
@@ -60,7 +61,8 @@ export default function AdminCategoriesPage() {
       description: form.description, image: form.image, banner_url: form.banner_url, icon: form.icon,
       seo_title: form.seo_title, seo_description: form.seo_description,
       status: form.status, display_order: parseInt(form.display_order) || 0,
-      parent_main_id: form.parent_main_id || null
+      parent_main_id: form.parent_main_id || null,
+      composite_filters: form.composite_filters && Object.keys(form.composite_filters).length ? form.composite_filters : null
     };
     if (form.slug && form.slug !== '') payload.slug = form.slug;
     const res = form.id ? await API.updateCategory(form.id, payload) : await API.createCategory(payload);
@@ -198,6 +200,7 @@ export default function AdminCategoriesPage() {
           form={modal.form}
           groups={groups}
           mainCategories={mainCategories}
+          currentMain={currentMain}
           onClose={() => setModal(null)}
           onSave={save}
         />
@@ -206,9 +209,39 @@ export default function AdminCategoriesPage() {
   );
 }
 
-function CategoryFormModal({ mode, form: initial, groups, mainCategories, onClose, onSave }) {
+function CategoryFormModal({ mode, form: initial, groups, mainCategories, currentMain, onClose, onSave }) {
   const [form, setForm] = useState(initial);
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  // Every sibling value under the current main, grouped by facet — the pool a
+  // composite category (e.g. "Anti Skid Terrace Tiles") can combine with.
+  const siblingsByGroup = useMemo(() => {
+    if (mode !== 'sub' || !currentMain) return {};
+    const out = {};
+    currentMain.groups.forEach(g => { out[g.group_key] = { name: g.name, items: g.children }; });
+    return out;
+  }, [mode, currentMain]);
+
+  const compositeEntries = Object.entries(form.composite_filters || {});
+  const addCompositeFilter = () => {
+    const firstKey = Object.keys(siblingsByGroup).find(k => !form.composite_filters?.[k]);
+    if (!firstKey) return;
+    const firstSlug = siblingsByGroup[firstKey].items[0]?.slug;
+    if (!firstSlug) return;
+    setForm(f => ({ ...f, composite_filters: { ...f.composite_filters, [firstKey]: firstSlug } }));
+  };
+  const removeCompositeFilter = (key) => setForm(f => {
+    const next = { ...f.composite_filters };
+    delete next[key];
+    return { ...f, composite_filters: next };
+  });
+  const setCompositeGroup = (oldKey, newKey) => setForm(f => {
+    const next = { ...f.composite_filters };
+    delete next[oldKey];
+    next[newKey] = siblingsByGroup[newKey]?.items[0]?.slug || '';
+    return { ...f, composite_filters: next };
+  });
+  const setCompositeValue = (key, slug) => setForm(f => ({ ...f, composite_filters: { ...f.composite_filters, [key]: slug } }));
 
   return (
     <Modal open onClose={onClose} title={form.id ? `Edit ${mode === 'main' ? 'Main Category' : 'Category'}` : `Add ${mode === 'main' ? 'Main Category' : 'Category'}`} wide>
@@ -233,6 +266,39 @@ function CategoryFormModal({ mode, form: initial, groups, mainCategories, onClos
                 <option value="">— Select —</option>
                 {groups.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
               </Select>
+            </Field>
+
+            <Field
+              label="Composite of (optional)"
+              hint="Combine this value with one or more other filters instead of tagging products to it directly — e.g. 'Anti Skid Terrace Tiles' = Area: Terrace + Finish: Anti Skid. The page always shows the live, matching products; nothing is duplicated."
+              className="sm:col-span-2"
+            >
+              <div className="flex flex-col gap-2">
+                {compositeEntries.map(([key, slug]) => (
+                  <div key={key} className="flex items-center gap-2">
+                    <Select value={key} onChange={e => setCompositeGroup(key, e.target.value)} className="w-40">
+                      {Object.keys(siblingsByGroup).map(gk => (
+                        <option key={gk} value={gk} disabled={gk !== key && !!form.composite_filters?.[gk]}>
+                          {siblingsByGroup[gk].name}
+                        </option>
+                      ))}
+                    </Select>
+                    <Select value={slug} onChange={e => setCompositeValue(key, e.target.value)} className="flex-1">
+                      {(siblingsByGroup[key]?.items || []).map(item => (
+                        <option key={item.slug} value={item.slug}>{item.name}</option>
+                      ))}
+                    </Select>
+                    <button type="button" onClick={() => removeCompositeFilter(key)} className="shrink-0 text-slate-400 hover:text-rose-500">
+                      <Icon.close className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+                {compositeEntries.length < Object.keys(siblingsByGroup).length && (
+                  <button type="button" onClick={addCompositeFilter} className="self-start text-xs font-bold text-brand-blue hover:underline">
+                    + Add filter
+                  </button>
+                )}
+              </div>
             </Field>
           </>
         )}

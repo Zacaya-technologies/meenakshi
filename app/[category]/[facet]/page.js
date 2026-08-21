@@ -25,7 +25,12 @@ export default async function FacetCategoryPage({ params }) {
   const { category, parent, group, breadcrumb } = data;
 
   const presetFilters = { category: parent.slug };
-  if (group?.key) presetFilters[group.key] = category.slug;
+  const composite = category.composite_filters ? JSON.parse(category.composite_filters) : null;
+  if (composite) {
+    Object.assign(presetFilters, composite);
+  } else if (group?.key) {
+    presetFilters[group.key] = category.slug;
+  }
 
   return (
     <>

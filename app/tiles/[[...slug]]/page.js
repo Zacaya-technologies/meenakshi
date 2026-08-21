@@ -29,7 +29,15 @@ export default async function TilesCategoryPage({ params }) {
 
   const { category, parent, group, kind, breadcrumb } = data;
   const presetFilters = { category: parent?.slug || category.slug };
-  if (kind === 'facet' && group?.key) presetFilters[group.key] = category.slug;
+  // A "composite" category (e.g. "Anti Skid Terrace Tiles") has no products
+  // tagged to it directly — its page applies the full set of atomic filters
+  // stored on the row instead of just its own slug.
+  const composite = category.composite_filters ? JSON.parse(category.composite_filters) : null;
+  if (composite) {
+    Object.assign(presetFilters, composite);
+  } else if (kind === 'facet' && group?.key) {
+    presetFilters[group.key] = category.slug;
+  }
 
   return (
     <>
