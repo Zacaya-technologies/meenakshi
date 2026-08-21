@@ -294,7 +294,12 @@ router.get('/:slug', async (req, res) => {
 
         if (!product) return res.status(404).json({ success: false, message: 'Product not found' });
 
-        await db.query(`UPDATE products SET views_count = views_count + 1 WHERE id = ?`, [product.id]);
+        // Best-effort view counter: on read-only serverless filesystems
+        // (e.g. Vercel) SQLite writes throw — never let analytics break
+        // the product detail response.
+        db.query(`UPDATE products SET views_count = views_count + 1 WHERE id = ?`, [product.id]).catch(err => {
+            console.warn('[Products] views_count increment skipped (read-only FS?):', err.message);
+        });
 
         const [images, reviews, variants, attributeRows, related, categoryIdRows, rawAttributeRows] = await Promise.all([
             db.query(`SELECT * FROM product_images WHERE product_id = ? ORDER BY is_primary DESC, display_order ASC`, [product.id]),
