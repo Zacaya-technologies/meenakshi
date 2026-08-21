@@ -10,7 +10,7 @@ const FIELDS = [
     'corporate_address', 'store_address',
     'primary_phone', 'secondary_phone', 'additional_phone', 'landline',
     'email', 'whatsapp_number', 'google_maps_url', 'website_url',
-    'facebook_url', 'instagram_url', 'linkedin_url', 'youtube_url',
+    'facebook_url', 'instagram_url', 'twitter_url', 'linkedin_url', 'youtube_url',
     'business_hours', 'copyright_text'
 ];
 
@@ -36,6 +36,7 @@ async function ensureTable() {
             website_url TEXT,
             facebook_url TEXT,
             instagram_url TEXT,
+            twitter_url TEXT,
             linkedin_url TEXT,
             youtube_url TEXT,
             business_hours TEXT,
@@ -43,6 +44,12 @@ async function ensureTable() {
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
     `);
+    // Table may already exist from before twitter_url was added — patch it in.
+    try {
+        await db.execScript(`ALTER TABLE business_settings ADD COLUMN twitter_url TEXT;`);
+    } catch (e) {
+        // Column already exists — ignore.
+    }
 }
 
 async function getSettings() {

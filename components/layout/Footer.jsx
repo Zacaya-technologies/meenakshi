@@ -31,6 +31,14 @@ export default function Footer() {
 
   const phones = [business.primary_phone, business.secondary_phone, business.additional_phone].filter(Boolean);
 
+  const socialLinks = [
+    { url: business.facebook_url, label: 'Facebook', Icon: Icon.facebook },
+    { url: business.instagram_url, label: 'Instagram', Icon: Icon.instagram },
+    { url: business.twitter_url, label: 'X (Twitter)', Icon: Icon.twitter },
+    { url: business.linkedin_url, label: 'LinkedIn', Icon: Icon.linkedin },
+    { url: business.youtube_url, label: 'YouTube', Icon: Icon.youtube }
+  ].filter(s => s.url);
+
   return (
     <footer className="mt-auto bg-ink text-white">
       <div className="mx-auto max-w-[1380px] px-6 py-16">
@@ -46,6 +54,23 @@ export default function Footer() {
             <p className="mt-4 flex items-center gap-2 text-sm text-slate-400">
               <Icon.phoneCall className="h-4 w-4 shrink-0 text-brand-blue" /> {business.business_hours}
             </p>
+
+            {socialLinks.length > 0 && (
+              <div className="mt-5 flex items-center gap-2.5">
+                {socialLinks.map(({ url, label, Icon: SocialIcon }) => (
+                  <a
+                    key={label}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-brand-blue hover:text-white"
+                  >
+                    <SocialIcon className="h-4 w-4" />
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
 
           <div>

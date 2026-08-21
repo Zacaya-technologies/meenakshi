@@ -40,6 +40,7 @@ const GROUPS = [
     fields: [
       { key: 'facebook_url', label: 'Facebook URL' },
       { key: 'instagram_url', label: 'Instagram URL' },
+      { key: 'twitter_url', label: 'X (Twitter) URL' },
       { key: 'linkedin_url', label: 'LinkedIn URL' },
       { key: 'youtube_url', label: 'YouTube URL' }
     ]

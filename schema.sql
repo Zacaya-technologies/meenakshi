@@ -280,6 +280,7 @@ CREATE TABLE IF NOT EXISTS business_settings (
     website_url TEXT,
     facebook_url TEXT,
     instagram_url TEXT,
+    twitter_url TEXT,
     linkedin_url TEXT,
     youtube_url TEXT,
     business_hours TEXT,
