@@ -78,16 +78,8 @@ export default function MobileDrawer({ open, onClose, menuItems }) {
             className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 bg-brand-chrome px-4 py-4"
             style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}
           >
-            <button onClick={() => go('/')} className="flex items-center gap-3 text-left">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-blue to-brand-deep font-heading text-lg font-black">
-                M
-              </span>
-              <span className="font-heading text-base font-extrabold leading-tight">
-                MEENAKSHI
-                <span className="mt-0.5 block text-[9px] font-bold uppercase tracking-[0.2em] text-brand-blue">
-                  Build World
-                </span>
-              </span>
+            <button onClick={() => go('/')} className="flex items-center rounded-xl bg-white px-2.5 py-1.5 text-left">
+              <img src="/images/logo.png" alt="Meenakshi Build World" className="h-8 w-auto" />
             </button>
             <button
               ref={closeRef}

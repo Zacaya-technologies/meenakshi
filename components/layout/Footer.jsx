@@ -13,13 +13,8 @@ export default function Footer() {
       <div className="mx-auto max-w-[1380px] px-6 py-16">
         <div className="mb-14 grid grid-cols-2 gap-10 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
-            <div className="mb-4 flex items-center gap-3">
-              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-blue to-brand-deep font-heading text-xl font-black">
-                M
-              </span>
-              <span className="font-heading text-lg font-extrabold">
-                MEENAKSHI <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-brand-blue">Build World</span>
-              </span>
+            <div className="mb-4 inline-flex items-center rounded-xl bg-white px-3 py-1.5">
+              <img src="/images/logo.png" alt="Meenakshi Build World" className="h-11 w-auto" />
             </div>
             <p className="text-sm text-slate-400">
               India’s leading database-driven enterprise marketplace for architectural ceramic tiles, Italian marble vitrified slabs, and outdoor paver systems.

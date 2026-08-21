@@ -314,14 +314,8 @@ export default function Header() {
             <Icon.menu className="h-5 w-5" />
           </button>
 
-          <Link href="/" className="flex shrink-0 items-center gap-3" onClick={closeMega}>
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-blue to-brand-deep font-heading text-xl font-black text-white shadow-glow">
-              M
-            </span>
-            <span className="hidden flex-col leading-none sm:flex">
-              <span className="font-heading text-lg font-extrabold tracking-wide text-white">MEENAKSHI</span>
-              <span className="mt-1 text-[10px] font-bold uppercase tracking-[0.22em] text-brand-blue">Build World</span>
-            </span>
+          <Link href="/" className="flex shrink-0 items-center rounded-xl bg-white px-3 py-1.5 shadow-glow" onClick={closeMega}>
+            <img src="/images/logo.png" alt="Meenakshi Build World" className="h-9 w-auto sm:h-10" />
           </Link>
 
           {/* Search — opens the search overlay, which autofocuses its own input */}
