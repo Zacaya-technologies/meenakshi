@@ -47,7 +47,7 @@ router.post('/whatsapp', async (req, res) => {
     );
     const whatsappLink = `https://wa.me/${phone}?text=I%20am%20interested%20in%20product%20${productId}`;
     await sendEmail(
-      process.env.SALES_EMAIL || 'sales@meenakshibuildworld.com',
+      process.env.SALES_EMAIL || 'info@meenakshibuildworld.com',
       'New WhatsApp Quote Request',
       `<p><strong>${name}</strong> requested a WhatsApp quote for product ID ${productId}.</p><p>Link: <a href="${whatsappLink}">${whatsappLink}</a></p>`
     );
@@ -71,7 +71,7 @@ router.post('/sample', async (req, res) => {
       ['sample', userId || null, name || null, phone || null, productId, product ? product.name : null, address]
     );
     await sendEmail(
-      process.env.SALES_EMAIL || 'sales@meenakshibuildworld.com',
+      process.env.SALES_EMAIL || 'info@meenakshibuildworld.com',
       'Sample Request Received',
       `<p>Sample requested for product ${productId}.</p><p>Shipping address: ${address}</p>`
     );
@@ -94,7 +94,7 @@ router.post('/bulk', authenticateToken, async (req, res) => {
       ['bulk', req.user.id, JSON.stringify(items)]
     );
     await sendEmail(
-      process.env.SALES_EMAIL || 'sales@meenakshibuildworld.com',
+      process.env.SALES_EMAIL || 'info@meenakshibuildworld.com',
       'Bulk Quote Request',
       `<p>User ${req.user.id} submitted a bulk quote request.</p><pre>${JSON.stringify(items, null, 2)}</pre>`
     );

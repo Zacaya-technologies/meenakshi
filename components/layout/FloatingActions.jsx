@@ -3,18 +3,18 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Icon } from '@/components/ui/Icons';
-
-const WHATSAPP_NUMBER = '919876543210';
-const SALES_NUMBER = '+919876543210';
+import { useBusiness, telHref, waLink, waGreeting } from '@/lib/business';
 
 /**
- * Persistent right-edge contact rail (WhatsApp + enquiry), matching the
+ * Persistent right-edge contact rail (WhatsApp + call + enquiry), matching the
  * reference. Sits below the header stack and clear of the bottom safe area so
- * it never covers system gesture affordances.
+ * it never covers system gesture affordances. All contact details come from
+ * the central business settings.
  */
 export default function FloatingActions() {
   const reduceMotion = useReducedMotion();
   const [chatOpen, setChatOpen] = useState(false);
+  const business = useBusiness();
 
   useEffect(() => {
     if (!chatOpen) return;
@@ -43,7 +43,7 @@ export default function FloatingActions() {
             aria-label="Contact options"
           >
             <div className="flex items-center justify-between bg-brand-navy px-4 py-3">
-              <span className="font-heading text-sm font-bold text-white">Talk to a tile expert</span>
+              <span className="font-heading text-sm font-bold text-white">Talk to our experts</span>
               <button
                 onClick={() => setChatOpen(false)}
                 aria-label="Close contact options"
@@ -55,25 +55,25 @@ export default function FloatingActions() {
 
             <div className="p-3">
               <p className="mb-3 px-1 text-xs text-slate-500 dark:text-slate-400">
-                Mon–Sat, 9:30 AM – 7:00 PM IST. Share your area in sq.ft for a same-day quote.
+                {business.business_hours}. Get expert help for your home or project.
               </p>
               <ContactRow
-                href={`tel:${SALES_NUMBER}`}
+                href={telHref(business.primary_phone)}
                 icon={<Icon.phone className="h-4 w-4" />}
-                title="Call sales"
-                subtitle={SALES_NUMBER}
+                title="Call now"
+                subtitle={business.primary_phone}
               />
               <ContactRow
-                href={`https://wa.me/${WHATSAPP_NUMBER}`}
+                href={waLink(business.whatsapp_number, waGreeting(business))}
                 icon={<Icon.whatsapp className="h-4 w-4" />}
                 title="WhatsApp us"
-                subtitle="Fastest reply — send a photo of your space"
+                subtitle={business.primary_phone}
               />
               <ContactRow
-                href="mailto:sales@meenakshibuildworld.com"
+                href={`mailto:${business.email}`}
                 icon={<Icon.mail className="h-4 w-4" />}
-                title="Email"
-                subtitle="sales@meenakshibuildworld.com"
+                title="Email us"
+                subtitle={business.email}
               />
             </div>
           </motion.div>
@@ -81,13 +81,22 @@ export default function FloatingActions() {
       </AnimatePresence>
 
       <a
-        href={`https://wa.me/${WHATSAPP_NUMBER}`}
+        href={`https://wa.me/${String(business.whatsapp_number || '').replace(/\D/g, '')}?text=${encodeURIComponent(waGreeting(business))}`}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat with us on WhatsApp"
         className="flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_10px_28px_rgba(37,211,102,0.45)] transition duration-200 hover:scale-105 active:scale-95"
       >
         <Icon.whatsapp className="h-7 w-7" />
+      </a>
+
+      {/* Mobile-friendly Call Now button */}
+      <a
+        href={telHref(business.primary_phone)}
+        aria-label={`Call ${business.business_name} at ${business.primary_phone}`}
+        className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-brand-blue to-brand-deep text-white shadow-glow transition duration-200 hover:scale-105 active:scale-95"
+      >
+        <Icon.phoneCall className="h-6 w-6" />
       </a>
 
       <button

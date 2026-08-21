@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useApp } from '@/lib/store';
+import { useBusiness, telHref, waLink } from '@/lib/business';
 import { API } from '@/lib/api';
 import { Icon, NavIcon } from '@/components/ui/Icons';
 import MegaMenu from './MegaMenu';
@@ -20,6 +21,7 @@ const CLOSE_INTENT_MS = 180;
 
 export default function Header() {
   const { cartCount, wishlist, compare, darkMode, setDarkMode, user, logout } = useApp();
+  const business = useBusiness();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -253,30 +255,31 @@ export default function Header() {
         <div className="mx-auto flex h-9 max-w-shell items-center justify-between gap-4 px-4 text-xs sm:px-6">
           <div className="flex items-center gap-5 overflow-hidden">
             <a
-              href="https://wa.me/919876543210"
+              href={waLink(business.whatsapp_number, `Hello ${business.business_name}, I would like to know more about your products.`)}
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex shrink-0 items-center gap-1.5 transition hover:text-brand-blue"
             >
               <Icon.whatsapp className="h-4 w-4 text-[#25D366]" />
               <span className="hidden sm:inline">WhatsApp</span>
-              <strong className="font-semibold text-white">+91 98765 43210</strong>
+              <strong className="font-semibold text-white">{business.primary_phone}</strong>
             </a>
-            <a href="tel:+919876543210" className="hidden shrink-0 items-center gap-1.5 transition hover:text-brand-blue md:flex">
+            <a href={telHref(business.primary_phone)} className="hidden shrink-0 items-center gap-1.5 transition hover:text-brand-blue md:flex">
               <Icon.phone className="h-4 w-4 text-brand-blue" />
-              Sales <strong className="font-semibold text-white">+91 98765 43210</strong>
+              Call <strong className="font-semibold text-white">{business.primary_phone}</strong>
             </a>
             <a
-              href="mailto:sales@meenakshibuildworld.com"
+              href={`mailto:${business.email}`}
               className="hidden shrink-0 items-center gap-1.5 transition hover:text-brand-blue lg:flex"
             >
               <Icon.mail className="h-4 w-4 text-brand-blue" />
-              sales@meenakshibuildworld.com
+              {business.email}
             </a>
           </div>
 
           <div className="flex shrink-0 items-center gap-4">
             <Link href="/calculator" className="hidden transition hover:text-brand-blue sm:inline">Tile Calculator</Link>
-            <Link href="/store-locator" className="hidden transition hover:text-brand-blue md:inline">Store Locator</Link>
-            {user ? (
+            <Link href="/contact" className="hidden transition hover:text-brand-blue md:inline">Store Locator</Link>            {user ? (
               <span className="flex items-center gap-3">
                 <span className="text-brand-blue">Hi, <strong>{user.name}</strong></span>
                 <button onClick={logout} className="transition hover:text-brand-blue">Logout</button>

@@ -14,7 +14,8 @@ const NAV = [
   { href: '/admin/brands', label: 'Brands', icon: 'star' },
   { href: '/admin/collections', label: 'Collections', icon: 'layers' },
   { href: '/admin/orders', label: 'Orders', icon: 'bag' },
-  { href: '/admin/inquiries', label: 'Inquiries', icon: 'chat' }
+  { href: '/admin/inquiries', label: 'Inquiries', icon: 'chat' },
+  { href: '/admin/business', label: 'Business Info', icon: 'building' }
 ];
 
 export default function AdminShell({ children }) {

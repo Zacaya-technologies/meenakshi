@@ -262,6 +262,31 @@ CREATE TABLE IF NOT EXISTS settings (
     setting_value TEXT
 );
 
+CREATE TABLE IF NOT EXISTS business_settings (
+    id INTEGER PRIMARY KEY,
+    business_name TEXT,
+    logo TEXT,
+    tagline TEXT,
+    description TEXT,
+    corporate_address TEXT,
+    store_address TEXT,
+    primary_phone TEXT,
+    secondary_phone TEXT,
+    additional_phone TEXT,
+    landline TEXT,
+    email TEXT,
+    whatsapp_number TEXT,
+    google_maps_url TEXT,
+    website_url TEXT,
+    facebook_url TEXT,
+    instagram_url TEXT,
+    linkedin_url TEXT,
+    youtube_url TEXT,
+    business_hours TEXT,
+    copyright_text TEXT,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- INDEXES FOR MAXIMUM ENTERPRISE PERFORMANCE
 CREATE INDEX IF NOT EXISTS idx_products_slug ON products(slug);
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);

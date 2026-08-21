@@ -70,7 +70,8 @@ export default function AdminDashboard() {
           { href: '/admin/categories', label: 'Manage Categories', desc: 'Add areas, sizes, designs & more' },
           { href: '/admin/products/new', label: 'Add Product', desc: 'Publish a new SKU' },
           { href: '/admin/orders', label: 'Review Orders', desc: 'Update fulfilment status' },
-          { href: '/admin/attributes', label: 'Spec Attributes', desc: 'Manage technical spec fields' }
+          { href: '/admin/attributes', label: 'Spec Attributes', desc: 'Manage technical spec fields' },
+          { href: '/admin/business', label: 'Business Info', desc: 'Update contact details & addresses' }
         ].map(a => (
           <Link key={a.href} href={a.href} className="group rounded-2xl border-[1.5px] border-dashed border-border bg-white p-5 transition hover:border-brand-blue dark:bg-navy2 dark:border-white/10">
             <div className="flex items-center justify-between">

@@ -5,7 +5,7 @@ import { useApp } from '@/lib/store';
 import { FALLBACK_IMG, discountPct, formatPrice } from '@/lib/api';
 import { Icon } from '@/components/ui/Icons';
 
-const WHATSAPP_NUMBER = '919876543210';
+const WHATSAPP_NUMBER = '919900027700';
 
 function StarRating({ rating }) {
   const rounded = Math.round(rating || 0);

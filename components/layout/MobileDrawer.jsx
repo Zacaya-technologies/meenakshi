@@ -5,11 +5,21 @@ import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { API } from '@/lib/api';
 import { groupHeading } from '@/lib/menuData';
+import { useBusiness, telHref, waLink, waGreeting } from '@/lib/business';
 import { Icon, NavIcon, AnyIcon } from '@/components/ui/Icons';
+
+const PAGE_LINKS = [
+  { label: 'Home', url: '/' },
+  { label: 'About Us', url: '/about' },
+  { label: 'Products', url: '/products' },
+  { label: 'Shop', url: '/shop' },
+  { label: 'Contact Us', url: '/contact' }
+];
 
 export default function MobileDrawer({ open, onClose, menuItems }) {
   const router = useRouter();
   const reduceMotion = useReducedMotion();
+  const business = useBusiness();
 
   const [openSlug, setOpenSlug] = useState(null);
   const [openGroup, setOpenGroup] = useState(null);
@@ -179,6 +189,43 @@ export default function MobileDrawer({ open, onClose, menuItems }) {
                 </div>
               );
             })}
+
+            {/* Quick page links */}
+            <div className="border-b border-white/[0.07] py-3.5">
+              <span className="mb-2 flex items-center gap-3 text-[11px] font-extrabold uppercase tracking-[0.14em] text-brand-blue">
+                <Icon.grid className="h-3.5 w-3.5" /> Quick Links
+              </span>
+              <ul>
+                {PAGE_LINKS.map(l => (
+                  <li key={l.url}>
+                    <button
+                      onClick={() => go(l.url)}
+                      className="block min-h-[44px] w-full border-b border-dashed border-white/[0.07] text-left text-[13px] font-semibold text-white/85 transition active:text-brand-blue"
+                    >
+                      {l.label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Contact actions */}
+            <div className="flex gap-3 py-5">
+              <a
+                href={telHref(business.primary_phone)}
+                className="flex min-h-[48px] flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep text-sm font-bold text-white shadow-glow"
+              >
+                <Icon.phoneCall className="h-4 w-4" /> Call Now
+              </a>
+              <a
+                href={waLink(business.whatsapp_number, waGreeting(business))}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex min-h-[48px] flex-1 items-center justify-center gap-2 rounded-xl bg-[#25D366] text-sm font-bold text-white"
+              >
+                <Icon.whatsapp className="h-4 w-4" /> WhatsApp
+              </a>
+            </div>
           </div>
         </motion.div>
       )}

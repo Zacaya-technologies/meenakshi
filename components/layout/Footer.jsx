@@ -3,61 +3,118 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Icon } from '@/components/ui/Icons';
+import { useBusiness, telHref, waLink, waGreeting } from '@/lib/business';
 
 export default function Footer() {
   const router = useRouter();
   const go = (url) => router.push(url);
+  const business = useBusiness();
+
+  const quickLinks = [
+    { label: 'Home', url: '/' },
+    { label: 'About Us', url: '/about' },
+    { label: 'Categories', url: '/all-tiles' },
+    { label: 'Products', url: '/products' },
+    { label: 'Shop', url: '/shop' },
+    { label: 'Brands', url: '/brands' },
+    { label: 'Contact Us', url: '/contact' }
+  ];
+
+  const productLinks = [
+    { label: 'Tiles', url: '/all-tiles' },
+    { label: 'Sanitary Ware', url: '/shop' },
+    { label: 'Kitchen', url: '/shop' },
+    { label: 'Steel', url: '/shop' },
+    { label: 'Cement', url: '/shop' },
+    { label: 'Plumbing', url: '/shop' }
+  ];
+
+  const phones = [business.primary_phone, business.secondary_phone, business.additional_phone].filter(Boolean);
 
   return (
     <footer className="mt-auto bg-ink text-white">
       <div className="mx-auto max-w-[1380px] px-6 py-16">
-        <div className="mb-14 grid grid-cols-2 gap-10 md:grid-cols-4">
+        <div className="mb-14 grid grid-cols-2 gap-10 md:grid-cols-4 lg:grid-cols-5">
           <div className="col-span-2 md:col-span-1">
             <div className="mb-4 inline-flex items-center rounded-xl bg-white px-3 py-1.5">
-              <img src="/images/logo.png" alt="Meenakshi Build World" className="h-11 w-auto" />
+              <img src={business.logo || '/images/logo.png'} alt={business.business_name} className="h-11 w-auto" />
             </div>
             <p className="text-sm text-slate-400">
-              India’s leading database-driven enterprise marketplace for architectural ceramic tiles, Italian marble vitrified slabs, and outdoor paver systems.
+              One-stop destination for quality building materials, tiles, sanitary ware, steel, cement,
+              plumbing and kitchen solutions in Bangalore.
+            </p>
+            <p className="mt-4 flex items-center gap-2 text-sm text-slate-400">
+              <Icon.phoneCall className="h-4 w-4 shrink-0 text-brand-blue" /> {business.business_hours}
             </p>
           </div>
 
           <div>
-            <h4 className="mb-4 font-heading text-sm font-bold text-brand-blue">Shop Categories</h4>
+            <h4 className="mb-4 font-heading text-sm font-bold text-brand-blue">Quick Links</h4>
             <ul className="flex flex-col gap-2.5 text-sm text-slate-400">
-              <li><button onClick={() => go('/floor-tiles')} className="transition hover:text-brand-blue">Floor Tiles</button></li>
-              <li><button onClick={() => go('/wall-tiles')} className="transition hover:text-brand-blue">Wall Tiles</button></li>
-              <li><button onClick={() => go('/floor-tiles/marble')} className="transition hover:text-brand-blue">Marble Floor Tiles</button></li>
-              <li><button onClick={() => go('/floor-tiles/outdoor')} className="transition hover:text-brand-blue">Outdoor Floor Tiles</button></li>
+              {quickLinks.map(l => (
+                <li key={l.label}>
+                  <button onClick={() => go(l.url)} className="transition hover:text-brand-blue">{l.label}</button>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div>
-            <h4 className="mb-4 font-heading text-sm font-bold text-brand-blue">Interactive Tools</h4>
+            <h4 className="mb-4 font-heading text-sm font-bold text-brand-blue">Products</h4>
             <ul className="flex flex-col gap-2.5 text-sm text-slate-400">
-              <li><button onClick={() => go('/visualizer')} className="transition hover:text-brand-blue">3D Room Visualizer</button></li>
-              <li><button onClick={() => go('/calculator')} className="transition hover:text-brand-blue">Tile & Box Calculator</button></li>
-              <li><button onClick={() => go('/compare')} className="transition hover:text-brand-blue">Product Comparison</button></li>
-              <li><button onClick={() => go('/architect-zone')} className="transition hover:text-brand-blue">Architect Commercial RFQ</button></li>
+              {productLinks.map(l => (
+                <li key={l.label}>
+                  <button onClick={() => go(l.url)} className="transition hover:text-brand-blue">{l.label}</button>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div>
-            <h4 className="mb-4 font-heading text-sm font-bold text-brand-blue">Portals</h4>
+            <h4 className="mb-4 font-heading text-sm font-bold text-brand-blue">Contact</h4>
             <ul className="flex flex-col gap-2.5 text-sm text-slate-400">
-              <li><button onClick={() => go('/customer-dash')} className="transition hover:text-brand-blue">Customer Orders</button></li>
-              <li><button onClick={() => go('/dealer-dash')} className="transition hover:text-brand-blue">B2B Dealer Credit Portal</button></li>
-              <li><button onClick={() => go('/admin')} className="transition hover:text-brand-blue">Master Admin CMS</button></li>
-              <li><Link href="/sitemap.xml" target="_blank" className="transition hover:text-brand-blue">Dynamic XML Sitemap</Link></li>
+              {phones.map(p => (
+                <li key={p}>
+                  <a href={telHref(p)} className="flex items-center gap-2 transition hover:text-brand-blue">
+                    <Icon.phone className="h-3.5 w-3.5 shrink-0 text-brand-blue" /> {p}
+                  </a>
+                </li>
+              ))}
+              <li>
+                <a href={`mailto:${business.email}`} className="flex items-center gap-2 break-all transition hover:text-brand-blue">
+                  <Icon.mail className="h-3.5 w-3.5 shrink-0 text-brand-blue" /> {business.email}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={waLink(business.whatsapp_number, waGreeting(business))}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 transition hover:text-brand-blue"
+                >
+                  <Icon.whatsapp className="h-3.5 w-3.5 shrink-0 text-[#25D366]" /> WhatsApp us
+                </a>
+              </li>
             </ul>
+          </div>
+
+          <div className="col-span-2 md:col-span-1">
+            <h4 className="mb-4 font-heading text-sm font-bold text-brand-blue">Corporate Office</h4>
+            <p className="whitespace-pre-line text-sm leading-relaxed text-slate-400">{business.corporate_address}</p>
+            <h4 className="mb-4 mt-6 font-heading text-sm font-bold text-brand-blue">Store</h4>
+            <p className="whitespace-pre-line text-sm leading-relaxed text-slate-400">{business.store_address}</p>
           </div>
         </div>
 
         <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 text-sm text-slate-500 md:flex-row">
-          <span>© 2026 Meenakshi Build World. All Rights Reserved.</span>
+          <span>{business.copyright_text}</span>
           <a
-            href="https://wa.me/919876543210?text=Hi%20Meenakshi%20Build%20World%20Sales%20Team%2C%20I%20am%20looking%20for%20a%20quotation%20on%20vitrified%20tiles."
+            href={waLink(
+              business.whatsapp_number,
+              `Hi ${business.business_name}, I am looking for a quotation on building materials.`
+            )}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-2 text-sm font-bold text-white transition hover:scale-105"
           >
             <Icon.whatsapp className="h-4 w-4" /> WhatsApp Support
