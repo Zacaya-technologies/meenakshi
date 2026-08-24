@@ -500,15 +500,27 @@ const TAXONOMY = {
         shortName: 'Ceramic',
         category_type: 'tile',
         featured: true,
-        description: 'Affordable, versatile ceramic tiles for floors, walls, kitchens and bathrooms in glossy, matt and digital-print finishes.',
-        valueMode: { application: 'literal', size: 'bare', design: 'composed', type: 'composed', finish: 'composed', color: 'composed' },
+        description: 'Affordable, versatile ceramic tiles for floors, walls, kitchens, bathrooms, living rooms, outdoor areas and parking spaces in glossy, matt, rustic and anti-skid finishes.',
+        valueMode: { area: 'literal', size: 'literal', design: 'literal', type: 'literal', finish: 'literal', color: 'literal', surface: 'literal' },
         groups: {
-            application: ['Ceramic Floor Tiles', 'Ceramic Wall Tiles', 'Ceramic Bathroom Tiles', 'Ceramic Kitchen Tiles'],
-            size: ['200x200 mm', '300x300 mm', '300x600 mm', '600x600 mm'],
-            design: ['Marble Ceramic Tiles', 'Wooden Ceramic Tiles', 'Stone Ceramic Tiles', 'Mosaic Ceramic Tiles'],
+            area: [
+                'Ceramic Floor Tiles', 'Ceramic Wall Tiles', 'Ceramic Bathroom Tiles', 'Ceramic Kitchen Tiles',
+                'Ceramic Living Room Tiles', 'Ceramic Outdoor Tiles', 'Ceramic Parking Tiles'
+            ],
+            size: [
+                '1x1 Ceramic Tiles', '2x2 Ceramic Tiles', 'Small Ceramic Tiles', 'Large Ceramic Tiles',
+                '200x200 mm Ceramic Tiles', '300x300 mm Ceramic Tiles', '300x450 mm Ceramic Tiles',
+                '300x600 mm Ceramic Tiles', '400x400 mm Ceramic Tiles', '600x600 mm Ceramic Tiles'
+            ],
+            design: [
+                'Texture Ceramic Tiles', 'Wooden Ceramic Tiles', 'Mosaic Ceramic Tiles', 'Moroccan Ceramic Tiles',
+                'Marble Ceramic Tiles', 'Pattern Ceramic Tiles', 'Plain Ceramic Tiles', 'Stone Ceramic Tiles',
+                'Subway Ceramic Tiles'
+            ],
             type: ['Designer Ceramic Tiles', 'Digital Ceramic Tiles', 'Printed Ceramic Tiles', 'Glazed Ceramic Tiles'],
-            finish: ['Glossy Ceramic Tiles', 'Matt Ceramic Tiles'],
-            color: FLOOR_COLOR.map(c => `${c} Ceramic Tiles`)
+            finish: ['Anti Skid Ceramic Tiles', 'Glossy Ceramic Tiles', 'Matt Ceramic Tiles', 'Rustic Ceramic Tiles'],
+            color: FLOOR_COLOR.map(c => `${c} Ceramic Tiles`),
+            surface: ['Floor', 'Wall']
         }
     },
     'vitrified-tiles': {
@@ -737,10 +749,20 @@ const PRODUCTS = [
     { main: 'parking-tiles', name: 'Terracotta Rustic Outdoor Parking Tile', price: 46, offer_price: null, brand: 'nitco', collection: null, area: 'Outdoor Parking Tiles', surface: 'Floor', size: '500x500 mm Parking Tiles', design: 'Concrete', type: 'Ceramic', finish: 'Rustic', color: 'Terracotta', featured: false },
 
     // ---- Ceramic Tiles ----
-    { main: 'ceramic-tiles', name: 'Glossy White Ceramic Floor Tile', price: 38, offer_price: 33, brand: 'kajaria-eternity', collection: null, application: 'Ceramic Floor Tiles', size: '300x300 mm', design: 'Marble', type: 'Designer', finish: 'Glossy', color: 'White', featured: true },
-    { main: 'ceramic-tiles', name: 'Digital Print Ceramic Kitchen Tile', price: 44, offer_price: null, brand: 'somany-grandeur', collection: null, application: 'Ceramic Kitchen Tiles', size: '300x600 mm', design: 'Mosaic', type: 'Digital', finish: 'Glossy', color: 'Sky Blue', featured: true },
-    { main: 'ceramic-tiles', name: 'Matt Wood-Look Ceramic Wall Tile', price: 41, offer_price: 36, brand: 'orientbell-horizon', collection: null, application: 'Ceramic Wall Tiles', size: '200x200 mm', design: 'Wooden', type: 'Printed', finish: 'Matt', color: 'Beige', featured: false },
-    { main: 'ceramic-tiles', name: 'Glazed Stone-Look Ceramic Bathroom Tile', price: 39, offer_price: null, brand: 'simpolo-vitrified', collection: null, application: 'Ceramic Bathroom Tiles', size: '300x300 mm', design: 'Stone', type: 'Glazed', finish: 'Glossy', color: 'Grey', featured: false },
+    { main: 'ceramic-tiles', name: 'Glossy White Ceramic Floor Tile', price: 38, offer_price: 33, brand: 'kajaria-eternity', collection: null, area: 'Ceramic Floor Tiles', surface: 'Floor', size: '300x300 mm Ceramic Tiles', design: 'Marble Ceramic Tiles', type: 'Designer Ceramic Tiles', finish: 'Glossy Ceramic Tiles', color: 'White Ceramic Tiles', featured: true },
+    { main: 'ceramic-tiles', name: 'Digital Print Ceramic Kitchen Tile', price: 44, offer_price: null, brand: 'somany-grandeur', collection: null, area: 'Ceramic Kitchen Tiles', surface: 'Wall', size: '300x600 mm Ceramic Tiles', design: 'Mosaic Ceramic Tiles', type: 'Digital Ceramic Tiles', finish: 'Glossy Ceramic Tiles', color: 'Sky Blue Ceramic Tiles', featured: true },
+    { main: 'ceramic-tiles', name: 'Matt Wood-Look Ceramic Wall Tile', price: 41, offer_price: 36, brand: 'orientbell-horizon', collection: null, area: 'Ceramic Wall Tiles', surface: 'Wall', size: '200x200 mm Ceramic Tiles', design: 'Wooden Ceramic Tiles', type: 'Printed Ceramic Tiles', finish: 'Matt Ceramic Tiles', color: 'Beige Ceramic Tiles', featured: false },
+    { main: 'ceramic-tiles', name: 'Glazed Stone-Look Ceramic Bathroom Tile', price: 39, offer_price: null, brand: 'simpolo-vitrified', collection: null, area: 'Ceramic Bathroom Tiles', surface: 'Wall', size: '300x300 mm Ceramic Tiles', design: 'Stone Ceramic Tiles', type: 'Glazed Ceramic Tiles', finish: 'Glossy Ceramic Tiles', color: 'Grey Ceramic Tiles', featured: false },
+    { main: 'ceramic-tiles', name: 'Premium Marble Ceramic Tile', price: 58, offer_price: 50, brand: 'kajaria-eternity', collection: null, area: 'Ceramic Floor Tiles', surface: 'Floor', size: '2x2 Ceramic Tiles', design: 'Marble Ceramic Tiles', finish: 'Glossy Ceramic Tiles', color: 'White Ceramic Tiles', featured: true },
+    { main: 'ceramic-tiles', name: 'Moroccan Blue Bathroom Ceramic Tile', price: 64, offer_price: 56, brand: 'somany-grandeur', collection: null, area: 'Ceramic Bathroom Tiles', surface: 'Wall', size: '300x450 mm Ceramic Tiles', design: 'Moroccan Ceramic Tiles', finish: 'Glossy Ceramic Tiles', color: 'Blue Ceramic Tiles', featured: false },
+    { main: 'ceramic-tiles', name: 'Subway Red Kitchen Ceramic Tile', price: 42, offer_price: null, brand: 'orientbell-horizon', collection: null, area: 'Ceramic Kitchen Tiles', surface: 'Wall', size: '300x450 mm Ceramic Tiles', design: 'Subway Ceramic Tiles', finish: 'Glossy Ceramic Tiles', color: 'Red Ceramic Tiles', featured: false },
+    { main: 'ceramic-tiles', name: 'Rustic Brown Living Room Ceramic Tile', price: 46, offer_price: 40, brand: 'nitco', collection: null, area: 'Ceramic Living Room Tiles', surface: 'Floor', size: '400x400 mm Ceramic Tiles', design: 'Stone Ceramic Tiles', finish: 'Rustic Ceramic Tiles', color: 'Brown Ceramic Tiles', featured: false },
+    { main: 'ceramic-tiles', name: 'Plain Gold Ceramic Wall Tile', price: 38, offer_price: null, brand: 'simpolo-vitrified', collection: null, area: 'Ceramic Wall Tiles', surface: 'Wall', size: 'Small Ceramic Tiles', design: 'Plain Ceramic Tiles', finish: 'Matt Ceramic Tiles', color: 'Gold Ceramic Tiles', featured: false },
+    { main: 'ceramic-tiles', name: 'Textured Green Outdoor Ceramic Tile', price: 52, offer_price: 45, brand: 'orientbell-horizon', collection: null, area: 'Ceramic Outdoor Tiles', surface: 'Floor', size: '400x400 mm Ceramic Tiles', design: 'Texture Ceramic Tiles', finish: 'Rustic Ceramic Tiles', color: 'Green Ceramic Tiles', featured: false },
+    { main: 'ceramic-tiles', name: 'Anti Skid Grey Parking Ceramic Tile', price: 48, offer_price: null, brand: 'simpolo-vitrified', collection: null, area: 'Ceramic Parking Tiles', surface: 'Floor', size: '400x400 mm Ceramic Tiles', design: 'Stone Ceramic Tiles', finish: 'Anti Skid Ceramic Tiles', color: 'Grey Ceramic Tiles', featured: true },
+    { main: 'ceramic-tiles', name: 'Large Glossy Marble Ceramic Slab', price: 88, offer_price: 78, brand: 'marazzi-italian', collection: null, area: 'Ceramic Floor Tiles', surface: 'Floor', size: 'Large Ceramic Tiles', design: 'Marble Ceramic Tiles', finish: 'Glossy Ceramic Tiles', color: 'Beige Ceramic Tiles', featured: false },
+    { main: 'ceramic-tiles', name: 'Mosaic Black Bathroom Ceramic Tile', price: 66, offer_price: 58, brand: 'nitco', collection: null, area: 'Ceramic Bathroom Tiles', surface: 'Wall', size: 'Small Ceramic Tiles', design: 'Mosaic Ceramic Tiles', finish: 'Glossy Ceramic Tiles', color: 'Black Ceramic Tiles', featured: false },
+    { main: 'ceramic-tiles', name: 'Pattern Blue Living Room Ceramic Tile', price: 54, offer_price: 47, brand: 'somany-grandeur', collection: null, area: 'Ceramic Living Room Tiles', surface: 'Floor', size: '1x1 Ceramic Tiles', design: 'Pattern Ceramic Tiles', finish: 'Matt Ceramic Tiles', color: 'Blue Ceramic Tiles', featured: false },
 
     // ---- Vitrified Tiles ----
     { main: 'vitrified-tiles', name: 'GVT Statuario Polished Slab', price: 142, offer_price: 126, brand: 'nitco-tiles', collection: 'italian-royal-marble', application: 'Vitrified Floor Tiles', size: '800x1600 mm', design: 'Marble', type: 'GVT', finish: 'Polished', color: 'White', featured: true },
