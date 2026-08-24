@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { API } from '@/lib/api';
@@ -31,6 +31,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
   const [products, setProducts] = useState([]);
   const [facets, setFacets] = useState(null);
   const [loading, setLoading] = useState(true);
+  const hasLoadedRef = useRef(false);
   const [pagination, setPagination] = useState({ total: 0, page: 1, pages: 1 });
   const [quickView, setQuickView] = useState(null);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -85,10 +86,12 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
     return () => { cancelled = true; };
   }, [filters.category]);
 
-  // Load products whenever filters/sort/page change
+  // Load products whenever filters/sort/page change. The skeleton grid only
+  // shows on the very first fetch — afterwards the current products stay in
+  // place (gently dimmed) while new ones load, so nothing blinks/flash-remounts.
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
+    if (!hasLoadedRef.current) setLoading(true);
     const qs = buildQuery({ sort, page, limit: 12 });
     API.getProducts(`?${qs}`).then(res => {
       if (cancelled) return;
@@ -99,6 +102,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
         setProducts([]);
         setPagination({ total: 0, page: 1, pages: 1 });
       }
+      hasLoadedRef.current = true;
       setLoading(false);
     });
     return () => { cancelled = true; };
@@ -346,13 +350,13 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
             </div>
           )}
 
-          {loading ? (
+          {loading && !hasLoadedRef.current ? (
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 xl:grid-cols-4">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div key={i} className="h-[340px] animate-pulse rounded-[20px] bg-slate-100 dark:bg-navy2" />
               ))}
             </div>
-          ) : products.length === 0 ? (
+          ) : !loading && products.length === 0 ? (
             <div className="rounded-[20px] border-[1.5px] border-dashed border-border bg-white p-16 text-center dark:bg-navy2 dark:border-white/10">
               <Icon.search className="mx-auto h-14 w-14 text-slate-300" />
               <h3 className="mt-4 font-heading text-lg font-bold text-ink dark:text-white">No products found</h3>
@@ -362,7 +366,11 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 xl:grid-cols-4">
+            <div
+              className={`grid grid-cols-2 gap-4 transition-opacity duration-200 md:grid-cols-3 md:gap-6 xl:grid-cols-4 ${
+                loading ? 'pointer-events-none opacity-50' : 'opacity-100'
+              }`}
+            >
               {products.map(p => (
                 <ProductCard key={p.id} product={p} onQuickView={setQuickView} />
               ))}

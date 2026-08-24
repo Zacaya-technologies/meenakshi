@@ -6,6 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { API } from '@/lib/api';
 import { groupHeading } from '@/lib/menuData';
 import { useBusiness, telHref, waLink, waGreeting } from '@/lib/business';
+import { useApp } from '@/lib/store';
 import { Icon, NavIcon, AnyIcon } from '@/components/ui/Icons';
 
 const PAGE_LINKS = [
@@ -20,6 +21,7 @@ export default function MobileDrawer({ open, onClose, menuItems }) {
   const router = useRouter();
   const reduceMotion = useReducedMotion();
   const business = useBusiness();
+  const { compare, darkMode, setDarkMode } = useApp();
 
   const [openSlug, setOpenSlug] = useState(null);
   const [openGroup, setOpenGroup] = useState(null);
@@ -88,17 +90,38 @@ export default function MobileDrawer({ open, onClose, menuItems }) {
             className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 bg-brand-chrome px-4 py-4"
             style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}
           >
-            <button onClick={() => go('/')} className="flex items-center rounded-xl bg-white px-2.5 py-1.5 text-left">
+            <button onClick={() => go('/')} className="flex min-w-0 items-center rounded-xl bg-white px-2.5 py-1.5 text-left">
               <img src="/images/logo.png" alt="Meenakshi Build World" className="h-8 w-auto" />
             </button>
-            <button
-              ref={closeRef}
-              onClick={onClose}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white transition active:bg-white/10"
-              aria-label="Close navigation menu"
-            >
-              <Icon.close className="h-5 w-5" />
-            </button>
+            <div className="flex shrink-0 items-center gap-2">
+              <button
+                onClick={() => go('/compare')}
+                className="relative flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white transition active:bg-white/10"
+                aria-label="Compare"
+              >
+                <Icon.scales className="h-5 w-5" />
+                {compare.length > 0 && (
+                  <span className="absolute right-0 top-0 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-brand-blue px-1 text-[10px] font-extrabold text-white">
+                    {compare.length > 99 ? '99+' : compare.length}
+                  </span>
+                )}
+              </button>
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white transition active:bg-white/10"
+                aria-label={darkMode ? 'Switch to light theme' : 'Switch to dark theme'}
+              >
+                {darkMode ? <Icon.sun className="h-5 w-5" /> : <Icon.moon className="h-5 w-5" />}
+              </button>
+              <button
+                ref={closeRef}
+                onClick={onClose}
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white transition active:bg-white/10"
+                aria-label="Close navigation menu"
+              >
+                <Icon.close className="h-5 w-5" />
+              </button>
+            </div>
           </div>
 
           {/* Category accordions */}

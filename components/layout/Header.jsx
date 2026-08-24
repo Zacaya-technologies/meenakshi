@@ -308,7 +308,7 @@ export default function Header() {
         className="sticky top-0 z-rail bg-brand-navy text-white shadow-[0_2px_20px_rgba(0,0,0,0.25)]"
       >
         {/* Main row */}
-        <div className="mx-auto flex h-20 max-w-shell items-center gap-3 px-4 sm:px-6">
+        <div className="mx-auto flex h-20 max-w-shell items-center gap-2 px-3 sm:gap-3 sm:px-6">
           <button
             onClick={() => setDrawerOpen(true)}
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/12 bg-white/5 text-white transition hover:border-brand-blue hover:text-brand-blue lg:hidden"
@@ -317,8 +317,8 @@ export default function Header() {
             <Icon.menu className="h-5 w-5" />
           </button>
 
-          <Link href="/" className="flex shrink-0 items-center rounded-xl bg-white px-3 py-1.5 shadow-glow" onClick={closeMega}>
-            <img src="/images/logo.png" alt="Meenakshi Build World" className="h-9 w-auto sm:h-10" />
+          <Link href="/" className="flex shrink-0 items-center rounded-xl bg-white px-2.5 py-1.5 shadow-glow sm:px-3" onClick={closeMega}>
+            <img src="/images/logo.png" alt="Meenakshi Build World" className="h-7 w-auto sm:h-9 lg:h-10" />
           </Link>
 
           {/* Search — opens the search overlay, which autofocuses its own input */}
@@ -334,12 +334,18 @@ export default function Header() {
             </span>
           </button>
 
-          <div className="ml-auto flex items-center gap-1.5">
+          <div className="ml-auto flex items-center gap-0.5 sm:gap-1.5">
             <IconAction onClick={() => setSearchOpen(true)} label="Search" className="lg:hidden">
               <Icon.search className="h-5 w-5" />
             </IconAction>
 
-            <IconAction onClick={() => router.push('/compare')} label="Compare" badge={compare.length} caption="Compare">
+            <IconAction
+              onClick={() => router.push('/compare')}
+              label="Compare"
+              badge={compare.length}
+              caption="Compare"
+              className="hidden sm:flex"
+            >
               <Icon.scales className="h-5 w-5" />
             </IconAction>
 
@@ -354,6 +360,7 @@ export default function Header() {
             <IconAction
               onClick={() => setDarkMode(!darkMode)}
               label={darkMode ? 'Switch to light theme' : 'Switch to dark theme'}
+              className="hidden sm:flex"
             >
               {darkMode ? <Icon.sun className="h-5 w-5" /> : <Icon.moon className="h-5 w-5" />}
             </IconAction>
