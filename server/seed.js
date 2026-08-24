@@ -50,7 +50,8 @@ const GROUPS = [
     { key: 'design', name: 'By Design', icon: 'palette' },
     { key: 'type', name: 'By Type', icon: 'stack' },
     { key: 'finish', name: 'By Finish', icon: 'brush' },
-    { key: 'color', name: 'By Color', icon: 'contrast' }
+    { key: 'color', name: 'By Color', icon: 'contrast' },
+    { key: 'surface', name: 'By Surface', icon: 'layers' }
 ];
 
 // Strips a trailing "<Main> Tiles" / "Tiles" suffix off an already-composed
@@ -467,15 +468,29 @@ const TAXONOMY = {
         shortName: 'Parking',
         category_type: 'tile',
         featured: true,
-        description: 'Heavy-duty, high load-bearing parking and driveway tiles engineered for constant vehicle traffic.',
-        valueMode: { application: 'literal', size: 'bare', design: 'composed', type: 'composed', finish: 'composed', color: 'composed' },
+        description: 'Heavy-duty parking, driveway and vehicle-area tiles — high load-bearing surfaces for indoor garages, outdoor driveways and covered parking structures.',
+        valueMode: { area: 'literal', application: 'literal', size: 'literal', design: 'composed', type: 'composed', finish: 'composed', color: 'composed', surface: 'bare' },
         groups: {
-            application: ['Parking Floor Tiles', 'Driveway Tiles', 'Garage Tiles'],
-            size: ['300x300 mm', '400x400 mm', '600x600 mm', '600x1200 mm'],
-            design: ['Stone Parking Tiles', 'Concrete Parking Tiles', 'Granite Parking Tiles'],
-            type: ['Heavy Duty Tiles', 'High Load Bearing Tiles', 'Paver Tiles', 'Full Body Vitrified Parking Tiles'],
-            finish: ['Anti-Skid Parking Tiles', 'Rustic Parking Tiles', 'Matt Parking Tiles'],
-            color: FLOOR_COLOR.map(c => `${c} Parking Tiles`)
+            area: ['Parking Wall Tiles', 'Parking Floor Tiles', 'Outdoor Parking Tiles'],
+            application: ['Driveway Tiles', 'Garage Tiles'],
+            size: [
+                '1x1 Parking Tiles', '2x2 Parking Tiles', '300x300 mm Parking Tiles',
+                '400x400 mm Parking Tiles', '500x500 mm Parking Tiles', '600x600 mm Parking Tiles',
+                '600x1200 mm Parking Tiles'
+            ],
+            design: [
+                'Cement Parking Tiles', 'Wooden Parking Tiles', 'Stone Parking Tiles', 'Plain Parking Tiles',
+                '3D Parking Tiles', 'Granite Parking Tiles', 'Marble Parking Tiles', 'Mosaic Parking Tiles',
+                'Texture Parking Tiles', 'Concrete Parking Tiles'
+            ],
+            type: [
+                'Ceramic Parking Tiles', 'Vitrified Parking Tiles', 'Digital Parking Tiles', 'Designer Parking Tiles',
+                'Full Body Vitrified Parking Tiles', 'Porcelain Parking Tiles', 'Heavy Duty Parking Tiles',
+                'High Load Bearing Parking Tiles', 'Paver Parking Tiles'
+            ],
+            finish: ['Anti Skid Parking Tiles', 'Matt Parking Tiles', 'Rustic Parking Tiles'],
+            color: FLOOR_COLOR.map(c => `${c} Parking Tiles`),
+            surface: ['Floor', 'Wall']
         }
     },
     'ceramic-tiles': {
@@ -706,10 +721,20 @@ const PRODUCTS = [
     { main: 'outdoor-tiles', name: 'Charcoal Anti-Skid Patio Slab', price: 94, offer_price: 82, brand: 'marazzi-italian', collection: 'outdoor-deck-slabs', application: 'Patio Tiles', size: '800x1600 mm', design: 'Stone Finish', type: 'Double Charge', finish: 'Anti-Skid', color: 'Black', featured: false },
 
     // ---- Parking Tiles ----
-    { main: 'parking-tiles', name: 'Heavy Duty Charcoal Parking Floor Tile', price: 52, offer_price: 46, brand: 'orientbell-horizon', collection: null, application: 'Parking Floor Tiles', size: '600x600 mm', design: 'Stone', type: 'Heavy Duty', finish: 'Anti-Skid', color: 'Black', featured: true },
-    { main: 'parking-tiles', name: 'High Load Bearing Driveway Paver', price: 44, offer_price: null, brand: 'simpolo-vitrified', collection: null, application: 'Driveway Tiles', size: '300x300 mm', design: 'Concrete', type: 'High Load Bearing', finish: 'Rustic', color: 'Grey', featured: true },
-    { main: 'parking-tiles', name: 'Granite-Look Garage Floor Tile', price: 49, offer_price: 43, brand: 'orientbell-horizon', collection: null, application: 'Garage Tiles', size: '400x400 mm', design: 'Granite', type: 'Paver', finish: 'Matt', color: 'Beige', featured: false },
-    { main: 'parking-tiles', name: 'Full Body Vitrified Parking Slab 20mm', price: 67, offer_price: 59, brand: 'marazzi-italian', collection: null, application: 'Parking Floor Tiles', size: '600x1200 mm', design: 'Stone', type: 'Full Body Vitrified', finish: 'Anti-Skid', color: 'Grey & White', featured: false },
+    { main: 'parking-tiles', name: 'Heavy Duty Charcoal Parking Floor Tile', price: 52, offer_price: 46, brand: 'orientbell-horizon', collection: null, area: 'Parking Floor Tiles', surface: 'Floor', size: '600x600 mm Parking Tiles', design: 'Stone', type: 'Heavy Duty', finish: 'Anti Skid', color: 'Black', featured: true },
+    { main: 'parking-tiles', name: 'High Load Bearing Driveway Paver', price: 44, offer_price: null, brand: 'simpolo-vitrified', collection: null, area: 'Outdoor Parking Tiles', surface: 'Floor', size: '300x300 mm Parking Tiles', design: 'Concrete', type: 'High Load Bearing', finish: 'Rustic', color: 'Grey', featured: true },
+    { main: 'parking-tiles', name: 'Granite-Look Garage Floor Tile', price: 49, offer_price: 43, brand: 'orientbell-horizon', collection: null, area: 'Parking Floor Tiles', surface: 'Floor', size: '400x400 mm Parking Tiles', design: 'Granite', type: 'Paver', finish: 'Matt', color: 'Beige', featured: false },
+    { main: 'parking-tiles', name: 'Full Body Vitrified Parking Slab 20mm', price: 67, offer_price: 59, brand: 'marazzi-italian', collection: null, area: 'Parking Floor Tiles', surface: 'Floor', size: '600x1200 mm Parking Tiles', design: 'Stone', type: 'Full Body Vitrified', finish: 'Anti Skid', color: 'Grey & White', featured: false },
+    { main: 'parking-tiles', name: 'Premium Stone Parking Tile', price: 52, offer_price: 46, brand: 'orientbell-horizon', collection: null, area: 'Parking Floor Tiles', surface: 'Floor', size: '400x400 mm Parking Tiles', design: 'Stone', type: 'Vitrified', finish: 'Anti Skid', color: 'Grey', featured: true },
+    { main: 'parking-tiles', name: 'Glossy Mosaic Parking Wall Tile', price: 48, offer_price: 42, brand: 'nitco', collection: null, area: 'Parking Wall Tiles', surface: 'Wall', size: '300x300 mm Parking Tiles', design: 'Mosaic', type: 'Ceramic', finish: 'Matt', color: 'White', featured: false },
+    { main: 'parking-tiles', name: 'Cement Matte Digital Driveway Tile', price: 44, offer_price: null, brand: 'simpolo-vitrified', collection: null, area: 'Parking Floor Tiles', surface: 'Floor', size: '500x500 mm Parking Tiles', design: 'Cement', type: 'Digital', finish: 'Matt', color: 'Brown', featured: false },
+    { main: 'parking-tiles', name: 'Wooden Plank Porcelain Parking Tile', price: 58, offer_price: 52, brand: 'marazzi-italian', collection: null, area: 'Parking Floor Tiles', surface: 'Floor', size: '600x600 mm Parking Tiles', design: 'Wooden', type: 'Porcelain', finish: 'Rustic', color: 'Terracotta', featured: false },
+    { main: 'parking-tiles', name: 'Plain White Heavy Duty Garage Tile', price: 40, offer_price: null, brand: 'orientbell-horizon', collection: null, area: 'Parking Floor Tiles', surface: 'Floor', size: '2x2 Parking Tiles', design: 'Plain', type: 'Heavy Duty', finish: 'Matt', color: 'White', featured: false },
+    { main: 'parking-tiles', name: '3D Designer Black & White Parking Tile', price: 62, offer_price: 55, brand: 'kajaria-eternity', collection: null, area: 'Parking Floor Tiles', surface: 'Floor', size: '600x600 mm Parking Tiles', design: '3D', type: 'Designer', finish: 'Matt', color: 'Black & White', featured: true },
+    { main: 'parking-tiles', name: 'Green Marble Outdoor Parking Slab', price: 72, offer_price: 64, brand: 'marazzi-italian', collection: null, area: 'Outdoor Parking Tiles', surface: 'Floor', size: '600x1200 mm Parking Tiles', design: 'Marble', type: 'Porcelain', finish: 'Matt', color: 'Green', featured: false },
+    { main: 'parking-tiles', name: 'Red Granite Anti Skid Outdoor Paver', price: 50, offer_price: null, brand: 'simpolo-vitrified', collection: null, area: 'Outdoor Parking Tiles', surface: 'Floor', size: '500x500 mm Parking Tiles', design: 'Granite', type: 'Paver', finish: 'Anti Skid', color: 'Red', featured: false },
+    { main: 'parking-tiles', name: 'Blue Texture Vitrified Parking Tile', price: 47, offer_price: 41, brand: 'somany-grandeur', collection: null, area: 'Parking Floor Tiles', surface: 'Floor', size: '1x1 Parking Tiles', design: 'Texture', type: 'Vitrified', finish: 'Anti Skid', color: 'Blue', featured: false },
+    { main: 'parking-tiles', name: 'Terracotta Rustic Outdoor Parking Tile', price: 46, offer_price: null, brand: 'nitco', collection: null, area: 'Outdoor Parking Tiles', surface: 'Floor', size: '500x500 mm Parking Tiles', design: 'Concrete', type: 'Ceramic', finish: 'Rustic', color: 'Terracotta', featured: false },
 
     // ---- Ceramic Tiles ----
     { main: 'ceramic-tiles', name: 'Glossy White Ceramic Floor Tile', price: 38, offer_price: 33, brand: 'kajaria-eternity', collection: null, application: 'Ceramic Floor Tiles', size: '300x300 mm', design: 'Marble', type: 'Designer', finish: 'Glossy', color: 'White', featured: true },
