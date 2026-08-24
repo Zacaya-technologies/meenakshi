@@ -51,7 +51,8 @@ const GROUPS = [
     { key: 'type', name: 'By Type', icon: 'stack' },
     { key: 'finish', name: 'By Finish', icon: 'brush' },
     { key: 'color', name: 'By Color', icon: 'contrast' },
-    { key: 'surface', name: 'By Surface', icon: 'layers' }
+    { key: 'surface', name: 'By Surface', icon: 'layers' },
+    { key: 'material', name: 'By Material', icon: 'grid' }
 ];
 
 // Strips a trailing "<Main> Tiles" / "Tiles" suffix off an already-composed
@@ -548,19 +549,22 @@ const TAXONOMY = {
         shortName: 'Other Areas',
         category_type: 'tile',
         featured: false,
-        description: 'Specialty tiling for staircases, commercial spaces, hospitality, healthcare and institutional projects.',
-        valueMode: { application: 'literal', size: 'bare', design: 'composed', type: 'composed', finish: 'composed', color: 'composed' },
+        description: 'Professional tile solutions for specialized residential, commercial and institutional spaces — designer TV unit walls, high-traffic commercial floors, swimming pools, hospitals, schools, bars and restaurants.',
+        valueMode: { application: 'literal', size: 'bare', design: 'composed', type: 'composed', finish: 'composed', color: 'composed', material: 'literal', surface: 'literal' },
         groups: {
             application: [
-                'Staircase Tiles', 'Pooja Room Tiles', 'Commercial Tiles', 'Office Tiles', 'Hotel Tiles',
-                'Restaurant Tiles', 'Hospital Tiles', 'School Tiles', 'Swimming Pool Tiles', 'Gym Tiles',
+                'TV Unit Tiles', 'Commercial Tiles', 'Swimming Pool Tiles', 'Hospital Tiles',
+                'School Tiles', 'Bar Tiles', 'Restaurant Tiles',
+                'Staircase Tiles', 'Pooja Room Tiles', 'Office Tiles', 'Hotel Tiles', 'Gym Tiles',
                 'Industrial Tiles', 'Reception Area Tiles', 'Lobby Tiles', 'Corridor Tiles'
             ],
-            size: ['300x300 mm', '600x600 mm', '600x1200 mm'],
-            design: ['Marble Tiles', 'Wooden Tiles', 'Stone Tiles', 'Plain Tiles', 'Designer Tiles'],
+            size: ['300x300 mm', '300x600 mm', '600x600 mm', '600x1200 mm'],
+            design: ['Marble Tiles', 'Wooden Tiles', 'Stone Tiles', 'Plain Tiles', 'Designer Tiles', 'Mosaic Tiles'],
             type: ['Ceramic Tiles', 'Vitrified Tiles', 'Porcelain Tiles', 'Full Body Vitrified Tiles'],
-            finish: ['Glossy Tiles', 'Matt Tiles', 'Anti-Skid Tiles', 'Polished Tiles'],
-            color: FLOOR_COLOR.map(c => `${c} Tiles`)
+            finish: ['Glossy Tiles', 'Matt Tiles', 'Anti-Skid Tiles', 'Polished Tiles', 'Rustic Tiles'],
+            color: FLOOR_COLOR.map(c => `${c} Tiles`),
+            material: ['Vitrified', 'Ceramic', 'Porcelain', 'Glass', 'Natural Stone'],
+            surface: ['Floor', 'Wall']
         }
     },
     'stone-brick-cladding': {
@@ -777,6 +781,18 @@ const PRODUCTS = [
     { main: 'other-tile-areas', name: 'Commercial Grade Lobby Floor Tile', price: 96, offer_price: 84, brand: 'marazzi-italian', collection: null, application: 'Lobby Tiles', size: '600x1200 mm', design: 'Designer', type: 'Full Body Vitrified', finish: 'Glossy', color: 'Grey & White', featured: false },
     { main: 'other-tile-areas', name: 'Anti-Skid Hospital Corridor Tile', price: 47, offer_price: null, brand: 'orientbell-horizon', collection: null, application: 'Hospital Tiles', size: '600x600 mm', design: 'Plain', type: 'Vitrified', finish: 'Anti-Skid', color: 'Ivory', featured: false },
     { main: 'other-tile-areas', name: 'Pool Deck Anti-Skid Tile', price: 52, offer_price: 45, brand: 'kajaria-eternity', collection: null, application: 'Swimming Pool Tiles', size: '300x300 mm', design: 'Stone', type: 'Ceramic', finish: 'Anti-Skid', color: 'Sky Blue', featured: false },
+    { main: 'other-tile-areas', name: 'Premium Grey Commercial Tile', price: 62, offer_price: 54, brand: 'simpolo-vitrified', collection: null, application: 'Commercial Tiles', surface: 'Floor', size: '600x600 mm', design: 'Stone', material: 'Vitrified', finish: 'Matt', color: 'Grey', featured: true },
+    { main: 'other-tile-areas', name: 'Marble TV Unit Feature Wall Tile', price: 95, offer_price: 84, brand: 'kajaria-eternity', collection: null, application: 'TV Unit Tiles', surface: 'Wall', size: '600x1200 mm', design: 'Marble', material: 'Vitrified', finish: 'Glossy', color: 'White', featured: true },
+    { main: 'other-tile-areas', name: 'Glass Mosaic Swimming Pool Tile', price: 78, offer_price: 69, brand: 'nitco', collection: null, application: 'Swimming Pool Tiles', surface: 'Wall', size: '300x300 mm', design: 'Mosaic', material: 'Glass', finish: 'Glossy', color: 'Blue', featured: false },
+    { main: 'other-tile-areas', name: 'Anti Skid Hospital Floor Tile', price: 58, offer_price: null, brand: 'orientbell-horizon', collection: null, application: 'Hospital Tiles', surface: 'Floor', size: '600x600 mm', design: 'Plain', material: 'Porcelain', finish: 'Anti-Skid', color: 'White', featured: false },
+    { main: 'other-tile-areas', name: 'Classroom Ceramic School Tile', price: 40, offer_price: null, brand: 'orientbell-horizon', collection: null, application: 'School Tiles', surface: 'Wall', size: '300x300 mm', design: 'Plain', material: 'Ceramic', finish: 'Matt', color: 'Cream', featured: false },
+    { main: 'other-tile-areas', name: 'Rustic Brick Bar Counter Tile', price: 66, offer_price: 58, brand: 'somany-grandeur', collection: null, application: 'Bar Tiles', surface: 'Wall', size: '300x300 mm', design: 'Designer', material: 'Ceramic', finish: 'Rustic', color: 'Brown', featured: false },
+    { main: 'other-tile-areas', name: 'Wood-Look Restaurant Floor Tile', price: 72, offer_price: 63, brand: 'marazzi-italian', collection: null, application: 'Restaurant Tiles', surface: 'Floor', size: '600x1200 mm', design: 'Wooden', material: 'Porcelain', finish: 'Rustic', color: 'Brown', featured: true },
+    { main: 'other-tile-areas', name: 'Stone-Look Hotel Lobby Tile', price: 88, offer_price: 77, brand: 'marazzi-italian', collection: null, application: 'Hotel Tiles', surface: 'Floor', size: '600x1200 mm', design: 'Stone', material: 'Natural Stone', finish: 'Polished', color: 'Beige', featured: false },
+    { main: 'other-tile-areas', name: 'Mosaic Bar Backsplash Tile', price: 70, offer_price: 61, brand: 'nitco', collection: null, application: 'Bar Tiles', surface: 'Wall', size: '300x300 mm', design: 'Mosaic', material: 'Glass', finish: 'Glossy', color: 'Blue & White', featured: false },
+    { main: 'other-tile-areas', name: 'Matt Porcelain Restaurant Wall Tile', price: 48, offer_price: null, brand: 'simpolo-vitrified', collection: null, application: 'Restaurant Tiles', surface: 'Wall', size: '300x600 mm', design: 'Plain', material: 'Porcelain', finish: 'Matt', color: 'Ivory', featured: false },
+    { main: 'other-tile-areas', name: 'Anti-Skid School Corridor Tile', price: 52, offer_price: 46, brand: 'orientbell-horizon', collection: null, application: 'School Tiles', surface: 'Floor', size: '600x600 mm', design: 'Stone', material: 'Ceramic', finish: 'Anti-Skid', color: 'Grey', featured: false },
+    { main: 'other-tile-areas', name: 'Plain White Hospital Wall Tile', price: 44, offer_price: null, brand: 'kajaria-eternity', collection: null, application: 'Hospital Tiles', surface: 'Wall', size: '300x300 mm', design: 'Plain', material: 'Ceramic', finish: 'Matt', color: 'White', featured: false },
 
     // ---- Stone & Brick Cladding ----
     { main: 'stone-brick-cladding', name: 'Natural Slate Exterior Cladding Panel', price: 132, offer_price: 115, brand: 'orientbell-horizon', collection: null, application: 'Exterior Stone Cladding', type: 'Slate Cladding', color: 'Grey', size: '600x300 mm', featured: true },

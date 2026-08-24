@@ -12,7 +12,8 @@
     "start:web": "next start -p 3001",
       "seed": "node server/seed.js",
       "migrate:parking-tiles": "node server/migrate-parking-tiles.js",
-      "migrate:ceramic-tiles": "node server/migrate-ceramic-tiles.js"
+      "migrate:ceramic-tiles": "node server/migrate-ceramic-tiles.js",
+      "migrate:other-tile-areas": "node server/migrate-other-tile-areas.js"
   },
   "keywords": [
     "tile-marketplace",

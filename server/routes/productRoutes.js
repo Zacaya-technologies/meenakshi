@@ -14,7 +14,7 @@ function toArray(v) {
 
 // "area" (Floor/Wall) and "application" (Kitchen/Bathroom) are mutually
 // exclusive per main category — a product only ever has one or the other.
-const FACET_GROUP_KEYS = ['area', 'application', 'size', 'design', 'type', 'finish', 'color', 'surface'];
+const FACET_GROUP_KEYS = ['area', 'application', 'size', 'design', 'type', 'finish', 'color', 'surface', 'material'];
 
 // Correlated subqueries that flatten each product's linked taxonomy + main
 // category into convenience string fields, reused by both the list and
@@ -35,7 +35,7 @@ const MAIN_CATEGORY_FIELDS = `
 router.get('/', async (req, res) => {
     try {
         const {
-            q, category, area, application, size, design, type, finish, color, brand, collection,
+            q, category, area, application, size, design, type, finish, color, surface, material, brand, collection,
             min_price, max_price, sort, featured, trending, in_stock, page = 1, limit = 12
         } = req.query;
 
@@ -62,7 +62,7 @@ router.get('/', async (req, res) => {
             params.push(category);
         }
 
-        const facetFilters = { area, application, size, design, type, finish, color };
+        const facetFilters = { area, application, size, design, type, finish, color, surface, material };
         for (const key of FACET_GROUP_KEYS) {
             const values = toArray(facetFilters[key]);
             if (!values.length) continue;
