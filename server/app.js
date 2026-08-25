@@ -19,6 +19,7 @@ const blogRoutes = require('./routes/blogRoutes');
 const seoRoutes = require('./routes/seoRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const businessSettingsRoutes = require('./routes/businessSettingsRoutes');
+const calculatorSettingsRoutes = require('./routes/calculatorSettingsRoutes');
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use('/api/v1/inquiries', inquiryRoutes);
 app.use('/api/v1/blogs', blogRoutes);
 app.use('/api/v1/admin', analyticsRoutes);
 app.use('/api/v1/business', businessSettingsRoutes);
+app.use('/api/v1/calculator-settings', calculatorSettingsRoutes);
 app.use('/', seoRoutes);
 
 app.use((req, res) => {

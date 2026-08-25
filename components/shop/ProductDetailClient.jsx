@@ -7,6 +7,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { API, FALLBACK_IMG, discountPct, formatPrice } from '@/lib/api';
 import { useApp } from '@/lib/store';
 import { Icon } from '@/components/ui/Icons';
+import { buildCalculatorLink } from '@/lib/calculator';
 
 const SWIPE_THRESHOLD = 60;
 
@@ -232,6 +233,13 @@ export default function ProductDetailClient({ slug }) {
               <Icon.scales className="h-5 w-5" />
             </button>
           </div>
+
+          <Link
+            href={buildCalculatorLink(product)}
+            className="mt-3 flex items-center justify-center gap-2 rounded-xl border-[1.5px] border-dashed border-brand-blue/40 py-3 text-sm font-bold text-brand-blue transition hover:border-brand-blue hover:bg-brand-blue/5"
+          >
+            <Icon.ruler className="h-4 w-4" /> Calculate Quantity for This Tile
+          </Link>
         </div>
       </div>
 

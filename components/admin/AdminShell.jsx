@@ -15,7 +15,8 @@ const NAV = [
   { href: '/admin/collections', label: 'Collections', icon: 'layers' },
   { href: '/admin/orders', label: 'Orders', icon: 'bag' },
   { href: '/admin/inquiries', label: 'Inquiries', icon: 'chat' },
-  { href: '/admin/business', label: 'Business Info', icon: 'building' }
+  { href: '/admin/business', label: 'Business Info', icon: 'building' },
+  { href: '/admin/calculator', label: 'Tile Calculator', icon: 'ruler' }
 ];
 
 export default function AdminShell({ children }) {

@@ -236,6 +236,12 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
         </div>
         {/* Desktop sort */}
         <div className="hidden items-center gap-2.5 lg:flex">
+          <Link
+            href="/calculator"
+            className="flex items-center gap-1.5 rounded-xl border-[1.5px] border-brand-blue/30 px-3.5 py-2.5 text-xs font-bold text-brand-blue transition hover:border-brand-blue hover:bg-brand-blue/5"
+          >
+            <Icon.ruler className="h-3.5 w-3.5" /> Calculate Tiles
+          </Link>
           <span className="text-xs text-slate-400">Sort by</span>
           <select
             value={sort}
@@ -264,6 +270,13 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
         >
           <Icon.stack className="h-4 w-4 text-brand-blue" /> {SORTS.find(s => s.value === sort)?.label || 'Sort'}
         </button>
+        <Link
+          href="/calculator"
+          aria-label="Calculate Tiles"
+          className="flex h-[46px] w-[46px] shrink-0 items-center justify-center rounded-xl border-[1.5px] border-brand-blue/30 text-brand-blue"
+        >
+          <Icon.ruler className="h-4.5 w-4.5" />
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 gap-7 lg:grid-cols-[300px_1fr] lg:items-start">
