@@ -169,7 +169,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
   // Subcategory quick-links for a main-category page (the Area/Application
   // column). Shown only while no facet filter is active.
   const subcats = useMemo(() => {
-    if (!facets || activeCount > 0) return [];
+    if (!facets || activeCount > 0 || !filters.category) return [];
     const navGroup = (facets.groups || []).find(g => g.key === 'area' || g.key === 'application');
     return (navGroup?.items || []).filter(i => i.slug !== filters.category);
   }, [facets, activeCount, filters.category]);
@@ -188,6 +188,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
         key: g.key,
         name: g.name.replace(/^By\s+/i, ''),
         items: g.items.map(i => ({
+          slug: i.slug,
           name: i.name,
           count: i.count,
           url: isMain(i.slug) ? `/tiles/${i.slug}` : `/tiles/${filters.category}/${i.slug}`
@@ -323,7 +324,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
                 {subcats.map(c => (
                   <Link
-                    key={c.slug}
+                    key={c.id ?? c.slug}
                     href={`/tiles/${filters.category}/${c.slug}`}
                     className="group overflow-hidden rounded-2xl border-[1.5px] border-border bg-white transition hover:border-brand-blue hover:shadow-card dark:bg-navy2 dark:border-white/10"
                   >
@@ -410,7 +411,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
                     </h3>
                     <ul className="grid grid-cols-1 gap-x-3 gap-y-2 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
                       {g.items.map(i => (
-                        <li key={i.slug}>
+                        <li key={`${g.key}-${i.slug}`}>
                           <Link
                             href={i.url}
                             className="text-[13px] text-slate-600 transition hover:text-brand-blue dark:text-slate-300"

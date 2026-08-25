@@ -49,7 +49,7 @@ function FacetGroup({ label, icon, options, selected, onToggle, searchable }) {
                 {filtered.map(opt => {
                   const isSel = selected.includes(opt.slug);
                   return (
-                    <li key={opt.slug}>
+                    <li key={opt.id ?? opt.slug}>
                       <label className="flex cursor-pointer items-center gap-2.5 text-[13px] text-slate-600 transition hover:text-brand-blue dark:text-slate-300">
                         <input
                           type="checkbox"
@@ -82,13 +82,13 @@ export default function FilterSidebar({ facets, selected, onToggle, onPriceChang
   const dynamicGroups = facets.groups || [];
 
   const groups = [
-    { key: 'brand', label: 'Brand', icon: <Icon.gem className="h-4 w-4" />, options: (facets.brands || []).map(b => ({ slug: b.slug, name: b.name })), searchable: (facets.brands || []).length > 8 },
-    { key: 'collection', label: 'Collection', icon: <Icon.layers className="h-4 w-4" />, options: (facets.collections || []).map(c => ({ slug: c.slug, name: c.name })), searchable: (facets.collections || []).length > 8 },
+    { key: 'brand', label: 'Brand', icon: <Icon.gem className="h-4 w-4" />, options: (facets.brands || []).map(b => ({ id: b.id, slug: b.slug, name: b.name })), searchable: (facets.brands || []).length > 8 },
+    { key: 'collection', label: 'Collection', icon: <Icon.layers className="h-4 w-4" />, options: (facets.collections || []).map(c => ({ id: c.id, slug: c.slug, name: c.name })), searchable: (facets.collections || []).length > 8 },
     ...dynamicGroups.map(g => ({
       key: g.key,
       label: g.name,
       icon: <AnyIcon id={g.icon} className="h-4 w-4" />,
-      options: (g.items || []).map(i => ({ slug: i.slug, name: i.name, count: i.count })),
+      options: (g.items || []).map(i => ({ id: i.id, slug: i.slug, name: i.name, count: i.count })),
       searchable: (g.items || []).length > 8
     }))
   ];
