@@ -39,6 +39,15 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
   const columns = live?.columns || [];
   const isLoading = loadingSlug === activeSlug && !live;
 
+  // Grid width must match the real column count (1 for "View All" + first
+  // facet group, one per remaining facet group, one for Latest Products) —
+  // a main category can have anywhere from a handful up to all 7 facet
+  // groups (area/application, size, design, type, finish, color, surface),
+  // so a single fixed xl:grid-cols-N would either leave gaps or, worse,
+  // overflow and wrap the Latest Products panel onto its own row.
+  const totalGridCols = Math.max(4, Math.min(8, (columns.length || 6) + 1));
+  const xlColsClass = { 4: 'xl:grid-cols-4', 5: 'xl:grid-cols-5', 6: 'xl:grid-cols-6', 7: 'xl:grid-cols-7', 8: 'xl:grid-cols-8' }[totalGridCols];
+
   const latest = live?.latestProducts || [];
   const isLoadingLatest = isLoading || (loadingSlug === activeSlug && !latest.length);
   const categoryName = activeItem?.name || 'All Products';
@@ -80,7 +89,7 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
             initial={reduceMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: reduceMotion ? 0 : 0.18, ease: 'easeOut' }}
-            className="grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-3 xl:grid-cols-7 xl:gap-x-6"
+            className={`grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-3 ${xlColsClass} xl:gap-x-6`}
           >
             {/* Column 1 — View All + first facet group (Area) */}
             <div className="min-w-0">
@@ -127,15 +136,12 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
               </h4>
 
               {isLoadingLatest ? (
-                <div className="flex flex-col gap-2">
+                <div className="grid grid-cols-2 gap-2.5">
                   {Array.from({ length: 4 }).map((_, i) => (
-                    <div key={i} className="flex items-center gap-3 p-2">
-                      <div className="h-16 w-16 shrink-0 animate-pulse rounded-lg bg-white/[0.06]" />
-                      <div className="flex-1 space-y-2">
-                        <div className="h-3 w-4/5 animate-pulse rounded bg-white/[0.06]" />
-                        <div className="h-2.5 w-1/3 animate-pulse rounded bg-white/[0.05]" />
-                        <div className="h-3 w-1/2 animate-pulse rounded bg-white/[0.06]" />
-                      </div>
+                    <div key={i}>
+                      <div className="aspect-square animate-pulse rounded-lg bg-white/[0.06]" />
+                      <div className="mt-2 h-2.5 w-4/5 animate-pulse rounded bg-white/[0.06]" />
+                      <div className="mt-1.5 h-2.5 w-1/2 animate-pulse rounded bg-white/[0.05]" />
                     </div>
                   ))}
                 </div>
@@ -144,33 +150,32 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
                   No products listed in this category yet.
                 </p>
               ) : (
-                <div className="flex flex-col gap-1">
-                  {latest.slice(0, 5).map(p => (
+                <div className="grid grid-cols-2 gap-2.5">
+                  {latest.slice(0, 4).map(p => (
                     <Link
                       key={p.id}
                       href={`/product/${p.slug}`}
                       onClick={onClose}
-                      className="group flex items-center gap-3 rounded-xl border border-transparent p-2 transition duration-200 hover:border-brand-blue/35 hover:bg-brand-blue/10"
+                      className="group overflow-hidden rounded-xl transition duration-200"
                     >
-                      <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-brand-navy2">
+                      <div className="aspect-square overflow-hidden rounded-lg bg-brand-navy2 ring-1 ring-inset ring-white/[0.06] transition group-hover:ring-brand-blue/40">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={p.image_url || FALLBACK_IMG}
                           alt=""
-                          width={64}
-                          height={64}
+                          width={120}
+                          height={120}
                           loading="lazy"
                           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
                         />
                       </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="truncate text-[13px] font-semibold text-white">{p.name}</div>
-                        <div className="text-[13px] font-bold text-brand-blue">
+                      <div className="mt-2">
+                        <div className="line-clamp-2 text-[12px] font-semibold leading-tight text-white transition group-hover:text-brand-blue">{p.name}</div>
+                        <div className="mt-1 text-[12px] font-bold text-brand-blue">
                           {formatPrice(p)}
                           <span className="ml-1 text-[10px] font-normal text-brand-slate">/sq.ft</span>
                         </div>
                       </div>
-                      <Icon.arrowRight className="h-4 w-4 shrink-0 text-white/25 transition duration-200 group-hover:translate-x-0.5 group-hover:text-brand-blue" />
                     </Link>
                   ))}
                 </div>
