@@ -119,7 +119,8 @@ export default function FilterSidebar({ facets, selected, onToggle, onPriceChang
         )}
       </div>
 
-      {/* Price range */}
+      {/* Price range — hidden while the catalogue is price-on-request (max price 0) */}
+      {Number(priceRange.max) > 0 && (
       <div className="border-b border-border py-3.5 dark:border-white/10">
         <span className="mb-2.5 flex items-center gap-2 text-[13px] font-bold text-ink dark:text-white">
           <Icon.bag className="h-4 w-4" /> Price (₹/sq.ft)
@@ -150,6 +151,7 @@ export default function FilterSidebar({ facets, selected, onToggle, onPriceChang
           <button type="submit" className="shrink-0 rounded-lg bg-brand-blue px-3 py-2 text-xs font-bold text-white">Go</button>
         </form>
       </div>
+      )}
 
       {groups.map(g => (
         <FacetGroup

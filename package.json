@@ -13,7 +13,8 @@
       "seed": "node server/seed.js",
       "migrate:parking-tiles": "node server/migrate-parking-tiles.js",
       "migrate:ceramic-tiles": "node server/migrate-ceramic-tiles.js",
-      "migrate:other-tile-areas": "node server/migrate-other-tile-areas.js"
+      "migrate:other-tile-areas": "node server/migrate-other-tile-areas.js",
+      "import:somany": "python3 scripts/import_somany_products.py"
   },
   "keywords": [
     "tile-marketplace",

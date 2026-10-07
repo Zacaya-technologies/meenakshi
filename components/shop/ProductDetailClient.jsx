@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, useReducedMotion } from 'framer-motion';
-import { API, FALLBACK_IMG, discountPct, formatPrice } from '@/lib/api';
+import { API, FALLBACK_IMG, discountPct, formatPrice, hasPrice } from '@/lib/api';
 import { useApp } from '@/lib/store';
 import { Icon } from '@/components/ui/Icons';
 import { buildCalculatorLink } from '@/lib/calculator';
@@ -157,7 +157,7 @@ export default function ProductDetailClient({ slug }) {
           <div className="mt-4 flex items-baseline gap-3">
             <span className="font-heading text-4xl font-extrabold text-brand-blue">{formatPrice(product)}</span>
             {off > 0 && <span className="text-lg text-slate-400 line-through">₹{Number(product.price).toLocaleString('en-IN')}</span>}
-            <span className="text-sm text-slate-400">/sq.ft</span>
+            {hasPrice(product) && <span className="text-sm text-slate-400">/sq.ft</span>}
           </div>
 
           {product.description && (
@@ -170,7 +170,7 @@ export default function ProductDetailClient({ slug }) {
                 <Icon.starFill key={i} className={`h-4 w-4 ${i <= Math.round(product.rating_avg || 0) ? '' : 'opacity-25'}`} />
               ))}
             </div>
-            <span className="text-sm text-slate-400">{product.rating_avg} · {product.reviews_count} reviews</span>
+            <span className="text-sm text-slate-400">{product.reviews_count > 0 ? `${product.rating_avg} · ${product.reviews_count} reviews` : 'No reviews yet'}</span>
           </div>
 
           <div className="mt-5 flex items-center gap-2 text-sm font-bold text-green-600">
@@ -291,7 +291,7 @@ export default function ProductDetailClient({ slug }) {
           <div className="truncate text-[11px] text-slate-400">{product.name}</div>
           <div className="flex items-baseline gap-1.5">
             <span className="font-heading text-lg font-extrabold text-brand-blue">{formatPrice(product)}</span>
-            <span className="text-[10px] text-slate-400">/sq.ft</span>
+            {hasPrice(product) && <span className="text-[10px] text-slate-400">/sq.ft</span>}
           </div>
         </div>
         <button

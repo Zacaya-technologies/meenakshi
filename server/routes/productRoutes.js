@@ -221,7 +221,7 @@ router.get('/facets', async (req, res) => {
             groups: groupPayload,
             brands,
             collections,
-            priceRange: { min: priceRow?.min || 0, max: priceRow?.max || 500 }
+            priceRange: { min: priceRow?.min ?? 0, max: priceRow?.max ?? 500 }
         });
     } catch (err) {
         console.error('Facets API Error:', err);

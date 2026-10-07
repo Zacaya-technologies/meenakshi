@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/lib/store';
-import { FALLBACK_IMG, discountPct, formatPrice } from '@/lib/api';
+import { FALLBACK_IMG, discountPct, formatPrice, hasPrice } from '@/lib/api';
 import { Icon } from '@/components/ui/Icons';
 
 const WHATSAPP_NUMBER = '919900027700';
@@ -139,11 +139,11 @@ export default function ProductCard({ product, onQuickView }) {
         </div>
 
         <div className="mt-auto flex items-baseline gap-2 pt-1">
-          <span className="font-heading text-[22px] font-extrabold text-brand-blue">
+          <span className={`font-heading font-extrabold text-brand-blue ${hasPrice(product) ? 'text-[22px]' : 'text-[17px]'}`}>
             {formatPrice(product)}
           </span>
           {off > 0 && <span className="text-xs text-slate-400 line-through">₹{Number(product.price).toLocaleString('en-IN')}</span>}
-          <span className="text-[11px] text-slate-400">/sq.ft</span>
+          {hasPrice(product) && <span className="text-[11px] text-slate-400">/sq.ft</span>}
         </div>
 
         <div className="mt-3.5 grid grid-cols-2 gap-2.5">

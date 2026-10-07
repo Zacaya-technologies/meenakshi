@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useApp } from '@/lib/store';
-import { FALLBACK_IMG, discountPct, formatPrice } from '@/lib/api';
+import { FALLBACK_IMG, discountPct, formatPrice, hasPrice } from '@/lib/api';
 import { Icon } from '@/components/ui/Icons';
 
 export default function QuickView({ product, onClose }) {
@@ -66,7 +66,7 @@ export default function QuickView({ product, onClose }) {
                 <div className="flex items-baseline gap-2">
                   <span className="font-heading text-3xl font-extrabold text-brand-blue">{formatPrice(product)}</span>
                   {off > 0 && <span className="text-sm text-slate-400 line-through">₹{Number(product.price).toLocaleString('en-IN')}</span>}
-                  <span className="text-xs text-slate-400">/sq.ft</span>
+                  {hasPrice(product) && <span className="text-xs text-slate-400">/sq.ft</span>}
                 </div>
 
                 {product.stock > 0 ? (
