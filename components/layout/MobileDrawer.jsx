@@ -49,16 +49,21 @@ export default function MobileDrawer({ open, onClose, menuItems }) {
     }
   }, [open]);
 
+  const pendingSlugRef = useRef(null);
   const toggleCategory = useCallback(async (slug) => {
     setOpenGroup(null);
     if (openSlug === slug) {
       setOpenSlug(null);
       return;
     }
-    setOpenSlug(slug);
-    if (liveData[slug]) return;
+    pendingSlugRef.current = slug;
+    if (liveData[slug]) {
+      pendingSlugRef.current = null;
+      return;
+    }
     const res = await API.getCategoryMenu(slug);
     if (res?.success) setLiveData(prev => ({ ...prev, [slug]: res.columns || [] }));
+    pendingSlugRef.current = null;
   }, [openSlug, liveData]);
 
   const go = useCallback((url) => {

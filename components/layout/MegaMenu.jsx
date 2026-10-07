@@ -45,11 +45,14 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
   // groups (area/application, size, design, type, finish, color, surface),
   // so a single fixed xl:grid-cols-N would either leave gaps or, worse,
   // overflow and wrap the Latest Products panel onto its own row.
-  const totalGridCols = Math.max(4, Math.min(8, (columns.length || 6) + 1));
+  const totalGridCols = Math.max(4, Math.min(8, (columns.length || 0) + 1));
   const xlColsClass = { 4: 'xl:grid-cols-4', 5: 'xl:grid-cols-5', 6: 'xl:grid-cols-6', 7: 'xl:grid-cols-7', 8: 'xl:grid-cols-8' }[totalGridCols];
+  const lgColsClass = { 4: 'lg:grid-cols-4', 5: 'lg:grid-cols-5', 6: 'lg:grid-cols-6', 7: 'lg:grid-cols-7', 8: 'lg:grid-cols-8' }[totalGridCols];
+  const mdColsClass = { 4: 'md:grid-cols-3', 5: 'md:grid-cols-4', 6: 'md:grid-cols-4', 7: 'md:grid-cols-4', 8: 'md:grid-cols-3' }[totalGridCols];
+  const smColsClass = 'sm:grid-cols-1';
 
   const latest = live?.latestProducts || [];
-  const isLoadingLatest = isLoading || (loadingSlug === activeSlug && !latest.length);
+  const isLoadingLatest = isLoading;
   const categoryName = activeItem?.name || 'All Products';
   const viewAllUrl = activeItem?.url || '/shop';
 
@@ -89,7 +92,7 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
             initial={reduceMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: reduceMotion ? 0 : 0.18, ease: 'easeOut' }}
-            className={`grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-3 ${xlColsClass} xl:gap-x-6`}
+            className={`grid ${smColsClass} ${mdColsClass} ${lgColsClass} ${xlColsClass} gap-x-6 gap-y-8`}
           >
             {/* Column 1 — View All + first facet group (Area) */}
             <div className="min-w-0">

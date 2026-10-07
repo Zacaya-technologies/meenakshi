@@ -132,16 +132,6 @@ export default function HeroBanner() {
         </motion.div>
       </div>
 
-      {/* Quick-action tabs, mirroring the reference's top-left chips */}
-      <div className="absolute left-4 top-4 z-10 hidden gap-2 sm:flex">
-        <QuickTab href="/make-to-order" tone="blue" icon={<Icon.layers className="h-4 w-4" />}>
-          Make to<br />Order
-        </QuickTab>
-        <QuickTab href="/callback" tone="amber" icon={<Icon.phoneCall className="h-4 w-4" />}>
-          Call Back<br />Requests
-        </QuickTab>
-      </div>
-
       {/* Slide controls */}
       <div className="absolute inset-x-0 bottom-5 z-10 mx-auto flex max-w-shell items-center justify-between px-4 sm:px-6">
         <div className="flex items-center gap-2" role="tablist" aria-label="Choose slide">
@@ -173,22 +163,6 @@ export default function HeroBanner() {
         </div>
       </div>
     </section>
-  );
-}
-
-function QuickTab({ href, tone, icon, children }) {
-  const tones = {
-    blue: 'bg-brand-blue hover:bg-brand-deep',
-    amber: 'bg-amber-500 text-brand-navy hover:bg-amber-400'
-  };
-  return (
-    <Link
-      href={href}
-      className={`flex min-h-[56px] items-center gap-2 rounded-xl px-3.5 py-2 text-[11px] font-bold leading-tight text-white shadow-lg transition duration-200 hover:-translate-y-0.5 ${tones[tone]}`}
-    >
-      <span>{children}</span>
-      <span className="shrink-0 opacity-90">{icon}</span>
-    </Link>
   );
 }
 

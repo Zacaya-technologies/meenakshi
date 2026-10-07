@@ -42,7 +42,7 @@ export default function Footer() {
   return (
     <footer className="mt-auto bg-ink text-white">
       <div className="mx-auto max-w-[1380px] px-6 py-16">
-        <div className="mb-14 grid grid-cols-2 gap-10 md:grid-cols-4 lg:grid-cols-5">
+        <div className="mb-14 grid grid-cols-2 gap-10 md:grid-cols-5">
           <div className="col-span-2 md:col-span-1">
             <div className="mb-4 inline-flex items-center rounded-xl bg-white px-3 py-1.5">
               <img src={business.logo || '/images/logo.png'} alt={business.business_name} className="h-11 w-auto" />

@@ -26,9 +26,18 @@ lines once the Next frontend fully replaces the SPA.
 - [x] Full-screen mobile drawer with two-level accordions
 - [x] Hero banner carousel + persistent contact rail
 
-## Not yet done
-- [ ] Routes referenced by the new nav that do not exist yet:
+## Done
+- [x] Routes referenced by the new nav that did not exist yet:
       `/calculator`, `/store-locator`, `/dealer-login`, `/make-to-order`, `/callback`
+- [x] Grid column calculation fix in MegaMenu (falsy `|| 6` default bug)
+- [x] Header hover-intent close logic fix (trigger leave now schedules close)
+- [x] MobileDrawer toggleCategory stale closure fix (using ref instead of state dep)
+- [x] Missing route pages created: store-locator, dealer-login, make-to-order, callback
+- [x] MegaMenu fully responsive grid: 1 col (sm) → 3 cols (md) → 4-8 cols (lg/xl)
+- [x] FilterSidebar responsive: full-width (sm) → sticky sidebar (lg+)
+- [x] All grids and devices adoptive layout implemented
+
+## Not yet done
 - [ ] Replace the Unsplash hero images with real brand photography
 - [ ] Browser QA pass (hover intent, keyboard nav, 375px, dark mode) — code is
       verified by build + SSR markup only, not yet clicked through

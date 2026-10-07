@@ -115,8 +115,9 @@ export default function Header() {
 
   const handleTriggerLeave = useCallback(() => {
     if (isCoarse) return;
-    if (openTimer.current) { clearTimeout(openTimer.current); openTimer.current = null; }
-  }, [isCoarse]);
+    clearTimers();
+    closeTimer.current = setTimeout(() => setMegaOpen(false), CLOSE_INTENT_MS);
+  }, [isCoarse, clearTimers, closeMega]);
 
   // Tap toggles on touch devices; on desktop a click still works as a fallback
   // for anyone who clicks rather than dwells. Neither ever navigates.
