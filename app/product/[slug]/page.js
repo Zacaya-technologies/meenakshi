@@ -55,13 +55,14 @@ function buildProductSchema({ product, images }) {
     description: product.description,
     image: (images || []).map(i => i.image_url),
     brand: product.brand_name ? { '@type': 'Brand', name: product.brand_name } : undefined,
-    offers: {
+    // Price-on-request products (price 0) omit the offer rather than advertise ₹0.
+    offers: Number(product.offer_price || product.price) > 0 ? {
       '@type': 'Offer',
       priceCurrency: 'INR',
       price: product.offer_price || product.price,
       availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       url: `https://www.meenakshibuildworld.com/product/${product.slug}`
-    },
+    } : undefined,
     aggregateRating: product.reviews_count > 0 ? {
       '@type': 'AggregateRating',
       ratingValue: product.rating_avg,
