@@ -85,7 +85,7 @@ export default function ProductDetailClient({ slug }) {
                 if (info.offset.x < -SWIPE_THRESHOLD && activeImg < gallery.length - 1) setActiveImg(i => i + 1);
                 else if (info.offset.x > SWIPE_THRESHOLD && activeImg > 0) setActiveImg(i => i - 1);
               }}
-              initial={reduceMotion ? false : { opacity: 0.4 }}
+              initial={reduceMotion ? false : { opacity: 1 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.2 }}
             >
