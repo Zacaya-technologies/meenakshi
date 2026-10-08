@@ -49,7 +49,7 @@ export default function MobileDrawer({ open, onClose, menuItems }) {
     }
   }, [open]);
 
-  const pendingSlugRef = useRef(null);
+  const pendingTimeoutRef = useRef(null);
   const toggleCategory = useCallback(async (slug) => {
     setOpenGroup(null);
     if (openSlug === slug) {
@@ -57,15 +57,18 @@ export default function MobileDrawer({ open, onClose, menuItems }) {
       return;
     }
     setOpenSlug(slug);
-    pendingSlugRef.current = slug;
     if (liveData[slug]) {
-      pendingSlugRef.current = null;
+      pendingTimeoutRef.current = null;
       return;
     }
-    const res = await API.getCategoryMenu(slug).catch(() => null);
-    // Store an empty list on failure too, so the skeleton never spins forever.
-    setLiveData(prev => ({ ...prev, [slug]: res?.success ? (res.columns || []) : [] }));
-    pendingSlugRef.current = null;
+    // Debounce: only fetch if same slug requested within 300ms
+    if (pendingTimeoutRef.current) clearTimeout(pendingTimeoutRef.current);
+    pendingTimeoutRef.current = setTimeout(async () => {
+      const res = await API.getCategoryMenu(slug).catch(() => null);
+      // Store an empty list on failure too, so the skeleton never spins forever.
+      setLiveData(prev => ({ ...prev, [slug]: res?.success ? (res.columns || []) : [] }));
+      pendingTimeoutRef.current = null;
+    }, 300);
   }, [openSlug, liveData]);
 
   const go = useCallback((url) => {

@@ -25,8 +25,8 @@ export default function ProductCard({ product, onQuickView }) {
   const addedTimer = useRef(null);
   useEffect(() => () => clearTimeout(addedTimer.current), []);
 
-  const inWish = wishlist.some(p => p.id === product.id);
-  const inCompare = compare.some(p => p.id === product.id);
+  const inWish = useMemo(() => wishlist.some(p => p.id === product.id), [wishlist, product.id]);
+  const inCompare = useMemo(() => compare.some(p => p.id === product.id), [compare, product.id]);
   const off = discountPct(product);
   const image = product.primary_image || product.image_url || FALLBACK_IMG;
   const inStock = product.stock === undefined || product.stock === null || product.stock > 0;
