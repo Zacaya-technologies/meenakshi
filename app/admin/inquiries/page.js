@@ -25,13 +25,13 @@ export default function AdminInquiriesPage() {
           <EmptyState label="No inquiries yet." />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[680px] border-collapse text-sm">
+            <table className="w-full border-collapse text-sm md:min-w-[680px]">
               <thead>
                 <tr className="border-b border-border text-left text-xs uppercase text-slate-400 dark:border-white/10">
                   <th className="p-3.5">Type</th>
                   <th className="p-3.5">Name / Phone</th>
-                  <th className="p-3.5">Product</th>
-                  <th className="p-3.5">Received</th>
+                  <th className="hidden p-3.5 md:table-cell">Product</th>
+                  <th className="hidden p-3.5 sm:table-cell">Received</th>
                 </tr>
               </thead>
               <tbody>
@@ -39,8 +39,8 @@ export default function AdminInquiriesPage() {
                   <tr key={i.id} className="border-b border-border last:border-0 dark:border-white/5">
                     <td className="p-3.5"><Badge tone="blue">{i.type}</Badge></td>
                     <td className="p-3.5 text-xs text-slate-500 dark:text-slate-300">{i.name || '—'}{i.phone ? ` • ${i.phone}` : ''}</td>
-                    <td className="p-3.5 text-xs text-slate-400">{i.product_name || 'General inquiry'}</td>
-                    <td className="p-3.5 text-xs text-slate-400">{i.created_at ? new Date(i.created_at).toLocaleString('en-IN') : '—'}</td>
+                    <td className="hidden p-3.5 text-xs text-slate-400 md:table-cell">{i.product_name || 'General inquiry'}</td>
+                    <td className="hidden p-3.5 text-xs text-slate-400 sm:table-cell">{i.created_at ? new Date(i.created_at).toLocaleString('en-IN') : '—'}</td>
                   </tr>
                 ))}
               </tbody>

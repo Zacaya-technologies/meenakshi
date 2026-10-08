@@ -17,7 +17,7 @@ export default function BrandsPage() {
   }, []);
 
   return (
-    <div className="mx-auto max-w-[1380px] px-6 py-10">
+    <div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-10">
       <nav className="mb-4 flex items-center gap-1.5 text-xs text-slate-400">
         <Link href="/" className="transition hover:text-brand-blue">Home</Link>
         <Icon.arrowRight className="h-3.5 w-3.5" />

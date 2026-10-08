@@ -29,7 +29,7 @@ export default function AboutPage() {
     <div className="bg-brand-light dark:bg-navy">
       {/* Hero */}
       <section className="bg-brand-navy py-16 text-white">
-        <div className="mx-auto max-w-[1380px] px-6 text-center">
+        <div className="mx-auto max-w-[1380px] px-4 sm:px-6 text-center">
           <p className="text-xs font-bold uppercase tracking-[0.25em] text-brand-blue">About Meenakshi Build World</p>
           <h1 className="mt-3 font-heading text-3xl font-black sm:text-4xl md:text-5xl">Building Trust Since 1996</h1>
           <p className="mx-auto mt-5 max-w-3xl text-sm leading-relaxed text-slate-300 sm:text-base">
@@ -41,7 +41,7 @@ export default function AboutPage() {
       </section>
 
       {/* Stats */}
-      <section className="mx-auto -mt-8 max-w-[1380px] px-6">
+      <section className="mx-auto -mt-8 max-w-[1380px] px-4 sm:px-6">
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {stats.map(s => (
             <div key={s.label} className="rounded-2xl border-[1.5px] border-border bg-white p-6 text-center shadow-card dark:border-white/10 dark:bg-navy2">
@@ -82,7 +82,7 @@ export default function AboutPage() {
       </section>
 
       {/* Our Products */}
-      <section className="mx-auto max-w-[1380px] px-6 pb-14">
+      <section className="mx-auto max-w-[1380px] px-4 sm:px-6 pb-14">
         <SectionCard title="Our Products">
           <p className="mb-5 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
             One-stop destination covering every major category of construction and building materials:
@@ -112,7 +112,7 @@ export default function AboutPage() {
 
       {/* Why Choose Us */}
       <section className="bg-white py-14 dark:bg-navy2">
-        <div className="mx-auto max-w-[1380px] px-6">
+        <div className="mx-auto max-w-[1380px] px-4 sm:px-6">
           <h2 className="text-center font-heading text-2xl font-extrabold uppercase tracking-wide text-ink dark:text-white">Why Choose Us</h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {whyUs.map(w => (

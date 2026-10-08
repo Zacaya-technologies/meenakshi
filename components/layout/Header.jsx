@@ -253,6 +253,10 @@ export default function Header() {
    * Render
    * ------------------------------------------------------------------ */
 
+  // The admin console has its own shell; the storefront chrome would only
+  // duplicate it and sit on top of its mobile navigation.
+  if (pathname?.startsWith('/admin')) return null;
+
   return (
     <>
       {/* Utility bar — scrolls away, it is not part of the sticky unit */}
@@ -286,7 +290,7 @@ export default function Header() {
             <Link href="/calculator" className="hidden transition hover:text-brand-blue sm:inline">Tile Calculator</Link>
             <Link href="/contact" className="hidden transition hover:text-brand-blue md:inline">Store Locator</Link>            {user ? (
               <span className="flex items-center gap-3">
-                <span className="text-brand-blue">Hi, <strong>{user.name}</strong></span>
+                <span className="hidden max-w-[160px] truncate align-middle text-brand-blue sm:inline-block">Hi, <strong>{user.name}</strong></span>
                 <button onClick={logout} className="transition hover:text-brand-blue">Logout</button>
               </span>
             ) : (

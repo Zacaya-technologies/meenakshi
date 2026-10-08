@@ -38,12 +38,12 @@ export default function ProductDetailClient({ slug }) {
   }, [slug]);
 
   if (loading) {
-    return <div className="mx-auto max-w-[1380px] px-6 py-16 text-center text-slate-400">Loading product…</div>;
+    return <div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-16 text-center text-slate-400">Loading product…</div>;
   }
 
   if (!data) {
     return (
-      <div className="mx-auto max-w-[1380px] px-6 py-24 text-center">
+      <div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-24 text-center">
         <h1 className="font-heading text-2xl font-bold text-ink dark:text-white">Product not found</h1>
         <Link href="/shop" className="mt-4 inline-block rounded-xl bg-brand-blue px-6 py-3 text-sm font-bold text-white">Back to Shop</Link>
       </div>
@@ -62,7 +62,7 @@ export default function ProductDetailClient({ slug }) {
     `Hi ${business.business_name}, please share the price of "${product.name}" (SKU: ${product.sku}${product.size ? `, ${product.size}` : ''}).`);
 
   return (
-    <div className="mx-auto max-w-[1380px] px-6 py-8 pb-28 lg:pb-8">
+    <div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-8 pb-28 lg:pb-8">
       {/* Breadcrumb — built from the product's live main-category tag */}
       <nav className="mb-6 flex flex-wrap items-center gap-1.5 text-xs text-slate-400">
         <Link href="/" className="transition hover:text-brand-blue">Home</Link>
@@ -161,7 +161,7 @@ export default function ProductDetailClient({ slug }) {
           </p>
 
           <div className="mt-4 flex items-baseline gap-3">
-            <span className="font-heading text-4xl font-extrabold text-brand-blue">{formatPrice(product)}</span>
+            <span className={priced ? 'font-heading text-4xl font-extrabold text-brand-blue' : 'text-xl font-semibold text-slate-700 dark:text-slate-200'}>{formatPrice(product)}</span>
             {off > 0 && <span className="text-lg text-slate-400 line-through">₹{Number(product.price).toLocaleString('en-IN')}</span>}
             {hasPrice(product) && <span className="text-sm text-slate-400">/sq.ft</span>}
           </div>
@@ -212,12 +212,12 @@ export default function ProductDetailClient({ slug }) {
             </div>
           )}
 
-          {/* Actions */}
-          <div className="mt-6 flex flex-wrap gap-3">
+          {/* Actions — a 2×2 grid on phones so nothing wraps mid-label */}
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
             <button
               onClick={() => addToCart(product)}
               disabled={!inStock}
-              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep px-6 py-3.5 text-sm font-bold text-white shadow-lg transition enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 sm:flex-none"
+              className="flex items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep px-4 py-3.5 text-sm font-bold text-white shadow-lg transition enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 sm:px-6"
             >
               <Icon.bag className="h-4 w-4" /> Add to Cart
             </button>
@@ -225,7 +225,7 @@ export default function ProductDetailClient({ slug }) {
               <button
                 onClick={() => { addToCart(product); router.push('/cart'); }}
                 disabled={!inStock}
-                className={`flex-1 rounded-xl border-[1.5px] border-brand-blue px-6 py-3.5 text-sm font-bold text-brand-blue transition hover:bg-brand-blue/5 disabled:cursor-not-allowed disabled:opacity-50 sm:flex-none ${buyMode ? 'bg-brand-blue/10' : ''}`}
+                className={`whitespace-nowrap rounded-xl border-[1.5px] border-brand-blue px-4 py-3.5 text-sm font-bold text-brand-blue transition hover:bg-brand-blue/5 disabled:cursor-not-allowed disabled:opacity-50 sm:px-6 ${buyMode ? 'bg-brand-blue/10' : ''}`}
               >
                 Buy Now
               </button>
@@ -234,24 +234,28 @@ export default function ProductDetailClient({ slug }) {
                 href={priceHref}
                 target="_blank"
                 rel="noreferrer"
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl border-[1.5px] border-brand-blue px-6 py-3.5 text-sm font-bold text-brand-blue transition hover:bg-brand-blue/5 sm:flex-none"
+                className="flex items-center justify-center gap-2 whitespace-nowrap rounded-xl border-[1.5px] border-brand-blue px-4 py-3.5 text-sm font-bold text-brand-blue transition hover:bg-brand-blue/5 sm:px-6"
               >
                 <Icon.whatsapp className="h-4 w-4" /> Get Price
               </a>
             )}
             <button
               onClick={() => toggleWishlist(product)}
-              className={`flex h-12 w-12 items-center justify-center rounded-xl border border-border transition dark:border-white/10 ${inWish ? 'bg-brand-blue text-white border-brand-blue' : 'text-ink dark:text-white'}`}
-              aria-label="Wishlist"
+              className={`flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-border transition dark:border-white/10 sm:w-12 ${inWish ? 'border-rose-200 bg-rose-50 text-rose-500 dark:border-rose-500/30 dark:bg-rose-500/10' : 'text-ink dark:text-white'}`}
+              aria-label={inWish ? 'Remove from wishlist' : 'Add to wishlist'}
+              aria-pressed={inWish}
             >
               <Icon.heart className={`h-5 w-5 ${inWish ? 'fill-current' : ''}`} />
+              <span className="text-sm font-semibold sm:hidden">{inWish ? 'Saved' : 'Wishlist'}</span>
             </button>
             <button
               onClick={() => toggleCompare(product)}
-              className={`flex h-12 w-12 items-center justify-center rounded-xl border border-border transition dark:border-white/10 ${inCompare ? 'bg-brand-blue text-white border-brand-blue' : 'text-ink dark:text-white'}`}
-              aria-label="Compare"
+              className={`flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-border transition dark:border-white/10 sm:w-12 ${inCompare ? 'bg-brand-blue text-white border-brand-blue' : 'text-ink dark:text-white'}`}
+              aria-label={inCompare ? 'Remove from compare' : 'Add to compare'}
+              aria-pressed={inCompare}
             >
               <Icon.scales className="h-5 w-5" />
+              <span className="text-sm font-semibold sm:hidden">{inCompare ? 'Comparing' : 'Compare'}</span>
             </button>
           </div>
 
@@ -311,7 +315,7 @@ export default function ProductDetailClient({ slug }) {
         <div className="min-w-0 flex-1">
           <div className="truncate text-[11px] text-slate-400">{product.name}</div>
           <div className="flex items-baseline gap-1.5">
-            <span className="font-heading text-lg font-extrabold text-brand-blue">{formatPrice(product)}</span>
+            <span className={priced ? 'font-heading text-lg font-extrabold text-brand-blue' : 'whitespace-nowrap text-sm font-semibold text-slate-700 dark:text-slate-200'}>{formatPrice(product)}</span>
             {hasPrice(product) && <span className="text-[10px] text-slate-400">/sq.ft</span>}
           </div>
         </div>

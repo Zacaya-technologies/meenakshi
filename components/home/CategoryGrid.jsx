@@ -27,6 +27,9 @@ export default function CategoryGrid() {
 
   if (!loading && categories.length === 0) return null;
 
+  // A badge on every card says nothing — only mark featured ones when some aren't.
+  const allFeatured = categories.length > 0 && categories.every(c => c.featured);
+
   return (
     <section className="mx-auto max-w-shell px-4 py-16 sm:px-6">
       <div className="mb-10 text-center">
@@ -46,7 +49,7 @@ export default function CategoryGrid() {
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
           <AllTilesCard />
-          {categories.map(c => <CategoryCard key={c.id} category={c} />)}
+          {categories.map(c => <CategoryCard key={c.id} category={c} showFeatured={!allFeatured} />)}
         </div>
       )}
     </section>
@@ -55,7 +58,7 @@ export default function CategoryGrid() {
 
 const CARD = 'group relative isolate flex h-56 flex-col justify-end overflow-hidden rounded-3xl p-4 shadow-card transition duration-300 ease-out-expo hover:-translate-y-1.5 hover:shadow-[0_24px_48px_-12px_rgba(15,23,42,0.45)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-blue/40 sm:h-72 sm:p-6';
 
-function CategoryCard({ category: c }) {
+function CategoryCard({ category: c, showFeatured }) {
   return (
     <Link href={`/${c.slug}`} className={`${CARD} bg-brand-navy`}>
       {/* Full-strength photo; slow zoom on hover */}
@@ -75,7 +78,7 @@ function CategoryCard({ category: c }) {
         <AnyIcon id={c.icon} className="h-5 w-5" />
       </span>
 
-      {c.featured ? (
+      {showFeatured && c.featured ? (
         <span className="absolute right-4 top-4 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-brand-deep shadow-sm sm:right-5 sm:top-5">
           Featured
         </span>

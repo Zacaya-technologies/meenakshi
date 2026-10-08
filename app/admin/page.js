@@ -48,15 +48,16 @@ export default function AdminDashboard() {
     <div>
       <PageHeader title="Dashboard" subtitle="Live snapshot of the Meenakshi Build World catalog." />
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-5">
         {cards.map(c => (
+          // Two stats per row on phones (icon above the figure) instead of a long single column.
           <Card key={c.label}>
-            <div className="flex items-center gap-4">
-              <span className={`flex h-12 w-12 items-center justify-center rounded-xl bg-brand-light dark:bg-white/5 ${c.tone}`}>
+            <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
+              <span className={`flex h-10 w-10 shrink-0 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-brand-light dark:bg-white/5 ${c.tone}`}>
                 <AnyIcon id={c.icon} className="h-6 w-6" />
               </span>
-              <div>
-                <div className="font-heading text-2xl font-extrabold text-ink dark:text-white">{c.value}</div>
+              <div className="min-w-0">
+                <div className="font-heading text-xl font-extrabold text-ink dark:text-white sm:text-2xl">{c.value}</div>
                 <div className="text-xs font-medium text-slate-400">{c.label}</div>
                 {c.sub && <div className="mt-0.5 text-[10px] text-slate-400">{c.sub}</div>}
               </div>

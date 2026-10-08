@@ -56,34 +56,43 @@ export default function AdminProductsPage() {
           <EmptyState label="No products found." />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[820px] border-collapse text-sm">
+            {/* Secondary columns drop away on narrow screens (SKU moves under the
+                name) so the table fits a phone without sideways scrolling. */}
+            <table className="w-full border-collapse text-sm lg:min-w-[820px]">
               <thead>
                 <tr className="border-b border-border text-left text-xs uppercase text-slate-400 dark:border-white/10">
                   <th className="p-3.5">Product</th>
-                  <th className="p-3.5">SKU</th>
-                  <th className="p-3.5">Category</th>
-                  <th className="p-3.5">Price</th>
-                  <th className="p-3.5">Stock</th>
-                  <th className="p-3.5">Status</th>
+                  <th className="hidden p-3.5 lg:table-cell">SKU</th>
+                  <th className="hidden p-3.5 xl:table-cell">Category</th>
+                  <th className="hidden p-3.5 md:table-cell">Price</th>
+                  <th className="hidden p-3.5 xl:table-cell">Stock</th>
+                  <th className="hidden p-3.5 sm:table-cell">Status</th>
                   <th className="p-3.5 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {products.map(p => (
                   <tr key={p.id} className="border-b border-border last:border-0 dark:border-white/5">
-                    <td className="flex items-center gap-3 p-3.5">
-                      <img src={p.primary_image} alt="" className="h-10 w-10 rounded-lg object-cover" />
-                      <span className="line-clamp-1 max-w-[220px] font-semibold text-ink dark:text-white">{p.name}</span>
+                    <td className="p-3.5">
+                      <div className="flex items-center gap-3">
+                        <img src={p.primary_image} alt="" className="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                        <div className="min-w-0">
+                          <span className="line-clamp-2 max-w-[260px] font-semibold text-ink dark:text-white">{p.name}</span>
+                          <span className="block text-[11px] text-slate-400 lg:hidden">{p.sku}</span>
+                        </div>
+                      </div>
                     </td>
-                    <td className="p-3.5 text-xs text-slate-400">{p.sku}</td>
-                    <td className="p-3.5 text-xs text-slate-400">{p.category_name}</td>
-                    <td className="p-3.5 font-bold text-brand-blue">{formatPrice(p)}</td>
-                    <td className="p-3.5 text-xs text-slate-400">{p.stock}</td>
-                    <td className="p-3.5"><Badge tone={p.published ? 'green' : 'slate'}>{p.published ? 'Published' : 'Draft'}</Badge></td>
+                    <td className="hidden p-3.5 text-xs text-slate-400 lg:table-cell">{p.sku}</td>
+                    <td className="hidden p-3.5 text-xs text-slate-400 xl:table-cell">{p.category_name}</td>
+                    <td className="hidden p-3.5 font-bold text-brand-blue md:table-cell">{formatPrice(p)}</td>
+                    <td className="hidden p-3.5 text-xs text-slate-400 xl:table-cell">{p.stock}</td>
+                    <td className="hidden p-3.5 sm:table-cell"><Badge tone={p.published ? 'green' : 'slate'}>{p.published ? 'Published' : 'Draft'}</Badge></td>
                     <td className="p-3.5 text-right">
-                      <Link href={`/admin/products/${p.id}/edit`} className="mr-3 text-xs font-bold text-brand-blue hover:underline">Edit</Link>
-                      <button onClick={() => duplicate(p)} className="mr-3 text-xs font-bold text-slate-400 hover:underline">Duplicate</button>
-                      <button onClick={() => remove(p)} className="text-xs font-bold text-rose-500 hover:underline">Delete</button>
+                      <div className="flex flex-col items-end gap-1.5 sm:flex-row sm:justify-end sm:gap-3">
+                        <Link href={`/admin/products/${p.id}/edit`} className="text-xs font-bold text-brand-blue hover:underline">Edit</Link>
+                        <button onClick={() => duplicate(p)} className="text-xs font-bold text-slate-400 hover:underline">Duplicate</button>
+                        <button onClick={() => remove(p)} className="text-xs font-bold text-rose-500 hover:underline">Delete</button>
+                      </div>
                     </td>
                   </tr>
                 ))}

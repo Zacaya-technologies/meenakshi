@@ -219,7 +219,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
   }, [menu, filters.category]);
 
   return (
-    <div className="mx-auto max-w-[1380px] px-6 py-8">
+    <div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-8">
       {/* Optional category banner (admin-managed banner_url) */}
       {!isPlaceholderImage(banner) && (
         <div className="mb-6 overflow-hidden rounded-3xl">
@@ -350,12 +350,14 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
           {subcats.length > 0 && (
             <div className="mb-8">
               <h2 className="mb-3 font-heading text-lg font-extrabold text-ink dark:text-white">Shop by Subcategory</h2>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
+              {/* Swipeable strip on phones so the products are not pushed a dozen
+                  screens down; a grid from sm up. */}
+              <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 scrollbar-none sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 sm:pb-0 xl:grid-cols-4">
                 {subcats.map(c => (
                   <Link
                     key={c.id ?? c.slug}
                     href={`/tiles/${filters.category}/${c.slug}`}
-                    className="group overflow-hidden rounded-2xl border-[1.5px] border-border bg-white transition hover:border-brand-blue hover:shadow-card dark:bg-navy2 dark:border-white/10"
+                    className="group w-36 shrink-0 snap-start overflow-hidden rounded-2xl border-[1.5px] border-border bg-white transition hover:border-brand-blue hover:shadow-card dark:bg-navy2 dark:border-white/10 sm:w-auto"
                   >
                     <div className="relative h-24 w-full overflow-hidden bg-brand-light sm:h-28 dark:bg-navy">
                       {c.image ? (
@@ -367,7 +369,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
                       )}
                     </div>
                     <div className="flex items-center justify-between gap-2 px-3 py-2.5">
-                      <span className="truncate text-[13px] font-bold text-ink dark:text-white">{c.name}</span>
+                      <span className="line-clamp-2 text-[13px] font-bold leading-snug text-ink dark:text-white">{c.name}</span>
                       {typeof c.count === 'number' && c.count > 0 && (
                         <span className="shrink-0 rounded-full bg-brand-light px-2 py-0.5 text-[10px] font-extrabold text-brand-blue dark:bg-white/5">
                           {c.count}

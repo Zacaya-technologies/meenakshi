@@ -157,14 +157,14 @@ export default function AdminCategoriesPage() {
                 <EmptyState label="No categories yet — add the first one above." />
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="w-full min-w-[640px] border-collapse text-sm">
+                  <table className="w-full border-collapse text-sm md:min-w-[640px]">
                     <thead>
                       <tr className="border-b border-border text-left text-xs uppercase text-slate-400 dark:border-white/10">
                         <th className="py-2 pr-3">Name</th>
-                        <th className="py-2 pr-3">URL</th>
+                        <th className="hidden py-2 pr-3 md:table-cell">URL</th>
                         <th className="py-2 pr-3">Products</th>
                         <th className="py-2 pr-3">Status</th>
-                        <th className="py-2 pr-3">Order</th>
+                        <th className="hidden py-2 pr-3 sm:table-cell">Order</th>
                         <th className="py-2 text-right">Actions</th>
                       </tr>
                     </thead>
@@ -172,10 +172,10 @@ export default function AdminCategoriesPage() {
                       {filteredChildren.map(c => (
                         <tr key={c.id} className="border-b border-border last:border-0 dark:border-white/5">
                           <td className="py-2.5 pr-3 font-semibold text-ink dark:text-white">{c.name}</td>
-                          <td className="py-2.5 pr-3 text-xs text-slate-400">/{currentMain.slug}/{c.slug}</td>
+                          <td className="hidden py-2.5 pr-3 text-xs text-slate-400 md:table-cell">/{currentMain.slug}/{c.slug}</td>
                           <td className="py-2.5 pr-3 text-xs text-slate-400">{c.product_count || 0}</td>
                           <td className="py-2.5 pr-3"><Badge tone={c.status === 'active' ? 'green' : 'red'}>{c.status}</Badge></td>
-                          <td className="py-2.5 pr-3 text-xs text-slate-400">{c.display_order}</td>
+                          <td className="hidden py-2.5 pr-3 text-xs text-slate-400 sm:table-cell">{c.display_order}</td>
                           <td className="py-2.5 text-right">
                             <button onClick={() => openEdit(c, 'sub')} className="mr-3 text-xs font-bold text-brand-blue hover:underline">Edit</button>
                             <button onClick={() => toggleStatus(c)} className="mr-3 text-xs font-bold text-slate-400 hover:underline">

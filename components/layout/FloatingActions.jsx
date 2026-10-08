@@ -18,7 +18,8 @@ export default function FloatingActions() {
   const business = useBusiness();
   // Product pages have a sticky add-to-cart bar along the bottom below lg;
   // lift the rail above it so it never covers the bar's buttons.
-  const overBottomBar = usePathname()?.startsWith('/product/');
+  const pathname = usePathname();
+  const overBottomBar = pathname?.startsWith('/product/');
 
   useEffect(() => {
     if (!chatOpen) return;
@@ -26,6 +27,9 @@ export default function FloatingActions() {
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [chatOpen]);
+
+  // Customer contact rail is meaningless inside the admin console.
+  if (pathname?.startsWith('/admin')) return null;
 
   return (
     <div
@@ -41,7 +45,7 @@ export default function FloatingActions() {
             /* Scales from the button it belongs to, so the panel reads as
                belonging to that control rather than appearing from nowhere. */
             style={{ transformOrigin: 'bottom right' }}
-            className="w-[300px] overflow-hidden rounded-2xl border border-border bg-white shadow-2xl dark:border-white/10 dark:bg-navy2"
+            className="w-[min(300px,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-border bg-white shadow-2xl dark:border-white/10 dark:bg-navy2"
             role="dialog"
             aria-label="Contact options"
           >
@@ -88,16 +92,18 @@ export default function FloatingActions() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat with us on WhatsApp"
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_10px_28px_rgba(37,211,102,0.45)] transition duration-200 hover:scale-105 active:scale-95"
+        className="hidden h-14 w-14 sm:flex items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_10px_28px_rgba(37,211,102,0.45)] transition duration-200 hover:scale-105 active:scale-95"
       >
         <Icon.whatsapp className="h-7 w-7" />
       </a>
 
-      {/* Mobile-friendly Call Now button */}
+      {/* Direct WhatsApp/Call buttons from sm up; phones get the single
+          contact button below (its panel has WhatsApp, Call and Email) so the
+          rail does not cover page content. */}
       <a
         href={telHref(business.primary_phone)}
         aria-label={`Call ${business.business_name} at ${business.primary_phone}`}
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-brand-blue to-brand-deep text-white shadow-glow transition duration-200 hover:scale-105 active:scale-95"
+        className="hidden h-14 w-14 sm:flex items-center justify-center rounded-full bg-gradient-to-br from-brand-blue to-brand-deep text-white shadow-glow transition duration-200 hover:scale-105 active:scale-95"
       >
         <Icon.phoneCall className="h-6 w-6" />
       </a>
@@ -107,7 +113,7 @@ export default function FloatingActions() {
         onClick={() => setChatOpen(o => !o)}
         aria-expanded={chatOpen}
         aria-label={chatOpen ? 'Close contact options' : 'Open contact options'}
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-brand-blue to-brand-deep text-white shadow-glow transition duration-200 hover:scale-105 active:scale-95"
+        className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-gradient-to-br from-brand-blue to-brand-deep text-white shadow-glow transition duration-200 hover:scale-105 active:scale-95"
       >
         {chatOpen ? <Icon.close className="h-6 w-6" /> : <Icon.chat className="h-6 w-6" />}
       </button>

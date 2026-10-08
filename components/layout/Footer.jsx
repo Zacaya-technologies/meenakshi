@@ -1,11 +1,14 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Icon } from '@/components/ui/Icons';
 import { useBusiness, telHref, waLink, waGreeting } from '@/lib/business';
 
 export default function Footer() {
   const business = useBusiness();
+  const pathname = usePathname();
+  if (pathname?.startsWith('/admin')) return null;
 
   const quickLinks = [
     { label: 'Home', url: '/' },
@@ -39,7 +42,7 @@ export default function Footer() {
 
   return (
     <footer className="mt-auto bg-ink text-white">
-      <div className="mx-auto max-w-[1380px] px-6 py-16">
+      <div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-16">
         <div className="mb-14 grid grid-cols-2 gap-10 md:grid-cols-5">
           <div className="col-span-2 md:col-span-1">
             <div className="mb-4 inline-flex items-center rounded-xl bg-white px-3 py-1.5">

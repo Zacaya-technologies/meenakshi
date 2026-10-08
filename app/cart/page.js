@@ -14,7 +14,7 @@ export default function CartPage() {
 
   if (cart.length === 0) {
     return (
-      <div className="mx-auto max-w-[1380px] px-6 py-24 text-center">
+      <div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-24 text-center">
         <Icon.bag className="mx-auto h-14 w-14 text-slate-300" />
         <h1 className="mt-4 font-heading text-2xl font-bold text-ink dark:text-white">Your cart is empty</h1>
         <p className="mt-2 text-sm text-slate-400">Browse our premium tile collection to get started.</p>
@@ -26,21 +26,21 @@ export default function CartPage() {
   }
 
   return (
-    <div className="mx-auto max-w-[1380px] px-6 py-10">
+    <div className="mx-auto max-w-[1380px] px-4 py-8 sm:px-6 sm:py-10">
       <h1 className="mb-6 font-heading text-3xl font-extrabold text-ink dark:text-white">Shopping Cart</h1>
 
       <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
         <div className="flex flex-col gap-4">
           {cart.map(item => (
-            <div key={item.product.id} className="flex gap-4 rounded-2xl border border-border bg-white p-4 dark:bg-navy2 dark:border-white/10">
-              <img src={item.product.image_url || item.product.primary_image || FALLBACK_IMG} alt={item.product.name} className="h-28 w-28 shrink-0 rounded-xl object-cover" />
-              <div className="flex flex-1 flex-col">
+            <div key={item.product.id} className="flex gap-3 rounded-2xl border border-border bg-white p-3 dark:bg-navy2 dark:border-white/10 sm:gap-4 sm:p-4">
+              <img src={item.product.image_url || item.product.primary_image || FALLBACK_IMG} alt={item.product.name} className="h-20 w-20 shrink-0 rounded-xl object-cover sm:h-28 sm:w-28" />
+              <div className="flex min-w-0 flex-1 flex-col">
                 <button onClick={() => router.push(`/product/${item.product.slug}`)} className="text-left font-heading text-sm font-semibold text-ink transition hover:text-brand-blue dark:text-white">
                   {item.product.name}
                 </button>
                 <div className="mt-0.5 text-xs text-slate-400">{[item.product.size, item.product.brand_name].filter(Boolean).join(' • ')}</div>
                 <div className="mt-1 text-sm font-bold text-brand-blue">{formatBoxPrice(item.product)}</div>
-                <div className="mt-auto flex items-center justify-between">
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-2 sm:mt-auto">
                   <div className="flex items-center gap-1 rounded-lg border border-border dark:border-white/10">
                     <button onClick={() => updateCartQty(item.product.id, item.quantityBoxes - 1)} disabled={item.quantityBoxes <= 1} className="px-3 py-1.5 text-ink disabled:opacity-30 dark:text-white" aria-label="Decrease boxes">−</button>
                     <span className="min-w-[4.5rem] text-center text-sm font-semibold text-ink dark:text-white">{item.quantityBoxes} box{item.quantityBoxes > 1 ? 'es' : ''}</span>

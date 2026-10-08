@@ -35,14 +35,14 @@ export default function AdminOrdersPage() {
           <EmptyState label="No orders yet." />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px] border-collapse text-sm">
+            <table className="w-full border-collapse text-sm lg:min-w-[760px]">
               <thead>
                 <tr className="border-b border-border text-left text-xs uppercase text-slate-400 dark:border-white/10">
                   <th className="p-3.5">Order #</th>
-                  <th className="p-3.5">Customer</th>
+                  <th className="hidden p-3.5 md:table-cell">Customer</th>
                   <th className="p-3.5">Amount</th>
-                  <th className="p-3.5">Payment</th>
-                  <th className="p-3.5">Status</th>
+                  <th className="hidden p-3.5 lg:table-cell">Payment</th>
+                  <th className="hidden p-3.5 sm:table-cell">Status</th>
                   <th className="p-3.5">Update</th>
                 </tr>
               </thead>
@@ -50,10 +50,10 @@ export default function AdminOrdersPage() {
                 {orders.map(o => (
                   <tr key={o.id} className="border-b border-border last:border-0 dark:border-white/5">
                     <td className="p-3.5 font-semibold text-ink dark:text-white">{o.order_number}</td>
-                    <td className="p-3.5 text-xs text-slate-400">{o.customer_name}<br />{o.customer_phone}</td>
+                    <td className="hidden p-3.5 text-xs text-slate-400 md:table-cell">{o.customer_name}<br />{o.customer_phone}</td>
                     <td className="p-3.5 font-bold text-brand-blue">₹{Number(o.net_payable).toLocaleString('en-IN')}</td>
-                    <td className="p-3.5"><Badge tone={o.payment_status === 'paid' ? 'green' : 'slate'}>{o.payment_status}</Badge></td>
-                    <td className="p-3.5"><Badge tone={STATUS_TONE[o.order_status] || 'slate'}>{o.order_status}</Badge></td>
+                    <td className="hidden p-3.5 lg:table-cell"><Badge tone={o.payment_status === 'paid' ? 'green' : 'slate'}>{o.payment_status}</Badge></td>
+                    <td className="hidden p-3.5 sm:table-cell"><Badge tone={STATUS_TONE[o.order_status] || 'slate'}>{o.order_status}</Badge></td>
                     <td className="p-3.5">
                       <Select value={o.order_status} onChange={e => updateStatus(o, e.target.value)} className="w-40">
                         {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}

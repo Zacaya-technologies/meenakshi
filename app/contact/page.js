@@ -28,7 +28,7 @@ export default function ContactPage() {
     <div className="bg-brand-light dark:bg-navy">
       {/* Hero */}
       <section className="bg-brand-navy py-16 text-white">
-        <div className="mx-auto max-w-[1380px] px-6 text-center">
+        <div className="mx-auto max-w-[1380px] px-4 sm:px-6 text-center">
           <p className="text-xs font-bold uppercase tracking-[0.25em] text-brand-blue">Contact Us</p>
           <h1 className="mt-3 font-heading text-3xl font-black uppercase leading-tight sm:text-4xl md:text-5xl">
             Get in Touch with<br className="hidden sm:block" /> Meenakshi Build World
@@ -40,7 +40,7 @@ export default function ContactPage() {
       </section>
 
       {/* Action buttons */}
-      <section className="mx-auto -mt-8 max-w-[1380px] px-6">
+      <section className="mx-auto -mt-8 max-w-[1380px] px-4 sm:px-6">
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           <ActionCard href={telHref(business.primary_phone)} icon={<Icon.phoneCall className="h-6 w-6" />} label="Call Now" sub={business.primary_phone} tone="from-brand-blue to-brand-deep" />
           <ActionCard href={waLink(business.whatsapp_number, waGreeting(business))} external icon={<Icon.whatsapp className="h-6 w-6" />} label="WhatsApp" sub={business.primary_phone} tone="from-[#25D366] to-[#128C7E]" />
@@ -184,17 +184,19 @@ export default function ContactPage() {
   );
 }
 
+// Icon sits above the label on phones, where two cards share a row and a
+// side-by-side layout pushes "WhatsApp"/"Get Directions" out of the card.
 function ActionCard({ href, icon, label, sub, tone, external }) {
   return (
     <a
       href={href}
       {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-      className="group flex items-center gap-3 rounded-2xl border-[1.5px] border-border bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:border-brand-blue dark:border-white/10 dark:bg-navy2"
+      className="group flex min-w-0 flex-col items-start gap-3 rounded-2xl border-[1.5px] border-border bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:border-brand-blue dark:border-white/10 dark:bg-navy2 sm:flex-row sm:items-center"
     >
-      <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${tone} text-white`}>
+      <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${tone} text-white sm:h-12 sm:w-12`}>
         {icon}
       </span>
-      <span className="min-w-0">
+      <span className="w-full min-w-0">
         <span className="block font-heading text-sm font-bold text-ink dark:text-white">{label}</span>
         <span className="block truncate text-xs text-slate-400">{sub}</span>
       </span>
