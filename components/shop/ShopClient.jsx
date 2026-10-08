@@ -349,32 +349,54 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
 
           {subcats.length > 0 && (
             <div className="mb-8">
-              <h2 className="mb-3 font-heading text-lg font-extrabold text-ink dark:text-white">Shop by Subcategory</h2>
+              <div className="mb-4 flex items-end justify-between gap-3">
+                <h2 className="font-heading text-xl font-extrabold text-ink dark:text-white">Shop by Subcategory</h2>
+                <span className="text-xs font-semibold text-slate-400">{subcats.length} spaces</span>
+              </div>
               {/* Swipeable strip on phones so the products are not pushed a dozen
                   screens down; a grid from sm up. */}
-              <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 scrollbar-none sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 sm:pb-0 xl:grid-cols-4">
+              <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 scrollbar-none sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3">
                 {subcats.map(c => (
                   <Link
                     key={c.id ?? c.slug}
                     href={`/tiles/${filters.category}/${c.slug}`}
-                    className="group w-36 shrink-0 snap-start overflow-hidden rounded-2xl border-[1.5px] border-border bg-white transition hover:border-brand-blue hover:shadow-card dark:bg-navy2 dark:border-white/10 sm:w-auto"
+                    className="group relative isolate block aspect-[4/3] w-60 shrink-0 snap-start overflow-hidden rounded-2xl bg-brand-navy shadow-card transition duration-300 ease-out-expo hover:-translate-y-1 hover:shadow-[0_22px_44px_-14px_rgba(15,23,42,0.5)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-blue/40 sm:w-auto"
                   >
-                    <div className="relative h-24 w-full overflow-hidden bg-brand-light sm:h-28 dark:bg-navy">
-                      {c.image ? (
-                        <img src={c.image} alt={c.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center text-2xl font-black text-brand-blue/30">
-                          {c.name.slice(0, 2).toUpperCase()}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex items-center justify-between gap-2 px-3 py-2.5">
-                      <span className="line-clamp-2 text-[13px] font-bold leading-snug text-ink dark:text-white">{c.name}</span>
-                      {typeof c.count === 'number' && c.count > 0 && (
-                        <span className="shrink-0 rounded-full bg-brand-light px-2 py-0.5 text-[10px] font-extrabold text-brand-blue dark:bg-white/5">
-                          {c.count}
+                    {c.image ? (
+                      <img
+                        src={c.image}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        className="absolute inset-0 -z-10 h-full w-full object-cover transition duration-700 ease-out-expo group-hover:scale-[1.08]"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 -z-10 flex items-center justify-center bg-gradient-to-br from-brand-blue to-brand-navy text-4xl font-black text-white/20">
+                        {c.name.slice(0, 2).toUpperCase()}
+                      </div>
+                    )}
+                    {/* Readability scrim; deepens on hover */}
+                    <div className="absolute inset-0 -z-10 bg-gradient-to-t from-brand-navy/90 via-brand-navy/25 to-transparent transition duration-300 group-hover:from-brand-navy group-hover:via-brand-navy/45" />
+                    <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-black/5 transition duration-300 group-hover:ring-2 group-hover:ring-brand-blue" />
+
+                    {typeof c.count === 'number' && c.count > 0 && (
+                      <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-slate-800 shadow-sm backdrop-blur sm:left-4 sm:top-4">
+                        {c.count} {c.count === 1 ? 'design' : 'designs'}
+                      </span>
+                    )}
+
+                    <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 sm:p-5">
+                      <div className="min-w-0">
+                        <h3 className="line-clamp-2 font-heading text-base font-bold leading-tight text-white drop-shadow-sm sm:text-lg">
+                          {c.name}
+                        </h3>
+                        <span className="mt-1 block text-xs font-medium text-white/70 transition duration-300 group-hover:text-brand-blue">
+                          Explore collection
                         </span>
-                      )}
+                      </div>
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/15 text-white ring-1 ring-white/30 backdrop-blur-md transition duration-300 group-hover:translate-x-0.5 group-hover:bg-brand-blue group-hover:ring-brand-blue">
+                        <Icon.arrowRight className="h-4 w-4" />
+                      </span>
                     </div>
                   </Link>
                 ))}
