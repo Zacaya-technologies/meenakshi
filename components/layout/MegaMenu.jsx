@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import Link from 'next/link';
-import { API, FALLBACK_IMG, formatPrice } from '@/lib/api';
+import { API, FALLBACK_IMG, formatPrice, hasPrice } from '@/lib/api';
 import { groupHeading } from '@/lib/menuData';
 import { Icon, AnyIcon } from '@/components/ui/Icons';
 
@@ -176,7 +176,7 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
                         <div className="line-clamp-2 text-[12px] font-semibold leading-tight text-white transition group-hover:text-brand-blue">{p.name}</div>
                         <div className="mt-1 text-[12px] font-bold text-brand-blue">
                           {formatPrice(p)}
-                          <span className="ml-1 text-[10px] font-normal text-brand-slate">/sq.ft</span>
+                          {hasPrice(p) && <span className="ml-1 text-[10px] font-normal text-brand-slate">/sq.ft</span>}
                         </div>
                       </div>
                     </Link>

@@ -14,7 +14,6 @@ export default function Footer() {
     { label: 'Home', url: '/' },
     { label: 'About Us', url: '/about' },
     { label: 'Categories', url: '/all-tiles' },
-    { label: 'Products', url: '/products' },
     { label: 'Shop', url: '/shop' },
     { label: 'Brands', url: '/brands' },
     { label: 'Contact Us', url: '/contact' }
@@ -22,11 +21,13 @@ export default function Footer() {
 
   const productLinks = [
     { label: 'Tiles', url: '/all-tiles' },
-    { label: 'Sanitary Ware', url: '/shop' },
-    { label: 'Kitchen', url: '/shop' },
-    { label: 'Steel', url: '/shop' },
-    { label: 'Cement', url: '/shop' },
-    { label: 'Plumbing', url: '/shop' }
+    { label: 'Kitchen', url: '/kitchen-tiles' },
+    // Not in the online catalogue yet — send shoppers to an enquiry instead of
+    // an unrelated tile listing.
+    { label: 'Sanitary Ware', url: '/contact' },
+    { label: 'Steel', url: '/contact' },
+    { label: 'Cement', url: '/contact' },
+    { label: 'Plumbing', url: '/contact' }
   ];
 
   const phones = [business.primary_phone, business.secondary_phone, business.additional_phone].filter(Boolean);

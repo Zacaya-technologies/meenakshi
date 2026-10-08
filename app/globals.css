@@ -131,3 +131,14 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Floating contact rail (FloatingActions). On product pages below lg it sits
+   above the sticky add-to-cart bar instead of covering its buttons. */
+.floating-rail {
+  bottom: max(1.5rem, env(safe-area-inset-bottom));
+}
+@media (max-width: 1023.98px) {
+  .floating-rail--above-bar {
+    bottom: calc(max(1.5rem, env(safe-area-inset-bottom)) + 4.5rem);
+  }
+}

@@ -12,7 +12,7 @@ import { Icon, NavIcon, AnyIcon } from '@/components/ui/Icons';
 const PAGE_LINKS = [
   { label: 'Home', url: '/' },
   { label: 'About Us', url: '/about' },
-  { label: 'Products', url: '/products' },
+  { label: 'All Tiles', url: '/all-tiles' },
   { label: 'Shop', url: '/shop' },
   { label: 'Contact Us', url: '/contact' }
 ];
@@ -56,13 +56,15 @@ export default function MobileDrawer({ open, onClose, menuItems }) {
       setOpenSlug(null);
       return;
     }
+    setOpenSlug(slug);
     pendingSlugRef.current = slug;
     if (liveData[slug]) {
       pendingSlugRef.current = null;
       return;
     }
-    const res = await API.getCategoryMenu(slug);
-    if (res?.success) setLiveData(prev => ({ ...prev, [slug]: res.columns || [] }));
+    const res = await API.getCategoryMenu(slug).catch(() => null);
+    // Store an empty list on failure too, so the skeleton never spins forever.
+    setLiveData(prev => ({ ...prev, [slug]: res?.success ? (res.columns || []) : [] }));
     pendingSlugRef.current = null;
   }, [openSlug, liveData]);
 

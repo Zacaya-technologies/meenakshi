@@ -2,10 +2,14 @@
 
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/lib/store';
+import { useBusiness, waLink } from '@/lib/business';
 import { FALLBACK_IMG, discountPct, formatPrice, hasPrice } from '@/lib/api';
 import { Icon } from '@/components/ui/Icons';
 
-const WHATSAPP_NUMBER = '919900027700';
+const ACTION_BTN = 'flex h-10 w-10 items-center justify-center rounded-full shadow-lg transition';
+const actionTone = (active) => (active
+  ? 'bg-brand-blue text-white'
+  : 'bg-white/95 text-slate-700 hover:bg-brand-blue hover:text-white');
 
 function StarRating({ rating }) {
   const rounded = Math.round(rating || 0);
@@ -22,21 +26,23 @@ function StarRating({ rating }) {
 
 export default function ProductCard({ product, onQuickView }) {
   const router = useRouter();
+  const business = useBusiness();
   const { wishlist, compare, toggleWishlist, toggleCompare, addToCart } = useApp();
   const inWish = wishlist.some(p => p.id === product.id);
   const inCompare = compare.some(p => p.id === product.id);
   const off = discountPct(product);
   const image = product.primary_image || product.image_url || FALLBACK_IMG;
   const inStock = product.stock === undefined || product.stock > 0;
+  const priced = hasPrice(product);
 
   const chips = [product.design, product.finish, product.color].filter(Boolean);
 
-  const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-    `Hi Meenakshi Build World, I'm interested in "${product.name}" (SKU: ${product.sku}). Please share more details.`
-  )}`;
-  const quoteHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-    `Hi, I'd like a bulk quote for "${product.name}" (SKU: ${product.sku}, ${product.size || ''}). Please share pricing per box.`
-  )}`;
+  const whatsappHref = waLink(business.whatsapp_number,
+    `Hi ${business.business_name}, I'm interested in "${product.name}" (SKU: ${product.sku}). Please share more details.`);
+  const priceHref = waLink(business.whatsapp_number,
+    `Hi ${business.business_name}, please share the price of "${product.name}" (SKU: ${product.sku}${product.size ? `, ${product.size}` : ''}).`);
+  const quoteHref = waLink(business.whatsapp_number,
+    `Hi, I'd like a bulk quote for "${product.name}" (SKU: ${product.sku}${product.size ? `, ${product.size}` : ''}). Please share pricing per box.`);
 
   return (
     <article className="group flex flex-col overflow-hidden rounded-[20px] border-[1.5px] border-border bg-white shadow-card transition duration-300 hover:-translate-y-2 hover:border-brand-blue/55 hover:shadow-hover dark:bg-navy2 dark:border-white/10">
@@ -49,6 +55,8 @@ export default function ProductCard({ product, onQuickView }) {
           <img
             src={image}
             alt={product.name}
+            loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.09]"
           />
         </button>
@@ -66,26 +74,30 @@ export default function ProductCard({ product, onQuickView }) {
           )}
         </div>
 
-        {/* Hover actions */}
-        <div className="absolute bottom-3.5 right-3.5 flex flex-col gap-2 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 translate-y-2">
-          <button
-            onClick={() => onQuickView(product)}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-700 shadow-lg transition hover:bg-brand-blue hover:text-white"
-            aria-label="Quick view"
-          >
-            <Icon.eye className="h-4.5 w-4.5" />
-          </button>
+        {/* Hover actions — always visible on touch screens, which have no hover */}
+        <div className="absolute bottom-3.5 right-3.5 flex translate-y-2 flex-col gap-2 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100 [@media(hover:none)]:translate-y-0 [@media(hover:none)]:opacity-100">
+          {onQuickView && (
+            <button
+              onClick={() => onQuickView(product)}
+              className={`${ACTION_BTN} ${actionTone(false)}`}
+              aria-label="Quick view"
+            >
+              <Icon.eye className="h-4.5 w-4.5" />
+            </button>
+          )}
           <button
             onClick={() => toggleWishlist(product)}
-            className={`flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-700 shadow-lg transition hover:bg-brand-blue hover:text-white ${inWish ? 'bg-brand-blue text-white' : ''}`}
-            aria-label="Add to wishlist"
+            className={`${ACTION_BTN} ${actionTone(inWish)}`}
+            aria-label={inWish ? 'Remove from wishlist' : 'Add to wishlist'}
+            aria-pressed={inWish}
           >
             <Icon.heart className={`h-4.5 w-4.5 ${inWish ? 'fill-current' : ''}`} />
           </button>
           <button
             onClick={() => toggleCompare(product)}
-            className={`flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-slate-700 shadow-lg transition hover:bg-brand-blue hover:text-white ${inCompare ? 'bg-brand-blue text-white' : ''}`}
-            aria-label="Add to compare"
+            className={`${ACTION_BTN} ${actionTone(inCompare)}`}
+            aria-label={inCompare ? 'Remove from compare' : 'Add to compare'}
+            aria-pressed={inCompare}
           >
             <Icon.scales className="h-4.5 w-4.5" />
           </button>
@@ -94,7 +106,7 @@ export default function ProductCard({ product, onQuickView }) {
             target="_blank"
             rel="noreferrer"
             onClick={e => e.stopPropagation()}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-[#25D366] shadow-lg transition hover:bg-[#25D366] hover:text-white"
+            className={`${ACTION_BTN} bg-white/95 text-[#25D366] hover:bg-[#25D366] hover:text-white`}
             aria-label="Chat on WhatsApp"
           >
             <Icon.whatsapp className="h-4.5 w-4.5" />
@@ -133,32 +145,46 @@ export default function ProductCard({ product, onQuickView }) {
           </div>
         )}
 
-        <div className="mb-2 flex items-center gap-2">
-          <StarRating rating={product.rating_avg} />
-          <span className="text-[11px] text-slate-400">({product.reviews_count || 0})</span>
-        </div>
+        {product.reviews_count > 0 && (
+          <div className="mb-2 flex items-center gap-2">
+            <StarRating rating={product.rating_avg} />
+            <span className="text-[11px] text-slate-400">({product.reviews_count})</span>
+          </div>
+        )}
 
         <div className="mt-auto flex items-baseline gap-2 pt-1">
-          <span className={`font-heading font-extrabold text-brand-blue ${hasPrice(product) ? 'text-[22px]' : 'text-[17px]'}`}>
+          <span className={`font-heading font-extrabold text-brand-blue ${priced ? 'text-[22px]' : 'text-[17px]'}`}>
             {formatPrice(product)}
           </span>
           {off > 0 && <span className="text-xs text-slate-400 line-through">₹{Number(product.price).toLocaleString('en-IN')}</span>}
-          {hasPrice(product) && <span className="text-[11px] text-slate-400">/sq.ft</span>}
+          {priced && <span className="text-[11px] text-slate-400">/sq.ft</span>}
         </div>
 
         <div className="mt-3.5 grid grid-cols-2 gap-2.5">
           <button
             onClick={() => addToCart(product)}
-            className="flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep py-2.5 text-xs font-bold text-white shadow-[0_6px_18px_rgba(30,167,253,0.32)] transition hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(30,167,253,0.45)]"
+            disabled={!inStock}
+            className="flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep py-2.5 text-xs font-bold text-white shadow-[0_6px_18px_rgba(30,167,253,0.32)] transition enabled:hover:-translate-y-0.5 enabled:hover:shadow-[0_10px_24px_rgba(30,167,253,0.45)] disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Icon.bag className="h-4 w-4" /> Add to Cart
           </button>
-          <button
-            onClick={() => router.push(`/product/${product.slug}?buy=1`)}
-            className="rounded-xl border-[1.5px] border-brand-blue py-2.5 text-xs font-bold text-brand-blue transition hover:bg-brand-blue/5"
-          >
-            Buy Now
-          </button>
+          {priced ? (
+            <button
+              onClick={() => router.push(`/product/${product.slug}?buy=1`)}
+              className="rounded-xl border-[1.5px] border-brand-blue py-2.5 text-xs font-bold text-brand-blue transition hover:bg-brand-blue/5"
+            >
+              Buy Now
+            </button>
+          ) : (
+            <a
+              href={priceHref}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center justify-center rounded-xl border-[1.5px] border-brand-blue py-2.5 text-xs font-bold text-brand-blue transition hover:bg-brand-blue/5"
+            >
+              Get Price
+            </a>
+          )}
         </div>
 
         <a

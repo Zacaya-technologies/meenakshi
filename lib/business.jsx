@@ -47,3 +47,19 @@ export function waLink(whatsappNumber, message) {
 export function waGreeting(business) {
   return `Hello ${business?.business_name || 'Meenakshi Build World'}, I would like to know more about your products.`;
 }
+
+// WhatsApp quote request listing every cart line — the site has no online
+// payment, so this is how a cart is "checked out".
+export function cartQuoteLink(business, cart) {
+  const lines = cart.map((i, n) => {
+    const p = i.product;
+    const bits = [p.sku && `SKU ${p.sku}`, p.size].filter(Boolean).join(', ');
+    return `${n + 1}. ${p.name}${bits ? ` (${bits})` : ''} — ${i.quantityBoxes} box${i.quantityBoxes > 1 ? 'es' : ''}`;
+  });
+  const message = [
+    `Hello ${business?.business_name || 'Meenakshi Build World'}, I'd like a quote for:`,
+    ...lines,
+    'Please share pricing, availability and delivery details.'
+  ].join('\n');
+  return waLink(business?.whatsapp_number, message);
+}

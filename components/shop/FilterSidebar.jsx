@@ -104,7 +104,7 @@ export default function FilterSidebar({ facets, selected, onToggle, onPriceChang
   // clear of the navbar if the header rows ever change height.
   // On sm: full-width block; on lg+: sticky sidebar with overflow.
   return (
-    <aside className="scrollbar-mega mb-6 rounded-[20px] border-[1.5px] border-border bg-white p-5 shadow-card w-full sm:w-[calc(300px+_-16px)] lg:sticky lg:top-[calc(var(--header-h)+16px)] lg:mb-0 lg:max-h-[calc(100vh-var(--header-h)-32px)] lg:overflow-y-auto dark:bg-navy2 dark:border-white/10">
+    <aside className="scrollbar-mega mb-6 w-full rounded-[20px] border-[1.5px] border-border bg-white p-5 shadow-card lg:sticky lg:top-[calc(var(--header-h)+16px)] lg:mb-0 lg:max-h-[calc(100vh-var(--header-h)-32px)] lg:overflow-y-auto dark:bg-navy2 dark:border-white/10">
       <div className="mb-3 flex items-center justify-between border-b border-border pb-4 dark:border-white/10">
         <h4 className="flex items-center gap-2 font-heading text-[15px] font-bold text-ink dark:text-white">
           <Icon.filter className="h-4 w-4 text-brand-blue" /> Filters
@@ -153,7 +153,13 @@ export default function FilterSidebar({ facets, selected, onToggle, onPriceChang
       </div>
       )}
 
-      {groups.map(g => (
+      {groups.map(g => {
+        // Options that would return no products are noise — keep them only
+        // while ticked so they can still be unticked.
+        const chosen = selected[g.key] || [];
+        const options = g.options.filter(o => o.count !== 0 || chosen.includes(o.slug));
+        return { ...g, options };
+      }).filter(g => g.options.length > 0).map(g => (
         <FacetGroup
           key={g.key}
           label={g.label}

@@ -10,12 +10,16 @@ export default function SearchModal({ open, onClose }) {
   const router = useRouter();
   const [q, setQ] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  // The query the current suggestions belong to — "no results" is only shown
+  // once the response for what is typed has actually arrived.
+  const [resultsFor, setResultsFor] = useState('');
   const inputRef = useRef(null);
 
   useEffect(() => {
     if (open) {
       setQ('');
       setSuggestions([]);
+      setResultsFor('');
       setTimeout(() => inputRef.current?.focus(), 60);
     }
   }, [open]);
@@ -23,13 +27,17 @@ export default function SearchModal({ open, onClose }) {
   useEffect(() => {
     if (!q || q.length < 2) {
       setSuggestions([]);
+      setResultsFor('');
       return;
     }
+    let stale = false;
     const t = setTimeout(async () => {
-      const res = await API.getSuggestions(q);
-      if (res.success) setSuggestions(res.suggestions);
+      const res = await API.getSuggestions(q).catch(() => null);
+      if (stale) return; // a newer keystroke superseded this request
+      setSuggestions(res?.success ? res.suggestions : []);
+      setResultsFor(q);
     }, 220);
-    return () => clearTimeout(t);
+    return () => { stale = true; clearTimeout(t); };
   }, [q]);
 
   const go = (url) => {
@@ -100,8 +108,10 @@ export default function SearchModal({ open, onClose }) {
                 ))}
               </div>
             )}
-            {q.length >= 2 && suggestions.length === 0 && (
-              <div className="mt-4 text-center text-sm text-slate-400">No products found for “{q}”</div>
+            {q.length >= 2 && resultsFor === q && suggestions.length === 0 && (
+              <div className="mt-4 text-center text-sm text-slate-400">
+                No quick matches for “{q}” — press Enter to search the full catalogue.
+              </div>
             )}
           </motion.div>
         </motion.div>

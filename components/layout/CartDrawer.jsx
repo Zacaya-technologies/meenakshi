@@ -3,11 +3,13 @@
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useApp } from '@/lib/store';
-import { FALLBACK_IMG, formatPrice } from '@/lib/api';
+import { useBusiness, cartQuoteLink } from '@/lib/business';
+import { FALLBACK_IMG, formatBoxPrice } from '@/lib/api';
 import { Icon } from '@/components/ui/Icons';
 
 export default function CartDrawer({ open, onClose }) {
   const router = useRouter();
+  const business = useBusiness();
   const { cart, updateCartQty, removeFromCart, cartTotal } = useApp();
 
   return (
@@ -57,13 +59,13 @@ export default function CartDrawer({ open, onClose }) {
                         <div className="truncate text-sm font-semibold text-ink dark:text-white">{item.product.name}</div>
                         <div className="text-xs text-slate-400">{item.product.size}</div>
                         <div className="mt-1 text-sm font-bold text-brand-blue">
-                          {formatPrice(item.product)}/box
+                          {formatBoxPrice(item.product)}
                         </div>
                         <div className="mt-auto flex items-center justify-between">
-                          <div className="flex items-center gap-1 rounded-lg border border-border">
-                            <button onClick={() => updateCartQty(item.product.id, item.quantityBoxes - 1)} className="px-2 py-1 text-ink dark:text-white">−</button>
-                            <span className="w-7 text-center text-sm font-semibold text-ink dark:text-white">{item.quantityBoxes}</span>
-                            <button onClick={() => updateCartQty(item.product.id, item.quantityBoxes + 1)} className="px-2 py-1 text-ink dark:text-white">+</button>
+                          <div className="flex items-center gap-1 rounded-lg border border-border dark:border-white/10">
+                            <button onClick={() => updateCartQty(item.product.id, item.quantityBoxes - 1)} disabled={item.quantityBoxes <= 1} className="px-2 py-1 text-ink disabled:opacity-30 dark:text-white" aria-label="Decrease boxes">−</button>
+                            <span className="min-w-[4rem] text-center text-sm font-semibold text-ink dark:text-white">{item.quantityBoxes} box{item.quantityBoxes > 1 ? 'es' : ''}</span>
+                            <button onClick={() => updateCartQty(item.product.id, item.quantityBoxes + 1)} className="px-2 py-1 text-ink dark:text-white" aria-label="Increase boxes">+</button>
                           </div>
                           <button onClick={() => removeFromCart(item.product.id)} className="text-slate-400 transition hover:text-red-500" aria-label="Remove">
                             <Icon.close className="h-4 w-4" />
@@ -81,7 +83,7 @@ export default function CartDrawer({ open, onClose }) {
                 <div className="mb-3 flex items-center justify-between">
                   <span className="text-sm text-slate-500">Total</span>
                   <span className="font-heading text-xl font-extrabold text-brand-blue">
-                    ₹{cartTotal.toLocaleString('en-IN')}
+                    {cartTotal > 0 ? `₹${Math.round(cartTotal).toLocaleString('en-IN')}` : 'On Request'}
                   </span>
                 </div>
                 <div className="flex gap-3">
@@ -91,12 +93,14 @@ export default function CartDrawer({ open, onClose }) {
                   >
                     View Cart
                   </button>
-                  <button
-                    onClick={() => { onClose(); router.push('/checkout'); }}
-                    className="flex-1 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep py-3 text-sm font-bold text-white"
+                  <a
+                    href={cartQuoteLink(business, cart)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep py-3 text-sm font-bold text-white"
                   >
-                    Checkout
-                  </button>
+                    <Icon.whatsapp className="h-4 w-4" /> Get Quote
+                  </a>
                 </div>
               </div>
             )}

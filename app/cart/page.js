@@ -2,12 +2,15 @@
 
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/lib/store';
-import { FALLBACK_IMG, formatPrice } from '@/lib/api';
+import { useBusiness, cartQuoteLink } from '@/lib/business';
+import { FALLBACK_IMG, formatBoxPrice, hasPrice } from '@/lib/api';
 import { Icon } from '@/components/ui/Icons';
 
 export default function CartPage() {
   const router = useRouter();
+  const business = useBusiness();
   const { cart, updateCartQty, removeFromCart, cartTotal } = useApp();
+  const onRequestCount = cart.filter(i => !hasPrice(i.product)).length;
 
   if (cart.length === 0) {
     return (
@@ -35,13 +38,13 @@ export default function CartPage() {
                 <button onClick={() => router.push(`/product/${item.product.slug}`)} className="text-left font-heading text-sm font-semibold text-ink transition hover:text-brand-blue dark:text-white">
                   {item.product.name}
                 </button>
-                <div className="mt-0.5 text-xs text-slate-400">{item.product.tile_size} • {item.product.brand_name}</div>
-                <div className="mt-1 text-sm font-bold text-brand-blue">{formatPrice(item.product)}/box</div>
+                <div className="mt-0.5 text-xs text-slate-400">{[item.product.size, item.product.brand_name].filter(Boolean).join(' • ')}</div>
+                <div className="mt-1 text-sm font-bold text-brand-blue">{formatBoxPrice(item.product)}</div>
                 <div className="mt-auto flex items-center justify-between">
                   <div className="flex items-center gap-1 rounded-lg border border-border dark:border-white/10">
-                    <button onClick={() => updateCartQty(item.product.id, item.quantityBoxes - 1)} className="px-3 py-1.5 text-ink dark:text-white">−</button>
-                    <span className="w-8 text-center text-sm font-semibold text-ink dark:text-white">{item.quantityBoxes}</span>
-                    <button onClick={() => updateCartQty(item.product.id, item.quantityBoxes + 1)} className="px-3 py-1.5 text-ink dark:text-white">+</button>
+                    <button onClick={() => updateCartQty(item.product.id, item.quantityBoxes - 1)} disabled={item.quantityBoxes <= 1} className="px-3 py-1.5 text-ink disabled:opacity-30 dark:text-white" aria-label="Decrease boxes">−</button>
+                    <span className="min-w-[4.5rem] text-center text-sm font-semibold text-ink dark:text-white">{item.quantityBoxes} box{item.quantityBoxes > 1 ? 'es' : ''}</span>
+                    <button onClick={() => updateCartQty(item.product.id, item.quantityBoxes + 1)} className="px-3 py-1.5 text-ink dark:text-white" aria-label="Increase boxes">+</button>
                   </div>
                   <button onClick={() => removeFromCart(item.product.id)} className="text-xs font-semibold text-slate-400 transition hover:text-red-500">
                     Remove
@@ -56,15 +59,22 @@ export default function CartPage() {
           <h2 className="font-heading text-lg font-bold text-ink dark:text-white">Order Summary</h2>
           <div className="mt-4 flex items-center justify-between border-b border-border pb-4 dark:border-white/10">
             <span className="text-sm text-slate-400">Subtotal</span>
-            <span className="font-heading text-xl font-extrabold text-brand-blue">₹{cartTotal.toLocaleString('en-IN')}</span>
+            <span className="font-heading text-xl font-extrabold text-brand-blue">
+              {cartTotal > 0 ? `₹${Math.round(cartTotal).toLocaleString('en-IN')}` : 'On Request'}
+            </span>
           </div>
-          <p className="mt-3 text-xs text-slate-400">GST & shipping calculated at checkout.</p>
-          <button
-            onClick={() => router.push('/checkout')}
-            className="mt-5 w-full rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5"
+          <p className="mt-3 text-xs text-slate-400">
+            {onRequestCount > 0 && cartTotal > 0 && `${onRequestCount} item${onRequestCount > 1 ? 's are' : ' is'} priced on request. `}
+            Our team will confirm pricing, GST and delivery on WhatsApp.
+          </p>
+          <a
+            href={cartQuoteLink(business, cart)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep py-3.5 text-sm font-bold text-white transition hover:-translate-y-0.5"
           >
-            Proceed to Checkout
-          </button>
+            <Icon.whatsapp className="h-4 w-4" /> Request Quote on WhatsApp
+          </a>
           <button onClick={() => router.push('/shop')} className="mt-2 w-full rounded-xl border-[1.5px] border-brand-blue py-3 text-sm font-bold text-brand-blue transition hover:bg-brand-blue/5">
             Continue Shopping
           </button>

@@ -108,11 +108,20 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
     return () => { cancelled = true; };
   }, [buildQuery, sort, page]);
 
+  // Seeded from the effective filters (URL + the route's preset scope) so that
+  // refining a landing page like /tiles/floor-tiles/marble keeps "marble"
+  // instead of silently dropping it on the way to /shop.
   const pushParams = useCallback((mutator) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([k, v]) => {
+      if (Array.isArray(v)) v.forEach(val => params.append(k, val));
+      else if (v) params.set(k, v);
+    });
+    if (sort) params.set('sort', sort);
+    if (page > 1) params.set('page', String(page));
     mutator(params);
     router.push(`/shop?${params.toString()}`);
-  }, [router, searchParams]);
+  }, [router, filters, sort, page]);
 
   const toggleFilter = useCallback(
     (key, value) => {
@@ -152,7 +161,12 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
 
   const goPage = (p) => {
     pushParams(params => { if (p > 1) params.set('page', p); else params.delete('page'); });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Price sorts are meaningless while the whole scope is price-on-request.
+  const hasPrices = Number(facets?.priceRange?.max) > 0;
+  const sorts = hasPrices ? SORTS : SORTS.filter(s => !s.value.startsWith('price_'));
 
   // Category title from facets (or the route's own heading override)
   const categoryName = useMemo(() => {
@@ -248,7 +262,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
             onChange={e => setSort(e.target.value)}
             className="cursor-pointer rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition focus:border-brand-blue dark:bg-navy2 dark:text-white dark:border-white/10"
           >
-            {SORTS.map(s => (
+            {sorts.map(s => (
               <option key={s.value} value={s.value}>{s.label}</option>
             ))}
           </select>
@@ -308,7 +322,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
 
         <MobileSheet open={mobileSortOpen} onClose={() => setMobileSortOpen(false)} title="Sort By">
           <div className="flex flex-col gap-1">
-            {SORTS.map(s => (
+            {sorts.map(s => (
               <button
                 key={s.value}
                 onClick={() => { setSort(s.value); setMobileSortOpen(false); }}
@@ -317,7 +331,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
                 }`}
               >
                 {s.label}
-                {sort === s.value && <Icon.starFill className="h-4 w-4" />}
+                {sort === s.value && <Icon.check className="h-4 w-4" />}
               </button>
             ))}
           </div>

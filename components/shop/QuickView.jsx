@@ -11,7 +11,8 @@ export default function QuickView({ product, onClose }) {
   const router = useRouter();
   const { addToCart, toggleWishlist, wishlist } = useApp();
   const off = discountPct(product);
-  const inWish = wishlist.some(p => p.id === product.id);
+  // QuickView stays mounted with product=null while closed.
+  const inWish = !!product && wishlist.some(p => p.id === product.id);
 
   useEffect(() => {
     const onKey = (e) => e.key === 'Escape' && onClose();

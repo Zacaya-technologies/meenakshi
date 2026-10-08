@@ -38,6 +38,19 @@ module.exports = {
       transitionTimingFunction: {
         'out-expo': 'cubic-bezier(0.22, 1, 0.36, 1)'
       },
+      // Steps used across components that Tailwind does not ship by default
+      // (h-4.5/w-4.5 icons, /8 /12 /92 colour opacities, duration-250).
+      spacing: {
+        4.5: '1.125rem'
+      },
+      opacity: {
+        8: '0.08',
+        12: '0.12',
+        92: '0.92'
+      },
+      transitionDuration: {
+        250: '250ms'
+      },
       maxWidth: {
         shell: '1380px'
       },

@@ -164,9 +164,18 @@ export default function ContactPage() {
               </p>
             )}
             {status === 'error' && (
-              <p className="mt-3 rounded-xl bg-rose-100 px-4 py-2.5 text-center text-sm font-semibold text-rose-600 dark:bg-rose-500/15 dark:text-rose-400">
-                Something went wrong. Please call us at {business.primary_phone}.
-              </p>
+              <div className="mt-3 rounded-xl bg-rose-100 px-4 py-2.5 text-center text-sm font-semibold text-rose-600 dark:bg-rose-500/15 dark:text-rose-400">
+                We couldn&apos;t submit the form. Send the same enquiry on{' '}
+                <a
+                  href={waLink(business.whatsapp_number, `Hello ${business.business_name}, I'm ${form.name || 'interested'}${form.phone ? ` (${form.phone})` : ''}. ${form.message}`.trim())}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                >
+                  WhatsApp
+                </a>{' '}
+                or call us at {business.primary_phone}.
+              </div>
             )}
           </form>
         </div>

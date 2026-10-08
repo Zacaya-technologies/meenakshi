@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { boxPrice } from '@/lib/api';
 
 const AppContext = createContext(null);
 
@@ -130,7 +131,7 @@ export function AppProvider({ children }) {
 
   const cartCount = useMemo(() => cart.reduce((acc, i) => acc + i.quantityBoxes, 0), [cart]);
   const cartTotal = useMemo(
-    () => cart.reduce((acc, i) => acc + (i.product.offer_price || i.product.price || 0) * i.quantityBoxes, 0),
+    () => cart.reduce((acc, i) => acc + boxPrice(i.product) * i.quantityBoxes, 0),
     [cart]
   );
 

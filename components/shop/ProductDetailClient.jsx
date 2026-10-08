@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { motion, useReducedMotion } from 'framer-motion';
 import { API, FALLBACK_IMG, discountPct, formatPrice, hasPrice } from '@/lib/api';
 import { useApp } from '@/lib/store';
+import { useBusiness, waLink } from '@/lib/business';
 import { Icon } from '@/components/ui/Icons';
 import { buildCalculatorLink } from '@/lib/calculator';
 
@@ -14,6 +15,7 @@ const SWIPE_THRESHOLD = 60;
 export default function ProductDetailClient({ slug }) {
   const router = useRouter();
   const reduceMotion = useReducedMotion();
+  const business = useBusiness();
   const { addToCart, toggleWishlist, wishlist, toggleCompare, compare } = useApp();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -54,6 +56,10 @@ export default function ProductDetailClient({ slug }) {
   const inWish = wishlist.some(p => p.id === product.id);
   const inCompare = compare.some(p => p.id === product.id);
   const buyMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('buy');
+  const inStock = product.stock === undefined || product.stock === null || product.stock > 0;
+  const priced = hasPrice(product);
+  const priceHref = waLink(business.whatsapp_number,
+    `Hi ${business.business_name}, please share the price of "${product.name}" (SKU: ${product.sku}${product.size ? `, ${product.size}` : ''}).`);
 
   return (
     <div className="mx-auto max-w-[1380px] px-6 py-8 pb-28 lg:pb-8">
@@ -164,17 +170,19 @@ export default function ProductDetailClient({ slug }) {
             <p className="mt-5 leading-relaxed text-slate-500 dark:text-slate-400">{product.description}</p>
           )}
 
-          <div className="mt-5 flex items-center gap-2">
-            <div className="flex text-amber-500">
-              {[1, 2, 3, 4, 5].map(i => (
-                <Icon.starFill key={i} className={`h-4 w-4 ${i <= Math.round(product.rating_avg || 0) ? '' : 'opacity-25'}`} />
-              ))}
+          {product.reviews_count > 0 && (
+            <div className="mt-5 flex items-center gap-2">
+              <div className="flex text-amber-500">
+                {[1, 2, 3, 4, 5].map(i => (
+                  <Icon.starFill key={i} className={`h-4 w-4 ${i <= Math.round(product.rating_avg || 0) ? '' : 'opacity-25'}`} />
+                ))}
+              </div>
+              <span className="text-sm text-slate-400">{`${product.rating_avg} · ${product.reviews_count} reviews`}</span>
             </div>
-            <span className="text-sm text-slate-400">{product.reviews_count > 0 ? `${product.rating_avg} · ${product.reviews_count} reviews` : 'No reviews yet'}</span>
-          </div>
+          )}
 
-          <div className="mt-5 flex items-center gap-2 text-sm font-bold text-green-600">
-            <span className="h-2.5 w-2.5 rounded-full bg-green-500" /> {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
+          <div className={`mt-5 flex items-center gap-2 text-sm font-bold ${inStock ? 'text-green-600' : 'text-rose-500'}`}>
+            <span className={`h-2.5 w-2.5 rounded-full ${inStock ? 'bg-green-500' : 'bg-rose-500'}`} /> {inStock ? 'In Stock' : 'Out of Stock'}
           </div>
 
           {/* Specs */}
@@ -208,16 +216,29 @@ export default function ProductDetailClient({ slug }) {
           <div className="mt-6 flex flex-wrap gap-3">
             <button
               onClick={() => addToCart(product)}
-              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep px-6 py-3.5 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5 sm:flex-none"
+              disabled={!inStock}
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep px-6 py-3.5 text-sm font-bold text-white shadow-lg transition enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 sm:flex-none"
             >
               <Icon.bag className="h-4 w-4" /> Add to Cart
             </button>
-            <button
-              onClick={() => { addToCart(product); router.push('/cart'); }}
-              className={`flex-1 rounded-xl border-[1.5px] border-brand-blue px-6 py-3.5 text-sm font-bold text-brand-blue transition hover:bg-brand-blue/5 sm:flex-none ${buyMode ? 'bg-brand-blue/10' : ''}`}
-            >
-              Buy Now
-            </button>
+            {priced ? (
+              <button
+                onClick={() => { addToCart(product); router.push('/cart'); }}
+                disabled={!inStock}
+                className={`flex-1 rounded-xl border-[1.5px] border-brand-blue px-6 py-3.5 text-sm font-bold text-brand-blue transition hover:bg-brand-blue/5 disabled:cursor-not-allowed disabled:opacity-50 sm:flex-none ${buyMode ? 'bg-brand-blue/10' : ''}`}
+              >
+                Buy Now
+              </button>
+            ) : (
+              <a
+                href={priceHref}
+                target="_blank"
+                rel="noreferrer"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl border-[1.5px] border-brand-blue px-6 py-3.5 text-sm font-bold text-brand-blue transition hover:bg-brand-blue/5 sm:flex-none"
+              >
+                <Icon.whatsapp className="h-4 w-4" /> Get Price
+              </a>
+            )}
             <button
               onClick={() => toggleWishlist(product)}
               className={`flex h-12 w-12 items-center justify-center rounded-xl border border-border transition dark:border-white/10 ${inWish ? 'bg-brand-blue text-white border-brand-blue' : 'text-ink dark:text-white'}`}
@@ -270,7 +291,7 @@ export default function ProductDetailClient({ slug }) {
                 className="group overflow-hidden rounded-2xl border border-border bg-white text-left transition hover:border-brand-blue/50 hover:shadow-hover dark:bg-navy2 dark:border-white/10"
               >
                 <div className="h-40 overflow-hidden bg-slate-100 dark:bg-navy">
-                  <img src={r.primary_image || FALLBACK_IMG} alt={r.name} className="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
+                  <img src={r.primary_image || FALLBACK_IMG} alt={r.name} loading="lazy" className="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
                 </div>
                 <div className="p-3">
                   <div className="line-clamp-2 text-sm font-semibold text-ink dark:text-white">{r.name}</div>
@@ -303,7 +324,7 @@ export default function ProductDetailClient({ slug }) {
         </button>
         <button
           onClick={() => addToCart(product)}
-          disabled={product.stock <= 0}
+          disabled={!inStock}
           className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep px-5 py-3 text-sm font-bold text-white shadow-glow disabled:opacity-50"
         >
           <Icon.bag className="h-4 w-4" /> Add to Cart

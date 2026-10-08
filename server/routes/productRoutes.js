@@ -79,8 +79,9 @@ router.get('/', async (req, res) => {
             params.push(...brands);
         }
         if (collection) {
-            conditions.push(`EXISTS (SELECT 1 FROM collections colf WHERE colf.id = p.collection_id AND colf.slug = ?)`);
-            params.push(collection);
+            const collections = toArray(collection);
+            conditions.push(`EXISTS (SELECT 1 FROM collections colf WHERE colf.id = p.collection_id AND colf.slug IN (${collections.map(() => '?').join(',')}))`);
+            params.push(...collections);
         }
         if (min_price) { conditions.push('COALESCE(p.offer_price, p.price) >= ?'); params.push(parseFloat(min_price)); }
         if (max_price) { conditions.push('COALESCE(p.offer_price, p.price) <= ?'); params.push(parseFloat(max_price)); }
@@ -187,6 +188,39 @@ router.get('/facets', async (req, res) => {
                 WHERE c.parent_id IS NULL AND c.parent_main_id = ? AND c.status = 'active'
                 ORDER BY c.display_order ASC, c.name ASC
             `, [mainCategory.id]);
+        }
+
+        // Unscoped (all products), every main category contributes its own
+        // "Marble", "2x2", "White"… child. Product filtering matches by slug
+        // across all categories, so collapse same-slug children into one
+        // option whose count is the number of distinct products behind it.
+        if (!mainCategory) {
+            const distinct = await db.query(`
+                SELECT c.group_id, c.slug, COUNT(DISTINCT pc.product_id) as n
+                FROM categories c
+                JOIN product_categories pc ON pc.category_id = c.id
+                JOIN products pp ON pp.id = pc.product_id
+                WHERE c.parent_id IS NOT NULL AND (pp.published = 1 OR pp.published = true)
+                GROUP BY c.group_id, c.slug
+            `);
+            const distinctCount = new Map(distinct.map(r => [`${r.group_id}|${r.slug}`, parseInt(r.n) || 0]));
+            const merged = new Map();
+            for (const child of children) {
+                const key = `${child.group_id}|${child.slug}`;
+                const prev = merged.get(key);
+                if (!prev) {
+                    merged.set(key, { ...child });
+                } else {
+                    // Composite children have no direct tags; keep the best count seen.
+                    prev.product_count = Math.max(parseInt(prev.product_count) || 0, parseInt(child.product_count) || 0);
+                    if (!prev.image && child.image) prev.image = child.image;
+                }
+            }
+            children.length = 0;
+            for (const [key, child] of merged) {
+                if (distinctCount.has(key)) child.product_count = distinctCount.get(key);
+                children.push(child);
+            }
         }
 
         // Only groups the scoped main categories actually have children in are

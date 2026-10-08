@@ -7,11 +7,11 @@ import { Icon } from '@/components/ui/Icons';
 
 const SLIDES = [
   {
-    id: 'tropical',
-    eyebrow: 'Fresh, Vibrant & Exotic',
-    title: 'Tropical Tiles',
-    copy: 'Statement botanical surfaces for feature walls, lobbies and hospitality interiors.',
-    cta: { label: 'Explore Collection', href: '/shop?pattern=Floral' },
+    id: 'wooden',
+    eyebrow: 'Warm, Natural & Easy-Care',
+    title: 'Wood-Look Tiles',
+    copy: 'The warmth of timber planks with the durability of tile, for living rooms, bedrooms and feature walls.',
+    cta: { label: 'Explore Collection', href: '/shop?design=wooden' },
     image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=2000&q=80',
     align: 'left'
   },
@@ -20,7 +20,7 @@ const SLIDES = [
     eyebrow: 'Italian Statuario & Onyx',
     title: 'Luxury Marble Slabs',
     copy: 'Book-matched slabs up to 800x3000 mm, finished for villas, hotels and flagship retail.',
-    cta: { label: 'View Marble Slabs', href: '/category/marble' },
+    cta: { label: 'View Marble Slabs', href: '/shop?design=marble' },
     image: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=2000&q=80',
     align: 'left'
   },
@@ -29,7 +29,7 @@ const SLIDES = [
     eyebrow: 'Anti-Skid R11 Rated',
     title: 'Outdoor & Parking',
     copy: 'Full-body vitrified 20 mm pavers engineered for driveways, terraces and pool decks.',
-    cta: { label: 'Shop Outdoor Tiles', href: '/category/outdoor' },
+    cta: { label: 'Shop Outdoor Tiles', href: '/outdoor-tiles' },
     image: 'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=2000&q=80',
     align: 'left'
   }

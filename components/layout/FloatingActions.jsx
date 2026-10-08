@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Icon } from '@/components/ui/Icons';
 import { useBusiness, telHref, waLink, waGreeting } from '@/lib/business';
@@ -15,6 +16,9 @@ export default function FloatingActions() {
   const reduceMotion = useReducedMotion();
   const [chatOpen, setChatOpen] = useState(false);
   const business = useBusiness();
+  // Product pages have a sticky add-to-cart bar along the bottom below lg;
+  // lift the rail above it so it never covers the bar's buttons.
+  const overBottomBar = usePathname()?.startsWith('/product/');
 
   useEffect(() => {
     if (!chatOpen) return;
@@ -25,8 +29,7 @@ export default function FloatingActions() {
 
   return (
     <div
-      className="fixed right-4 z-[1200] flex flex-col items-end gap-3"
-      style={{ bottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}
+      className={`floating-rail fixed right-4 z-[1200] flex flex-col items-end gap-3 ${overBottomBar ? 'floating-rail--above-bar' : ''}`}
     >
       <AnimatePresence>
         {chatOpen && (
