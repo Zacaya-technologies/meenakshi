@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { API, isPlaceholderImage } from '@/lib/api';
 import ProductCard, { ProductCardSkeleton } from './ProductCard';
 import QuickView from './QuickView';
@@ -26,6 +26,7 @@ const FACET_KEYS = ['area', 'application', 'size', 'design', 'type', 'finish', '
 // /floor-tiles/marble) — the sidebar remains fully interactive on top of it.
 export default function ShopClient({ presetFilters = {}, breadcrumb, heading, description, banner }) {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const [products, setProducts] = useState([]);
@@ -111,6 +112,20 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
   // Seeded from the effective filters (URL + the route's preset scope) so that
   // refining a landing page like /tiles/floor-tiles/marble keeps "marble"
   // instead of silently dropping it on the way to /shop.
+  // Stay on the current page (e.g. /floor-tiles) rather than jumping to
+  // /shop: switching routes remounted the listing, which closed the mobile
+  // filter sheet after every tick and reset the scroll position. Only when
+  // the shopper removes part of the page's own preset scope — which the
+  // landing route cannot express — does the URL move to /shop.
+  const navigate = useCallback((params) => {
+    const keepsPreset = Object.entries(presetFilters).every(([k, v]) =>
+      (Array.isArray(v) ? v : [v]).every(val => (k === 'category' ? params.get('category') === val : params.getAll(k).includes(val)))
+    );
+    const base = keepsPreset ? pathname : '/shop';
+    const qs = params.toString();
+    router.push(qs ? `${base}?${qs}` : base, { scroll: false });
+  }, [router, pathname, presetFilters]);
+
   const pushParams = useCallback((mutator) => {
     const params = new URLSearchParams();
     Object.entries(filters).forEach(([k, v]) => {
@@ -120,8 +135,8 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
     if (sort) params.set('sort', sort);
     if (page > 1) params.set('page', String(page));
     mutator(params);
-    router.push(`/shop?${params.toString()}`);
-  }, [router, filters, sort, page]);
+    navigate(params);
+  }, [navigate, filters, sort, page]);
 
   const toggleFilter = useCallback(
     (key, value) => {
@@ -144,16 +159,12 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
     });
   }, [pushParams]);
 
+  // Back to the page's own scope: the landing route's presets apply again
+  // once the query string is gone.
   const clearFilters = useCallback(() => {
-    const params = new URLSearchParams();
-    if (presetFilters.category) params.set('category', presetFilters.category);
-    Object.entries(presetFilters).forEach(([k, v]) => {
-      if (k === 'category') return;
-      (Array.isArray(v) ? v : [v]).forEach(val => params.append(k, val));
-    });
-    if (filters.q) params.set('q', filters.q);
-    router.push(`/shop?${params.toString()}`);
-  }, [router, filters, presetFilters]);
+    const qs = filters.q ? `?q=${encodeURIComponent(filters.q)}` : '';
+    router.push(`${pathname}${qs}`, { scroll: false });
+  }, [router, pathname, filters.q]);
 
   const setSort = (val) => {
     pushParams(params => { if (val) params.set('sort', val); else params.delete('sort'); });

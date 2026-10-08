@@ -1,10 +1,15 @@
 import { Suspense } from 'react';
+import { notFound } from 'next/navigation';
 import ProductDetailClient from '@/components/shop/ProductDetailClient';
 import { serverFetch } from '@/lib/server-api';
 
+// Returns the product payload, MISSING when the API says the slug does not
+// exist, or null on any other failure (the client component retries then).
+const MISSING = Symbol('missing');
 async function fetchProduct(slug) {
   try {
     const res = await serverFetch(`/api/v1/products/${slug}`);
+    if (res.status === 404) return MISSING;
     if (!res.ok) return null;
     const data = await res.json();
     return data.success ? data : null;
@@ -15,7 +20,7 @@ async function fetchProduct(slug) {
 
 export async function generateMetadata({ params }) {
   const data = await fetchProduct(params.slug);
-  if (!data) return {};
+  if (!data || data === MISSING) return { title: 'Product not found | Meenakshi Build World', robots: { index: false } };
   const { product, images } = data;
   const image = images?.[0]?.image_url;
   return {
@@ -28,6 +33,8 @@ export async function generateMetadata({ params }) {
 
 export default async function ProductDetailPage({ params }) {
   const data = await fetchProduct(params.slug);
+  // A real 404 status, not a 200 "Product not found" page search engines index.
+  if (data === MISSING) notFound();
   const jsonLd = data ? buildProductSchema(data) : null;
 
   return (

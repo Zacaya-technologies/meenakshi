@@ -9,7 +9,8 @@ import { Icon } from '@/components/ui/Icons';
 export default function AdminLoginPage() {
   const router = useRouter();
   const { login } = useApp();
-  const [email, setEmail] = useState('admin@meenakshibuildworld.com');
+  // Never pre-fill the admin username on a public page.
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -42,14 +43,14 @@ export default function AdminLoginPage() {
         <label className="mb-3 block">
           <span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">Email</span>
           <input
-            type="email" value={email} onChange={e => setEmail(e.target.value)} required
+            type="email" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="username"
             className="w-full rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition focus:border-brand-blue dark:bg-navy dark:text-white dark:border-white/10"
           />
         </label>
         <label className="mb-5 block">
           <span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">Password</span>
           <input
-            type="password" value={password} onChange={e => setPassword(e.target.value)} required
+            type="password" value={password} onChange={e => setPassword(e.target.value)} required autoComplete="current-password"
             className="w-full rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition focus:border-brand-blue dark:bg-navy dark:text-white dark:border-white/10"
           />
         </label>

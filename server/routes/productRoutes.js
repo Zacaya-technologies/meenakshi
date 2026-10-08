@@ -103,7 +103,11 @@ router.get('/', async (req, res) => {
         if (sort === 'rating') orderClause = 'ORDER BY p.rating_avg DESC';
         if (sort === 'popular') orderClause = 'ORDER BY p.views_count DESC';
 
-        const offset = (parseInt(page) - 1) * parseInt(limit);
+        // Clamp paging: junk like ?page=abc used to reach the SQL as NaN (500 +
+        // leaked error) and ?limit=100000 returned the whole catalogue at once.
+        const perPage = Math.min(Math.max(parseInt(limit, 10) || 12, 1), 100);
+        const pageNo = Math.max(parseInt(page, 10) || 1, 1);
+        const offset = (pageNo - 1) * perPage;
 
         const sql = `
             SELECT p.*, b.name as brand_name, b.logo_url as brand_logo, col.name as collection_name,
@@ -114,7 +118,7 @@ router.get('/', async (req, res) => {
             LEFT JOIN collections col ON p.collection_id = col.id
             ${whereClause}
             ${orderClause}
-            LIMIT ${parseInt(limit)} OFFSET ${offset}
+            LIMIT ${perPage} OFFSET ${offset}
         `;
         const products = await db.query(sql, params);
 
@@ -125,7 +129,7 @@ router.get('/', async (req, res) => {
         res.json({
             success: true,
             products,
-            pagination: { total, page: parseInt(page), pages: Math.max(1, Math.ceil(total / parseInt(limit))) }
+            pagination: { total, page: pageNo, pages: Math.max(1, Math.ceil(total / perPage)) }
         });
     } catch (err) {
         console.error('Products API Error:', err);

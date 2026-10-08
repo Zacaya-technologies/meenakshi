@@ -33,6 +33,31 @@ router.get('/', authenticateToken, requireRole('admin'), async (req, res) => {
   }
 });
 
+// POST /api/v1/inquiries - general contact-form enquiry (the Contact page).
+router.post('/', async (req, res) => {
+  const { type, name, phone, email, message } = req.body || {};
+  const clean = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
+  const n = clean(name, 120), p = clean(phone, 30), e = clean(email, 160), m = clean(message, 4000);
+  if (!n || (!p && !e)) {
+    return res.status(400).json({ success: false, message: 'Please share your name and a phone number or email.' });
+  }
+  try {
+    await db.query(
+      'INSERT INTO inquiries (type, name, phone, email, message) VALUES (?, ?, ?, ?, ?)',
+      [clean(type, 30) || 'contact', n, p || null, e || null, m]
+    );
+    await sendEmail(
+      process.env.SALES_EMAIL || 'info@meenakshibuildworld.com',
+      'New website enquiry',
+      `<p><strong>${n.replace(/</g, '&lt;')}</strong> (${(p || e).replace(/</g, '&lt;')}) sent an enquiry:</p><p>${m.replace(/</g, '&lt;')}</p>`
+    );
+    res.json({ success: true, message: 'Enquiry received' });
+  } catch (err) {
+    console.error('[Inquiry] Failed to save contact enquiry:', err.message);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
 // POST /api/v1/inquiries/whatsapp - request a WhatsApp quote
 router.post('/whatsapp', async (req, res) => {
   const { name, phone, productId, message } = req.body;
