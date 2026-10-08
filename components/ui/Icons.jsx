@@ -25,7 +25,7 @@ export const Icon = {
   stack: ({ className }) => <P className={className}><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="m2 12 10 5 10-5"/><path d="m2 17 10 5 10-5"/></P>,
   contrast: ({ className }) => <P className={className}><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z"/></P>,
   search: ({ className }) => <P className={className}><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></P>,
-  heart: ({ className }) => <P className={className}><path d="M19.5 5.5a5 5 0 0 0-7.5 0 5 5 0 0 0-7.5 7.5l7.5 7.5 7.5-7.5a5 5 0 0 0 0-7.5z"/></P>,
+  heart: ({ className }) => <P className={className}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></P>,
   bag: ({ className }) => <P className={className}><path d="M6 2h12l2 19H4L6 2z"/><path d="M9 6a3 3 0 0 1 6 0"/></P>,
   scales: ({ className }) => <P className={className}><path d="m16 3 5 5-5 5"/><path d="M21 8H9"/><path d="M8 21l-5-5 5-5"/><path d="M3 16h12"/></P>,
   user: ({ className }) => <P className={className}><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></P>,
@@ -49,7 +49,7 @@ export const Icon = {
     </svg>
   ),
   star: ({ className }) => <P className={className}><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2z"/></P>,
-  eye: ({ className }) => <P className={className}><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></P>,
+  eye: ({ className }) => <P className={className}><path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"/><circle cx="12" cy="12" r="3"/></P>,
   filter: ({ className }) => <P className={className}><path d="M4 6h16M7 12h10M10 18h4"/></P>,
   check: ({ className }) => <P className={className}><path d="m5 12.5 4.5 4.5L19 7.5"/></P>,
   collection: ({ className }) => <P className={className}><rect x="4" y="4" width="12" height="12" rx="2"/><path d="M8 4V2.5A1.5 1.5 0 0 1 9.5 1h11A1.5 1.5 0 0 1 22 2.5v11a1.5 1.5 0 0 1-1.5 1.5H19"/></P>,

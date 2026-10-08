@@ -6,10 +6,16 @@ import { useBusiness, waLink } from '@/lib/business';
 import { FALLBACK_IMG, discountPct, formatPrice, hasPrice } from '@/lib/api';
 import { Icon } from '@/components/ui/Icons';
 
-const ACTION_BTN = 'flex h-10 w-10 items-center justify-center rounded-full shadow-lg transition';
-const actionTone = (active) => (active
-  ? 'bg-brand-blue text-white'
-  : 'bg-white/95 text-slate-700 hover:bg-brand-blue hover:text-white');
+const ACTION_BTN = 'group/act relative flex h-9 w-9 items-center justify-center rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/60';
+
+// Label that slides out to the left of a toolbar button on hover (desktop only).
+function ActionTip({ children }) {
+  return (
+    <span className="pointer-events-none absolute right-full top-1/2 mr-2.5 -translate-y-1/2 translate-x-1 whitespace-nowrap rounded-md bg-slate-900/90 px-2 py-1 text-[11px] font-semibold text-white opacity-0 shadow-md transition duration-150 group-hover/act:translate-x-0 group-hover/act:opacity-100 [@media(hover:none)]:hidden">
+      {children}
+    </span>
+  );
+}
 
 function StarRating({ rating }) {
   const rounded = Math.round(rating || 0);
@@ -75,41 +81,46 @@ export default function ProductCard({ product, onQuickView }) {
         </div>
 
         {/* Hover actions — always visible on touch screens, which have no hover */}
-        <div className="absolute bottom-3.5 right-3.5 flex translate-y-2 flex-col gap-2 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100 [@media(hover:none)]:translate-y-0 [@media(hover:none)]:opacity-100">
+        <div className="absolute right-3 top-3 flex translate-x-2 flex-col items-center gap-0.5 rounded-full bg-white/90 p-1 opacity-0 shadow-[0_8px_24px_rgba(15,23,42,0.18)] ring-1 ring-black/5 backdrop-blur-md transition duration-300 group-hover:translate-x-0 group-hover:opacity-100 group-focus-within:translate-x-0 group-focus-within:opacity-100 dark:bg-navy2/90 dark:ring-white/10 [@media(hover:none)]:translate-x-0 [@media(hover:none)]:opacity-100">
           {onQuickView && (
             <button
               onClick={() => onQuickView(product)}
-              className={`${ACTION_BTN} ${actionTone(false)}`}
+              className={`${ACTION_BTN} text-slate-600 hover:bg-brand-blue/10 hover:text-brand-blue dark:text-slate-300`}
               aria-label="Quick view"
             >
-              <Icon.eye className="h-4.5 w-4.5" />
+              <Icon.eye className="h-4 w-4" />
+              <ActionTip>Quick view</ActionTip>
             </button>
           )}
           <button
             onClick={() => toggleWishlist(product)}
-            className={`${ACTION_BTN} ${actionTone(inWish)}`}
+            className={`${ACTION_BTN} ${inWish ? 'text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10' : 'text-slate-600 hover:bg-rose-50 hover:text-rose-500 dark:text-slate-300 dark:hover:bg-rose-500/10'}`}
             aria-label={inWish ? 'Remove from wishlist' : 'Add to wishlist'}
             aria-pressed={inWish}
           >
-            <Icon.heart className={`h-4.5 w-4.5 ${inWish ? 'fill-current' : ''}`} />
+            <Icon.heart className={`h-4 w-4 ${inWish ? 'fill-current' : ''}`} />
+            <ActionTip>{inWish ? 'Saved' : 'Wishlist'}</ActionTip>
           </button>
           <button
             onClick={() => toggleCompare(product)}
-            className={`${ACTION_BTN} ${actionTone(inCompare)}`}
+            className={`${ACTION_BTN} ${inCompare ? 'bg-brand-blue text-white' : 'text-slate-600 hover:bg-brand-blue/10 hover:text-brand-blue dark:text-slate-300'}`}
             aria-label={inCompare ? 'Remove from compare' : 'Add to compare'}
             aria-pressed={inCompare}
           >
-            <Icon.scales className="h-4.5 w-4.5" />
+            <Icon.scales className="h-4 w-4" />
+            <ActionTip>{inCompare ? 'Comparing' : 'Compare'}</ActionTip>
           </button>
+          <span className="my-0.5 h-px w-5 bg-slate-200 dark:bg-white/10" aria-hidden="true" />
           <a
             href={whatsappHref}
             target="_blank"
             rel="noreferrer"
             onClick={e => e.stopPropagation()}
-            className={`${ACTION_BTN} bg-white/95 text-[#25D366] hover:bg-[#25D366] hover:text-white`}
+            className={`${ACTION_BTN} text-[#25D366] hover:bg-[#25D366] hover:text-white`}
             aria-label="Chat on WhatsApp"
           >
-            <Icon.whatsapp className="h-4.5 w-4.5" />
+            <Icon.whatsapp className="h-4 w-4" />
+            <ActionTip>WhatsApp</ActionTip>
           </a>
         </div>
       </div>
