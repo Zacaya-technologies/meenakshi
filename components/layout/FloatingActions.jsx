@@ -66,19 +66,22 @@ export default function FloatingActions() {
               </p>
               <ContactRow
                 href={telHref(business.primary_phone)}
-                icon={<Icon.phone className="h-4 w-4" />}
+                icon={<Icon.phoneSolid className="h-4 w-4" />}
+                tone="bg-brand-navy text-white dark:bg-white/10"
                 title="Call now"
                 subtitle={business.primary_phone}
               />
               <ContactRow
                 href={waLink(business.whatsapp_number, waGreeting(business))}
-                icon={<Icon.whatsapp className="h-4 w-4" />}
+                icon={<Icon.whatsapp className="h-[18px] w-[18px]" />}
+                tone="bg-[#25D366] text-white"
                 title="WhatsApp us"
                 subtitle={business.primary_phone}
               />
               <ContactRow
                 href={`mailto:${business.email}`}
                 icon={<Icon.mail className="h-4 w-4" />}
+                tone="bg-brand-blue text-white"
                 title="Email us"
                 subtitle={business.email}
               />
@@ -87,47 +90,77 @@ export default function FloatingActions() {
         )}
       </AnimatePresence>
 
-      <a
-        href={`https://wa.me/${String(business.whatsapp_number || '').replace(/\D/g, '')}?text=${encodeURIComponent(waGreeting(business))}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Chat with us on WhatsApp"
-        className="hidden h-14 w-14 sm:flex items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_10px_28px_rgba(37,211,102,0.45)] transition duration-200 hover:scale-105 active:scale-95"
-      >
-        <Icon.whatsapp className="h-7 w-7" />
-      </a>
-
-      {/* Direct WhatsApp/Call buttons from sm up; phones get the single
-          contact button below (its panel has WhatsApp, Call and Email) so the
-          rail does not cover page content. */}
-      <a
-        href={telHref(business.primary_phone)}
-        aria-label={`Call ${business.business_name} at ${business.primary_phone}`}
-        className="hidden h-14 w-14 sm:flex items-center justify-center rounded-full bg-gradient-to-br from-brand-blue to-brand-deep text-white shadow-glow transition duration-200 hover:scale-105 active:scale-95"
-      >
-        <Icon.phoneCall className="h-6 w-6" />
-      </a>
-
-      <button
-        type="button"
-        onClick={() => setChatOpen(o => !o)}
-        aria-expanded={chatOpen}
-        aria-label={chatOpen ? 'Close contact options' : 'Open contact options'}
-        className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-gradient-to-br from-brand-blue to-brand-deep text-white shadow-glow transition duration-200 hover:scale-105 active:scale-95"
-      >
-        {chatOpen ? <Icon.close className="h-6 w-6" /> : <Icon.chat className="h-6 w-6" />}
-      </button>
+      {/* One dock instead of loose glowing circles. Direct WhatsApp/Call
+          buttons from sm up; phones get only the enquiry button (its panel
+          has WhatsApp, Call and Email) so the dock never covers content. */}
+      <div className="flex flex-col items-center gap-1.5 rounded-full bg-white/95 p-1.5 shadow-[0_12px_32px_-8px_rgba(15,23,42,0.35)] ring-1 ring-slate-900/5 backdrop-blur dark:bg-navy2/95 dark:ring-white/10">
+        <DockButton
+          href={waLink(business.whatsapp_number, waGreeting(business))}
+          external
+          label="WhatsApp us"
+          className="hidden bg-[#25D366] hover:bg-[#1EBE5A] sm:flex"
+        >
+          <Icon.whatsapp className="h-6 w-6" />
+        </DockButton>
+        <DockButton
+          href={telHref(business.primary_phone)}
+          label="Call now"
+          ariaLabel={`Call ${business.business_name} at ${business.primary_phone}`}
+          className="hidden bg-brand-navy hover:bg-slate-800 dark:bg-white/10 dark:hover:bg-white/20 sm:flex"
+        >
+          <Icon.phoneSolid className="h-5 w-5" />
+        </DockButton>
+        <DockButton
+          onClick={() => setChatOpen(o => !o)}
+          label={chatOpen ? 'Close' : 'Send an enquiry'}
+          ariaLabel={chatOpen ? 'Close contact options' : 'Open contact options'}
+          expanded={chatOpen}
+          className="flex bg-brand-blue hover:bg-brand-deep"
+        >
+          {chatOpen ? <Icon.close className="h-5 w-5" /> : <Icon.chatSolid className="h-5 w-5" />}
+        </DockButton>
+      </div>
     </div>
   );
 }
 
-function ContactRow({ href, icon, title, subtitle }) {
+const DOCK_BTN = 'group/dock relative h-12 w-12 items-center justify-center rounded-full text-white shadow-sm transition duration-200 ease-out hover:scale-[1.06] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 dark:focus-visible:ring-offset-navy2';
+
+function DockButton({ href, onClick, external, label, ariaLabel, expanded, className, children }) {
+  const tip = (
+    // Label slides out to the left on hover; hidden on touch screens.
+    <span className="pointer-events-none absolute right-full top-1/2 mr-3 -translate-y-1/2 translate-x-1 whitespace-nowrap rounded-lg bg-slate-900 px-2.5 py-1.5 text-xs font-semibold text-white opacity-0 shadow-lg transition duration-150 group-hover/dock:translate-x-0 group-hover/dock:opacity-100 [@media(hover:none)]:hidden">
+      {label}
+    </span>
+  );
+  if (href) {
+    return (
+      <a
+        href={href}
+        aria-label={ariaLabel || label}
+        className={`${DOCK_BTN} ${className}`}
+        {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+      >
+        {children}
+        {tip}
+      </a>
+    );
+  }
+  return (
+    <button type="button" onClick={onClick} aria-label={ariaLabel || label} aria-expanded={expanded} className={`${DOCK_BTN} ${className}`}>
+      {children}
+      {tip}
+    </button>
+  );
+}
+
+function ContactRow({ href, icon, tone, title, subtitle }) {
   return (
     <a
       href={href}
       className="flex min-h-[56px] items-center gap-3 rounded-xl px-3 py-2 transition hover:bg-brand-blue/8 dark:hover:bg-white/5"
     >
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-blue/12 text-brand-blue">
+      <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${tone}`}>
         {icon}
       </span>
       <span className="min-w-0">

@@ -52,6 +52,17 @@ export const Icon = {
   eye: ({ className }) => <P className={className}><path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"/><circle cx="12" cy="12" r="3"/></P>,
   filter: ({ className }) => <P className={className}><path d="M4 6h16M7 12h10M10 18h4"/></P>,
   check: ({ className }) => <P className={className}><path d="m5 12.5 4.5 4.5L19 7.5"/></P>,
+  // Solid glyphs for the floating contact dock (bolder than the stroke set).
+  phoneSolid: ({ className }) => (
+    <svg viewBox="0 0 20 20" fill="currentColor" className={className} aria-hidden="true">
+      <path fillRule="evenodd" d="M2 3.5A1.5 1.5 0 0 1 3.5 2h1.148a1.5 1.5 0 0 1 1.465 1.175l.513 2.31a1.5 1.5 0 0 1-1.059 1.767l-.638.188a11.04 11.04 0 0 0 6.631 6.631l.188-.638a1.5 1.5 0 0 1 1.767-1.06l2.31.514A1.5 1.5 0 0 1 18 15.352V16.5a1.5 1.5 0 0 1-1.5 1.5H15C8.096 18 2 11.904 2 5V3.5Z" clipRule="evenodd" />
+    </svg>
+  ),
+  chatSolid: ({ className }) => (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path fillRule="evenodd" d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 0 1-3.476.383.39.39 0 0 0-.297.17l-2.755 4.133a.75.75 0 0 1-1.248 0l-2.755-4.133a.39.39 0 0 0-.297-.17 48.9 48.9 0 0 1-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97ZM6.75 8.25a.75.75 0 0 1 .75-.75h9a.75.75 0 0 1 0 1.5h-9a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H7.5Z" clipRule="evenodd" />
+    </svg>
+  ),
   collection: ({ className }) => <P className={className}><rect x="4" y="4" width="12" height="12" rx="2"/><path d="M8 4V2.5A1.5 1.5 0 0 1 9.5 1h11A1.5 1.5 0 0 1 22 2.5v11a1.5 1.5 0 0 1-1.5 1.5H19"/></P>,
   package: ({ className }) => <P className={className}><path d="m7.5 4.5 9 0 5 5v11a1.5 1.5 0 0 1-1.5 1.5h-16A1.5 1.5 0 0 1 2.5 20.5v-11l5-5z"/><path d="M2.5 9.5h19"/><path d="M12 4.5V14"/><path d="M8 14h8"/></P>,
   starFill: ({ className }) => (
