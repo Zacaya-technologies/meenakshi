@@ -6,23 +6,20 @@ Production-ready enterprise B2B & B2C marketplace for vitrified slabs, tiles, an
 
 - **Backend:** Node.js + Express
 - **Database:** PostgreSQL (`pg`) / SQLite (`sqlite3`)
-- **Frontend:** Vanilla JS SPA (Bootstrap 5 grid + Remix Icons, GSAP)
+- **Frontend:** Next.js 14 (App Router) + React 18, Tailwind CSS, Framer Motion
 - **Auth:** JWT + bcryptjs
 
 ## Project Structure
 
 ```
 .
-├── public/               # Frontend (SPA)
-│   ├── index.html        # Entry point (header mount, router, footer)
-│   ├── css/style.css     # Design system + all styling
-│   └── js/
-│       ├── app.js        # SPA router / state
-│       ├── api.js        # API client
-│       ├── gsap-animations.js
-│       └── components/   # Views: navbar, hero, filter, visualizer,
-│                         # calculator, product-detail, compare, cart,
-│                         # customer-dash, dealer-dash, admin-panel
+├── app/                  # Next.js routes (home, shop, taxonomy pages,
+│                         # product, cart, compare, calculator, admin…);
+│                         # app/api/[...path] runs the Express API in-process
+├── components/           # UI: layout (header, mega menu, drawer, footer),
+│                         # shop (product card, filters, quick view), home, admin
+├── lib/                  # API client, cart/wishlist store, business settings
+├── public/images/        # Logo + product images (products/<slug>.webp)
 ├── server/               # Express API
 │   ├── server.js         # App entry
 │   ├── db.js             # DB connection (pg/sqlite)
