@@ -19,16 +19,22 @@ const FACET_GROUP_KEYS = ['area', 'application', 'size', 'design', 'type', 'fini
 // Correlated subqueries that flatten each product's linked taxonomy + main
 // category into convenience string fields, reused by both the list and
 // detail endpoints so the frontend doesn't need to know about the M2M shape.
+// A product carries several size tags ("800x2400 mm", "800x2400 mm Vitrified
+// Tiles", "2x4", "Large Vitrified Tiles"…); the displayed size must be the
+// exact millimetre one, which the calculator link also parses.
+const FLATTENED_ORDER = {
+    size: `ORDER BY CASE WHEN cc.name LIKE '% mm' THEN 0 WHEN cc.name LIKE '% mm %' THEN 1 ELSE 2 END, LENGTH(cc.name)`
+};
 const FLATTENED_FIELDS = FACET_GROUP_KEYS.map(key => `
     (SELECT cc.name FROM product_categories pcx JOIN categories cc ON pcx.category_id = cc.id
      JOIN category_groups gg ON cc.group_id = gg.id
-     WHERE pcx.product_id = p.id AND gg.group_key = '${key}' LIMIT 1) as ${key}
+     WHERE pcx.product_id = p.id AND gg.group_key = '${key}' ${FLATTENED_ORDER[key] || ''} LIMIT 1) as ${key}
 `).join(',');
 const MAIN_CATEGORY_FIELDS = `
     (SELECT cc.name FROM product_categories pcx JOIN categories cc ON pcx.category_id = cc.id
-     WHERE pcx.product_id = p.id AND cc.parent_id IS NULL LIMIT 1) as category_name,
+     WHERE pcx.product_id = p.id AND cc.parent_id IS NULL ORDER BY cc.display_order, cc.id LIMIT 1) as category_name,
     (SELECT cc.slug FROM product_categories pcx JOIN categories cc ON pcx.category_id = cc.id
-     WHERE pcx.product_id = p.id AND cc.parent_id IS NULL LIMIT 1) as category_slug
+     WHERE pcx.product_id = p.id AND cc.parent_id IS NULL ORDER BY cc.display_order, cc.id LIMIT 1) as category_slug
 `;
 
 // GET /api/v1/products - faceted search & filter
@@ -276,7 +282,7 @@ router.get('/suggest', async (req, res) => {
                    (SELECT image_url FROM product_images WHERE product_id = p.id ORDER BY is_primary DESC LIMIT 1) as image,
                    (SELECT cc.name FROM product_categories pcx JOIN categories cc ON pcx.category_id = cc.id
                     JOIN category_groups gg ON cc.group_id = gg.id
-                    WHERE pcx.product_id = p.id AND gg.group_key = 'size' LIMIT 1) as size
+                    WHERE pcx.product_id = p.id AND gg.group_key = 'size' ${FLATTENED_ORDER.size} LIMIT 1) as size
             FROM products p
             WHERE (p.published = 1 OR p.published = true) AND (p.name LIKE ? OR p.sku LIKE ?)
             LIMIT 5

@@ -68,7 +68,7 @@ export default function HeroBanner() {
       /* Fixed aspect box reserves the space before the image decodes, so the
          page below never jumps when the hero paints. */
       className="relative isolate w-full overflow-hidden bg-brand-navy"
-      style={{ height: 'clamp(380px, 52vw, 620px)' }}
+      style={{ height: 'clamp(480px, 52vw, 620px)' }}
     >
       {/* Default (sync) mode: the outgoing and incoming slides are both mounted
           for the crossfade. They are absolutely positioned, so they stack
@@ -94,7 +94,8 @@ export default function HeroBanner() {
       </AnimatePresence>
 
       {/* Copy */}
-      <div className="relative mx-auto flex h-full max-w-shell items-center px-4 sm:px-6">
+      {/* Bottom padding keeps the copy and buttons clear of the slide controls */}
+      <div className="relative mx-auto flex h-full max-w-shell items-center px-4 pb-16 sm:px-6 sm:pb-12">
         <motion.div
           key={`${slide.id}-copy`}
           initial={reduceMotion ? false : { opacity: 0, y: 24 }}
@@ -107,7 +108,7 @@ export default function HeroBanner() {
             {slide.eyebrow}
           </span>
 
-          <h1 className="mt-5 font-heading text-4xl font-extrabold uppercase leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl">
+          <h1 className="mt-5 font-heading text-[2rem] font-extrabold uppercase leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl">
             {slide.title}
           </h1>
 
@@ -142,7 +143,7 @@ export default function HeroBanner() {
               aria-selected={i === index}
               aria-label={`${s.title} slide`}
               onClick={() => go(i)}
-              className="flex h-11 w-6 cursor-pointer items-center justify-center"
+              className="flex h-11 cursor-pointer items-center justify-center px-1"
             >
               <span
                 className={`block h-1.5 rounded-full transition-all duration-300 ${

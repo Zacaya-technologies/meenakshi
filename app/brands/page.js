@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { API, FALLBACK_IMG } from '@/lib/api';
+import { API, isPlaceholderImage } from '@/lib/api';
 import { Icon } from '@/components/ui/Icons';
 
 export default function BrandsPage() {
@@ -41,8 +41,15 @@ export default function BrandsPage() {
               href={`/shop?brand=${b.slug}`}
               className="group overflow-hidden rounded-2xl border-[1.5px] border-border bg-white text-center transition hover:-translate-y-1 hover:border-brand-blue/50 hover:shadow-hover dark:bg-navy2 dark:border-white/10"
             >
-              <div className="h-28 overflow-hidden bg-slate-100 dark:bg-navy">
-                <img src={b.logo_url || FALLBACK_IMG} alt={b.name} className="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
+              <div className="flex h-28 items-center justify-center overflow-hidden border-b border-border bg-white px-6 dark:border-white/10 dark:bg-navy">
+                {isPlaceholderImage(b.logo_url) ? (
+                  // No real logo uploaded yet — a wordmark beats a random stock photo.
+                  <span className="font-heading text-xl font-extrabold tracking-tight text-ink transition duration-300 group-hover:text-brand-deep dark:text-white">
+                    {b.name}
+                  </span>
+                ) : (
+                  <img src={b.logo_url} alt={b.name} className="max-h-16 w-auto max-w-full object-contain transition duration-300 group-hover:scale-105" />
+                )}
               </div>
               <div className="p-4">
                 <div className="font-heading text-sm font-bold text-ink dark:text-white">{b.name}</div>

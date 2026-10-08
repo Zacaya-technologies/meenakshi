@@ -88,10 +88,19 @@ export default function AboutPage() {
             One-stop destination covering every major category of construction and building materials:
           </p>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {['Tiles', 'Sanitary Ware', 'Kitchen', 'Steel', 'Cement', 'Plumbing', 'Building Materials'].map(c => (
+            {[
+              ['Tiles', '/all-tiles'],
+              ['Kitchen', '/kitchen-tiles'],
+              // Not in the online catalogue yet — route to an enquiry, not the tile shop.
+              ['Sanitary Ware', '/contact'],
+              ['Steel', '/contact'],
+              ['Cement', '/contact'],
+              ['Plumbing', '/contact'],
+              ['Building Materials', '/contact']
+            ].map(([c, href]) => (
               <Link
                 key={c}
-                href={c === 'Tiles' ? '/all-tiles' : '/shop'}
+                href={href}
                 className="flex items-center justify-between rounded-xl border border-border px-4 py-3 text-sm font-bold text-ink transition hover:border-brand-blue hover:text-brand-blue dark:border-white/10 dark:text-white"
               >
                 {c} <Icon.arrowRight className="h-4 w-4" />

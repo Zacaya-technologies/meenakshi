@@ -52,13 +52,16 @@ router.get('/:categorySlug', async (req, res) => {
             mainIds = [category.id];
         }
 
-        const children = await db.query(`
+        // Links to empty subcategories only lead to "No products found", so they
+        // are left out. Composite subcategories (an AND of other filters) are
+        // never tagged directly, so their direct count is always 0 — keep them.
+        const children = (await db.query(`
             SELECT c.*,
                    (SELECT COUNT(*) FROM product_categories pc WHERE pc.category_id = c.id) as product_count
             FROM categories c
             WHERE c.parent_id IN (${mainIds.map(() => '?').join(',')}) AND c.status = 'active'
             ORDER BY c.display_order ASC, product_count DESC, c.name ASC
-        `, mainIds);
+        `, mainIds)).filter(c => c.composite_filters || parseInt(c.product_count) > 0);
 
         // Room mains (Bedroom / Hallway / Pooja / Drawing / Dining) are separate
         // top-level categories linked to this main via `parent_main_id` — they

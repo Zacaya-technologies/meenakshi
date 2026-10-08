@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { API } from '@/lib/api';
+import { API, isPlaceholderImage } from '@/lib/api';
 import ProductCard, { ProductCardSkeleton } from './ProductCard';
 import QuickView from './QuickView';
 import FilterSidebar from './FilterSidebar';
@@ -185,7 +185,8 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
   const subcats = useMemo(() => {
     if (!facets || activeCount > 0 || !filters.category) return [];
     const navGroup = (facets.groups || []).find(g => g.key === 'area' || g.key === 'application');
-    return (navGroup?.items || []).filter(i => i.slug !== filters.category);
+    // Empty subcategories would only lead to "No products found".
+    return (navGroup?.items || []).filter(i => i.slug !== filters.category && i.count !== 0);
   }, [facets, activeCount, filters.category]);
 
   // Grouped facet index ("Living Room Tiles By Finish / Size / Design / Type /
@@ -201,13 +202,14 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
       .map(g => ({
         key: g.key,
         name: g.name.replace(/^By\s+/i, ''),
-        items: g.items.map(i => ({
+        items: g.items.filter(i => i.count !== 0).map(i => ({
           slug: i.slug,
           name: i.name,
           count: i.count,
           url: isMain(i.slug) ? `/tiles/${i.slug}` : `/tiles/${filters.category}/${i.slug}`
         }))
-      }));
+      }))
+      .filter(g => g.items.length > 0);
   }, [facets, activeCount, filters.category, menu, subcats]);
 
   // Other main categories deep-linked below every taxonomy page.
@@ -219,7 +221,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
   return (
     <div className="mx-auto max-w-[1380px] px-6 py-8">
       {/* Optional category banner (admin-managed banner_url) */}
-      {banner && (
+      {!isPlaceholderImage(banner) && (
         <div className="mb-6 overflow-hidden rounded-3xl">
           <img src={banner} alt="" className="h-40 w-full object-cover sm:h-52" />
         </div>

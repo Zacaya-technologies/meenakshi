@@ -4,21 +4,30 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useApp } from '@/lib/store';
+import { useBusiness, waLink } from '@/lib/business';
 import { FALLBACK_IMG, discountPct, formatPrice, hasPrice } from '@/lib/api';
 import { Icon } from '@/components/ui/Icons';
 
 export default function QuickView({ product, onClose }) {
   const router = useRouter();
+  const business = useBusiness();
   const { addToCart, toggleWishlist, wishlist } = useApp();
   const off = discountPct(product);
   // QuickView stays mounted with product=null while closed.
   const inWish = !!product && wishlist.some(p => p.id === product.id);
 
   useEffect(() => {
+    if (!product) return;
     const onKey = (e) => e.key === 'Escape' && onClose();
     document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [onClose]);
+    // Keep the page behind the dialog from scrolling while it is open.
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [product, onClose]);
 
   return (
     <AnimatePresence>
@@ -35,7 +44,10 @@ export default function QuickView({ product, onClose }) {
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 24, opacity: 0, scale: 0.98 }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-[22px] bg-white p-6 shadow-2xl dark:bg-navy2"
+            role="dialog"
+            aria-modal="true"
+            aria-label={product.name}
+            className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl dark:bg-navy2"
             onClick={e => e.stopPropagation()}
           >
             <button
@@ -87,24 +99,34 @@ export default function QuickView({ product, onClose }) {
                 <div className="mt-6 flex flex-wrap gap-3">
                   <button
                     onClick={() => addToCart(product)}
-                    className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep px-6 py-3 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5"
+                    disabled={product.stock !== undefined && product.stock !== null && product.stock <= 0}
+                    className="flex items-center gap-2 rounded-lg bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-deep disabled:cursor-not-allowed disabled:bg-slate-300 dark:bg-white/10 dark:hover:bg-brand-blue"
                   >
                     <Icon.bag className="h-4 w-4" /> Add to Cart
                   </button>
                   <button
                     onClick={() => router.push(`/product/${product.slug}`)}
-                    className="rounded-xl border-[1.5px] border-brand-blue px-6 py-3 text-sm font-bold text-brand-blue transition hover:bg-brand-blue/5"
+                    className="rounded-lg border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-800 transition-colors hover:border-slate-900 dark:border-white/20 dark:text-white dark:hover:border-white"
                   >
                     Full Details
                   </button>
                   <button
                     onClick={() => toggleWishlist(product)}
-                    className={`flex h-11 w-11 items-center justify-center rounded-xl border border-border text-ink transition dark:text-white ${inWish ? 'bg-brand-blue text-white border-brand-blue' : ''}`}
-                    aria-label="Wishlist"
+                    className={`flex h-[46px] w-[46px] items-center justify-center rounded-lg border transition-colors ${inWish ? 'border-rose-200 bg-rose-50 text-rose-500 dark:border-rose-500/30 dark:bg-rose-500/10' : 'border-slate-300 text-slate-700 hover:border-slate-900 dark:border-white/20 dark:text-white'}`}
+                    aria-label={inWish ? 'Remove from wishlist' : 'Add to wishlist'}
+                    aria-pressed={inWish}
                   >
                     <Icon.heart className={`h-5 w-5 ${inWish ? 'fill-current' : ''}`} />
                   </button>
                 </div>
+                <a
+                  href={waLink(business.whatsapp_number, `Hi ${business.business_name}, I'm interested in "${product.name}" (SKU: ${product.sku}${product.size ? `, ${product.size}` : ''}). Please share the price and availability.`)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#128C7E] hover:underline dark:text-[#25D366]"
+                >
+                  <Icon.whatsapp className="h-4 w-4" /> Enquire on WhatsApp
+                </a>
               </div>
             </div>
           </motion.div>

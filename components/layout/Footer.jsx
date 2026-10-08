@@ -1,13 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Icon } from '@/components/ui/Icons';
 import { useBusiness, telHref, waLink, waGreeting } from '@/lib/business';
 
 export default function Footer() {
-  const router = useRouter();
-  const go = (url) => router.push(url);
   const business = useBusiness();
 
   const quickLinks = [
@@ -79,7 +76,7 @@ export default function Footer() {
             <ul className="flex flex-col gap-2.5 text-sm text-slate-400">
               {quickLinks.map(l => (
                 <li key={l.label}>
-                  <button onClick={() => go(l.url)} className="transition hover:text-brand-blue">{l.label}</button>
+                  <Link href={l.url} className="transition hover:text-brand-blue">{l.label}</Link>
                 </li>
               ))}
             </ul>
@@ -90,7 +87,7 @@ export default function Footer() {
             <ul className="flex flex-col gap-2.5 text-sm text-slate-400">
               {productLinks.map(l => (
                 <li key={l.label}>
-                  <button onClick={() => go(l.url)} className="transition hover:text-brand-blue">{l.label}</button>
+                  <Link href={l.url} className="transition hover:text-brand-blue">{l.label}</Link>
                 </li>
               ))}
             </ul>
