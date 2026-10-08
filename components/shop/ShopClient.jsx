@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { API } from '@/lib/api';
-import ProductCard from './ProductCard';
+import ProductCard, { ProductCardSkeleton } from './ProductCard';
 import QuickView from './QuickView';
 import FilterSidebar from './FilterSidebar';
 import MobileSheet from './MobileSheet';
@@ -381,7 +381,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
           {loading && !hasLoadedRef.current ? (
             <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 xl:grid-cols-4">
               {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="h-[340px] animate-pulse rounded-[20px] bg-slate-100 dark:bg-navy2" />
+                <ProductCardSkeleton key={i} />
               ))}
             </div>
           ) : !loading && products.length === 0 ? (

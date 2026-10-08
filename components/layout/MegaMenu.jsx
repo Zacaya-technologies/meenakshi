@@ -48,7 +48,7 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
   const totalGridCols = Math.max(4, Math.min(8, (columns.length || 0) + 1));
   const xlColsClass = { 4: 'xl:grid-cols-4', 5: 'xl:grid-cols-5', 6: 'xl:grid-cols-6', 7: 'xl:grid-cols-7', 8: 'xl:grid-cols-8' }[totalGridCols];
   const lgColsClass = { 4: 'lg:grid-cols-4', 5: 'lg:grid-cols-5', 6: 'lg:grid-cols-6', 7: 'lg:grid-cols-7', 8: 'lg:grid-cols-8' }[totalGridCols];
-  const mdColsClass = { 4: 'md:grid-cols-3', 5: 'md:grid-cols-4', 6: 'md:grid-cols-4', 7: 'md:grid-cols-4', 8: 'md:grid-cols-3' }[totalGridCols];
+  const mdColsClass = 'md:grid-cols-3';
   const smColsClass = 'sm:grid-cols-1';
 
   const latest = live?.latestProducts || [];

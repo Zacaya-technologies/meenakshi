@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { API } from '@/lib/api';
 import HeroBanner from '@/components/home/HeroBanner';
 import CategoryGrid from '@/components/home/CategoryGrid';
-import ProductCard from '@/components/shop/ProductCard';
+import ProductCard, { ProductCardSkeleton } from '@/components/shop/ProductCard';
 import QuickView from '@/components/shop/QuickView';
 import { Icon } from '@/components/ui/Icons';
 
@@ -61,13 +61,13 @@ export default function HomePage() {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="h-[380px] animate-pulse rounded-[20px] bg-slate-100 dark:bg-navy2" />
+              <ProductCardSkeleton key={i} />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
             {featured.map(p => (
               <ProductCard key={p.id} product={p} onQuickView={setQuickView} />
             ))}

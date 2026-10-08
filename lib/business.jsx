@@ -51,6 +51,7 @@ export function waGreeting(business) {
 // WhatsApp quote request listing every cart line — the site has no online
 // payment, so this is how a cart is "checked out".
 export function cartQuoteLink(business, cart) {
+  const waNumber = business?.whatsapp_number || '919900027700';
   const lines = cart.map((i, n) => {
     const p = i.product;
     const bits = [p.sku && `SKU ${p.sku}`, p.size].filter(Boolean).join(', ');
@@ -61,5 +62,5 @@ export function cartQuoteLink(business, cart) {
     ...lines,
     'Please share pricing, availability and delivery details.'
   ].join('\n');
-  return waLink(business?.whatsapp_number, message);
+  return waLink(waNumber, message);
 }

@@ -174,7 +174,11 @@ export default function Header() {
         // Wait for the state commit and for the panel to flip to
         // visibility:visible — a hidden element cannot take focus.
         setTimeout(() => {
-          document.getElementById('mega-panel')?.querySelector('a, button')?.focus();
+          const panel = document.getElementById('mega-panel');
+          if (panel) {
+            const focusable = panel.querySelector('a, button');
+            focusable?.focus();
+          }
         }, 60);
         break;
       case 'Escape':

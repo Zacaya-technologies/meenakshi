@@ -27,7 +27,7 @@ export default function WishlistPage() {
       <h1 className="mb-6 font-heading text-3xl font-extrabold text-ink dark:text-white">
         My Wishlist <span className="text-lg font-normal text-slate-400">({wishlist.length})</span>
       </h1>
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
         {wishlist.map(p => (
           <ProductCard key={p.id} product={p} />
         ))}
