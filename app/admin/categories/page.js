@@ -104,19 +104,19 @@ export default function AdminCategoriesPage() {
                 </span>
                 <Badge tone={main.status === 'active' ? 'green' : 'red'}>{main.status}</Badge>
               </div>
-              <h3 className="mt-3 font-heading text-sm font-bold text-ink dark:text-white">{main.name}</h3>
-              <p className="text-xs text-slate-400">/{main.slug}</p>
-              <p className="mt-1 text-[11px] text-slate-400">
+              <h2 className="mt-3 font-heading text-sm font-bold text-ink dark:text-white">{main.name}</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">/{main.slug}</p>
+              <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
                 {main.groups.reduce((n, g) => n + g.children.length, 0)} subcategories
                 {main.rooms?.length ? ` · ${main.rooms.length} room${main.rooms.length > 1 ? 's' : ''}: ${main.rooms.map(r => r.name).join(', ')}` : ''}
               </p>
             </div>
             <div className="mt-3 flex gap-2 border-t border-border pt-3 dark:border-white/10">
               <button onClick={() => openEdit(main, 'main')} className="text-xs font-bold text-brand-blue hover:underline">Edit</button>
-              <button onClick={() => toggleStatus(main)} className="text-xs font-bold text-slate-400 hover:underline">
+              <button onClick={() => toggleStatus(main)} className="text-xs font-bold text-slate-500 hover:underline">
                 {main.status === 'active' ? 'Disable' : 'Enable'}
               </button>
-              <button onClick={() => remove(main)} className="ml-auto text-xs font-bold text-rose-500 hover:underline">Delete</button>
+              <button onClick={() => remove(main)} className="ml-auto text-xs font-bold text-rose-600 dark:text-rose-400 hover:underline">Delete</button>
             </div>
           </Card>
         ))}
@@ -159,7 +159,7 @@ export default function AdminCategoriesPage() {
                 <div className="overflow-x-auto">
                   <table className="w-full border-collapse text-sm md:min-w-[640px]">
                     <thead>
-                      <tr className="border-b border-border text-left text-xs uppercase text-slate-400 dark:border-white/10">
+                      <tr className="border-b border-border text-left text-xs uppercase text-slate-500 dark:border-white/10">
                         <th className="py-2 pr-3">Name</th>
                         <th className="hidden py-2 pr-3 md:table-cell">URL</th>
                         <th className="py-2 pr-3">Products</th>
@@ -172,16 +172,16 @@ export default function AdminCategoriesPage() {
                       {filteredChildren.map(c => (
                         <tr key={c.id} className="border-b border-border last:border-0 dark:border-white/5">
                           <td className="py-2.5 pr-3 font-semibold text-ink dark:text-white">{c.name}</td>
-                          <td className="hidden py-2.5 pr-3 text-xs text-slate-400 md:table-cell">/{currentMain.slug}/{c.slug}</td>
-                          <td className="py-2.5 pr-3 text-xs text-slate-400">{c.product_count || 0}</td>
+                          <td className="hidden py-2.5 pr-3 text-xs text-slate-500 md:table-cell">/{currentMain.slug}/{c.slug}</td>
+                          <td className="py-2.5 pr-3 text-xs text-slate-500 dark:text-slate-400">{c.product_count || 0}</td>
                           <td className="py-2.5 pr-3"><Badge tone={c.status === 'active' ? 'green' : 'red'}>{c.status}</Badge></td>
-                          <td className="hidden py-2.5 pr-3 text-xs text-slate-400 sm:table-cell">{c.display_order}</td>
+                          <td className="hidden py-2.5 pr-3 text-xs text-slate-500 sm:table-cell">{c.display_order}</td>
                           <td className="py-2.5 text-right">
                             <button onClick={() => openEdit(c, 'sub')} className="mr-3 text-xs font-bold text-brand-blue hover:underline">Edit</button>
-                            <button onClick={() => toggleStatus(c)} className="mr-3 text-xs font-bold text-slate-400 hover:underline">
+                            <button onClick={() => toggleStatus(c)} className="mr-3 text-xs font-bold text-slate-500 hover:underline">
                               {c.status === 'active' ? 'Disable' : 'Enable'}
                             </button>
-                            <button onClick={() => remove(c)} className="text-xs font-bold text-rose-500 hover:underline">Delete</button>
+                            <button onClick={() => remove(c)} className="text-xs font-bold text-rose-600 dark:text-rose-400 hover:underline">Delete</button>
                           </td>
                         </tr>
                       ))}
@@ -288,7 +288,7 @@ function CategoryFormModal({ mode, form: initial, groups, mainCategories, curren
                         <option key={item.slug} value={item.slug}>{item.name}</option>
                       ))}
                     </Select>
-                    <button type="button" onClick={() => removeCompositeFilter(key)} className="shrink-0 text-slate-400 hover:text-rose-500">
+                    <button type="button" onClick={() => removeCompositeFilter(key)} className="shrink-0 text-slate-500 hover:text-rose-500">
                       <Icon.close className="h-4 w-4" />
                     </button>
                   </div>

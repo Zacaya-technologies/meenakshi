@@ -41,7 +41,7 @@ export default function AdminDashboard() {
     { label: 'Published Products', value: stats?.products ?? '—', icon: 'gem', tone: 'text-emerald-500' },
     { label: 'Main Categories', value: stats?.mainCategories ?? '—', icon: 'layout', tone: 'text-amber-500', sub: stats ? `${stats.totalCategories} taxonomy entries total` : null },
     { label: 'Customer Orders', value: stats?.orders ?? '—', icon: 'scales', tone: 'text-violet-500' },
-    { label: 'Open Inquiries', value: stats?.inquiries ?? '—', icon: 'chat', tone: 'text-rose-500' }
+    { label: 'Open Inquiries', value: stats?.inquiries ?? '—', icon: 'chat', tone: 'text-rose-600 dark:text-rose-400' }
   ];
 
   return (
@@ -58,8 +58,8 @@ export default function AdminDashboard() {
               </span>
               <div className="min-w-0">
                 <div className="font-heading text-xl font-extrabold text-ink dark:text-white sm:text-2xl">{c.value}</div>
-                <div className="text-xs font-medium text-slate-400">{c.label}</div>
-                {c.sub && <div className="mt-0.5 text-[10px] text-slate-400">{c.sub}</div>}
+                <div className="text-xs font-medium text-slate-500 dark:text-slate-400">{c.label}</div>
+                {c.sub && <div className="mt-0.5 text-[10px] text-slate-500 dark:text-slate-400">{c.sub}</div>}
               </div>
             </div>
           </Card>
@@ -79,7 +79,7 @@ export default function AdminDashboard() {
               <span className="font-heading text-sm font-bold text-ink dark:text-white">{a.label}</span>
               <Icon.arrowRight className="h-4 w-4 text-slate-300 transition group-hover:translate-x-1 group-hover:text-brand-blue" />
             </div>
-            <p className="mt-1.5 text-xs text-slate-400">{a.desc}</p>
+            <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">{a.desc}</p>
           </Link>
         ))}
       </div>
@@ -96,7 +96,7 @@ export default function AdminDashboard() {
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <div className="truncate font-heading text-sm font-bold text-ink dark:text-white">{m.name}</div>
-                      <div className="mt-0.5 text-[11px] text-slate-400">{m.subcategory_count} subcategor{m.subcategory_count === 1 ? 'y' : 'ies'}</div>
+                      <div className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">{m.subcategory_count} subcategor{m.subcategory_count === 1 ? 'y' : 'ies'}</div>
                     </div>
                     <span className="shrink-0 rounded-xl bg-brand-light px-3 py-1.5 text-sm font-extrabold text-brand-blue dark:bg-white/5">
                       {m.product_count}
@@ -115,7 +115,7 @@ export default function AdminDashboard() {
               const max = Math.max(1, ...g.items.map(i => i.count));
               return (
                 <Card key={g.group_key}>
-                  <h3 className="mb-3 font-heading text-sm font-extrabold text-ink dark:text-white">{g.group_name}</h3>
+                  <h2 className="mb-3 font-heading text-sm font-extrabold text-ink dark:text-white">{g.group_name}</h2>
                   <ul className="flex flex-col gap-2">
                     {g.items.slice(0, 8).map(i => (
                       <li key={i.slug}>

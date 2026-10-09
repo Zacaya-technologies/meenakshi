@@ -25,7 +25,7 @@ export default function ComparePage() {
       <div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-24 text-center">
         <Icon.scales className="mx-auto h-14 w-14 text-slate-300" />
         <h1 className="mt-4 font-heading text-2xl font-bold text-ink dark:text-white">Nothing to compare yet</h1>
-        <p className="mt-2 text-sm text-slate-400">Add products to compare using the scale icon on any product card.</p>
+        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Add products to compare using the scale icon on any product card.</p>
         <button onClick={() => router.push('/shop')} className="mt-5 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep px-6 py-3 text-sm font-bold text-white">
           Browse Tiles
         </button>
@@ -62,7 +62,7 @@ export default function ComparePage() {
           </thead>
           <tbody>
             <tr className="border-b border-border dark:border-white/10">
-              <td className="sticky left-0 z-10 bg-white p-3 text-xs font-bold uppercase text-slate-400 dark:bg-navy2 sm:p-4">Product</td>
+              <td className="sticky left-0 z-10 bg-white p-3 text-xs font-bold uppercase text-slate-500 dark:bg-navy2 sm:p-4">Product</td>
               {compare.map(p => (
                 <td key={p.id} className="p-4 text-center">
                   <button onClick={() => router.push(`/product/${p.slug}`)} className="line-clamp-2 text-sm font-semibold text-ink transition hover:text-brand-blue dark:text-white">
@@ -72,7 +72,7 @@ export default function ComparePage() {
               ))}
             </tr>
             <tr className="border-b border-border dark:border-white/10">
-              <td className="sticky left-0 z-10 bg-white p-3 text-xs font-bold uppercase text-slate-400 dark:bg-navy2 sm:p-4">Price</td>
+              <td className="sticky left-0 z-10 bg-white p-3 text-xs font-bold uppercase text-slate-500 dark:bg-navy2 sm:p-4">Price</td>
               {compare.map(p => (
                 <td key={p.id} className={`p-3 text-center sm:p-4 ${hasPrice(p) ? 'font-heading text-xl font-extrabold text-brand-blue' : 'text-sm font-semibold text-slate-600 dark:text-slate-300'}`}>
                   {formatPrice(p)}
@@ -81,7 +81,7 @@ export default function ComparePage() {
             </tr>
             {ATTRS.map(a => (
               <tr key={a.key} className="border-b border-border dark:border-white/10">
-                <td className="sticky left-0 z-10 bg-white p-3 text-xs font-bold uppercase text-slate-400 dark:bg-navy2 sm:p-4">{a.label}</td>
+                <td className="sticky left-0 z-10 bg-white p-3 text-xs font-bold uppercase text-slate-500 dark:bg-navy2 sm:p-4">{a.label}</td>
                 {compare.map(p => (
                   <td key={p.id} className="p-3 text-center text-sm text-slate-600 dark:text-slate-300 sm:p-4">
                     {p[a.key] || '—'}
@@ -90,7 +90,7 @@ export default function ComparePage() {
               </tr>
             ))}
             <tr>
-              <td className="sticky left-0 z-10 bg-white p-3 text-xs font-bold uppercase text-slate-400 dark:bg-navy2 sm:p-4">Action</td>
+              <td className="sticky left-0 z-10 bg-white p-3 text-xs font-bold uppercase text-slate-500 dark:bg-navy2 sm:p-4 dark:text-slate-400">Action</td>
               {compare.map(p => (
                 <td key={p.id} className="p-3 text-center sm:p-4">
                   <button onClick={() => addToCart(p)} className="whitespace-nowrap rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep px-4 py-2 text-xs font-bold text-white">

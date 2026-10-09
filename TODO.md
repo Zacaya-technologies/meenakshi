@@ -1,43 +1,30 @@
-# TODO — Meenakshi Build World Next.js Frontend (MyTyles-style Mega Menu)
+# TODO — Meenakshi Build World (Next.js storefront + Express API)
 
-## ⚠️ Which URL to open
+## Running locally
 
-There are **two frontends** in this repo:
+`npm run dev` starts both processes:
 
 | URL | What it serves |
 | --- | --- |
-| `http://localhost:3000` | Express API **+ the legacy vanilla-JS SPA** in `public/` — no mega menu |
-| `http://localhost:3001` | **The Next.js app** — this is the redesigned site |
+| `http://localhost:3001` | The Next.js storefront and admin console |
+| `http://localhost:3000` | The Express API only (`/api/v1/*`) — the old vanilla-JS SPA in `public/` has been removed |
 
-`npm run dev` starts both. Open **http://localhost:3001**. Port 3000 still serves the
-old SPA from `public/` (see `server/server.js` → `express.static` + the `app.get('*')`
-fallback), which is why the mega menu appears "missing" there. Delete or gate those two
-lines once the Next frontend fully replaces the SPA.
-
-## Steps
-- [x] Scaffold Next.js config (package.json, next.config, tailwind, postcss, jsconfig)
-- [x] Create lib (api client, app store/context) + JSON-driven menu data
-- [x] Build layout: Header, MegaMenu panel (in-flow push), MegaColumns, MobileDrawer, Footer, SearchModal, CartDrawer
-- [x] Build shop: FilterSidebar, ProductCard, QuickView, ShopClient (breadcrumb/title/count/sort/grid/pagination)
-- [x] Build pages: root layout, home, /shop, /product/[slug], /compare
-- [x] Install deps + run both servers + verify
-- [x] Redesign desktop nav + mega menu to the MyTyles interaction model
-      (non-navigating triggers, in-flow push, per-category content swap, hover intent)
-- [x] Full-screen mobile drawer with two-level accordions
-- [x] Hero banner carousel + persistent contact rail
+On Vercel the Express app runs inside Next.js via `app/api/[...path]/route.js`.
 
 ## Done
-- [x] Routes referenced by the new nav that did not exist yet:
-      `/calculator`, `/store-locator`, `/dealer-login`, `/make-to-order`, `/callback`
-- [x] Grid column calculation fix in MegaMenu (falsy `|| 6` default bug)
-- [x] Header hover-intent close logic fix (trigger leave now schedules close)
-- [x] MobileDrawer toggleCategory stale closure fix (using ref instead of state dep)
-- [x] Missing route pages created: store-locator, dealer-login, make-to-order, callback
-- [x] MegaMenu fully responsive grid: 1 col (sm) → 3 cols (md) → 4-8 cols (lg/xl)
-- [x] FilterSidebar responsive: full-width (sm) → sticky sidebar (lg+)
-- [x] All grids and devices adoptive layout implemented
+- [x] Next.js app, mega menu, mobile drawer, shop, product, cart, compare, calculator, admin
+- [x] Somany catalogue (734 products) with images and category tagging
+- [x] Browser QA pass — scripted in headless Chrome:
+      user flows (search, menus, filters, cart, quick view, calculator, contact, admin),
+      layout at 320–1920px, dark mode, keyboard navigation and focus return,
+      axe-core accessibility scan (0 violations)
+- [x] Legacy SPA removed from `public/`; Express is API-only
 
 ## Not yet done
-- [ ] Replace the Unsplash hero images with real brand photography
-- [ ] Browser QA pass (hover intent, keyboard nav, 375px, dark mode) — code is
-      verified by build + SSR markup only, not yet clicked through
+- [ ] Change the seeded admin password (`Password123!` is public in `server/seed.js`)
+      and set `JWT_SECRET` in Vercel
+- [ ] Replace the Unsplash hero images with real showroom/project photography
+- [ ] Real figures for the homepage/About stats (2000+ SKUs, 150+ brands, 4.8 rating)
+- [ ] Dealer Login page (currently "coming soon")
+- [ ] Major dependency upgrades: Next.js 14 → 16, nodemailer 9 → 10, sqlite3 5 → 6
+- [ ] Persistent database for production writes (SQLite on Vercel is read-only)

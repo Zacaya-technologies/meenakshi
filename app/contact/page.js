@@ -55,9 +55,9 @@ export default function ContactPage() {
           <InfoBlock title="Contact Information">
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <h4 className="mb-2 flex items-center gap-2 font-heading text-sm font-bold text-ink dark:text-white">
+                <h3 className="mb-2 flex items-center gap-2 font-heading text-sm font-bold text-ink dark:text-white">
                   <Icon.phone className="h-4 w-4 text-brand-blue" /> Phone
-                </h4>
+                </h3>
                 <ul className="flex flex-col gap-1.5 text-sm text-slate-500 dark:text-slate-400">
                   {phones.map(p => (
                     <li key={p}><a href={telHref(p)} className="transition hover:text-brand-blue">{p}</a></li>
@@ -68,13 +68,13 @@ export default function ContactPage() {
                 </ul>
               </div>
               <div>
-                <h4 className="mb-2 flex items-center gap-2 font-heading text-sm font-bold text-ink dark:text-white">
+                <h3 className="mb-2 flex items-center gap-2 font-heading text-sm font-bold text-ink dark:text-white">
                   <Icon.mail className="h-4 w-4 text-brand-blue" /> Email
-                </h4>
+                </h3>
                 <a href={`mailto:${business.email}`} className="text-sm transition hover:text-brand-blue">{business.email}</a>
-                <h4 className="mb-2 mt-5 flex items-center gap-2 font-heading text-sm font-bold text-ink dark:text-white">
+                <h3 className="mb-2 mt-5 flex items-center gap-2 font-heading text-sm font-bold text-ink dark:text-white">
                   <Icon.phoneCall className="h-4 w-4 text-brand-blue" /> Business Hours
-                </h4>
+                </h3>
                 <p className="text-sm text-slate-500 dark:text-slate-400">{business.business_hours}</p>
               </div>
             </div>
@@ -104,8 +104,8 @@ export default function ContactPage() {
         {/* Enquiry form */}
         <div className="lg:col-span-2">
           <form onSubmit={submit} className="rounded-2xl border-[1.5px] border-border bg-white p-6 shadow-card dark:border-white/10 dark:bg-navy2">
-            <h3 className="font-heading text-lg font-extrabold text-ink dark:text-white">Send an Enquiry</h3>
-            <p className="mb-5 mt-1 text-sm text-slate-400">Tell us what you need — our team will get back to you.</p>
+            <h2 className="font-heading text-lg font-extrabold text-ink dark:text-white">Send an Enquiry</h2>
+            <p className="mb-5 mt-1 text-sm text-slate-500 dark:text-slate-400">Tell us what you need — our team will get back to you.</p>
 
             <label className="mb-4 block">
               <span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-slate-500">Name *</span>
@@ -198,7 +198,7 @@ function ActionCard({ href, icon, label, sub, tone, external }) {
       </span>
       <span className="w-full min-w-0">
         <span className="block font-heading text-sm font-bold text-ink dark:text-white">{label}</span>
-        <span className="block truncate text-xs text-slate-400">{sub}</span>
+        <span className="block truncate text-xs text-slate-500 dark:text-slate-400">{sub}</span>
       </span>
     </a>
   );
@@ -207,7 +207,7 @@ function ActionCard({ href, icon, label, sub, tone, external }) {
 function InfoBlock({ title, children }) {
   return (
     <div className="rounded-2xl border-[1.5px] border-border bg-white p-6 shadow-card dark:border-white/10 dark:bg-navy2">
-      <h3 className="mb-4 font-heading text-base font-extrabold uppercase tracking-wide text-ink dark:text-white">{title}</h3>
+      <h2 className="mb-4 font-heading text-base font-extrabold uppercase tracking-wide text-ink dark:text-white">{title}</h2>
       {children}
     </div>
   );

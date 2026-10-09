@@ -36,7 +36,7 @@ export default function AdminShell({ children }) {
 
   if (!hydrated || !user || user.role !== 'admin') {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center text-sm text-slate-400">
+      <div className="flex min-h-[60vh] items-center justify-center text-sm text-slate-500 dark:text-slate-400">
         {hydrated ? 'Redirecting to admin login…' : 'Loading admin console…'}
       </div>
     );
@@ -73,7 +73,7 @@ export default function AdminShell({ children }) {
           </Link>
           <button
             onClick={() => { logout(); router.push('/admin/login'); }}
-            className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-rose-500 transition hover:bg-rose-50 dark:hover:bg-rose-500/10"
+            className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-rose-600 dark:text-rose-400 transition hover:bg-rose-50 dark:hover:bg-rose-500/10"
           >
             <Icon.close className="h-4.5 w-4.5" /> Logout
           </button>
@@ -90,7 +90,7 @@ export default function AdminShell({ children }) {
           </button>
           <span className="font-heading text-sm font-extrabold text-ink dark:text-white">Admin Console</span>
         </div>
-        <main className="min-w-0 flex-1 overflow-x-hidden p-5 sm:p-8">{children}</main>
+        <div className="min-w-0 flex-1 overflow-x-hidden p-5 sm:p-8">{children}</div>
       </div>
     </div>
   );

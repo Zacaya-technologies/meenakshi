@@ -216,14 +216,14 @@ export default function TileCalculatorClient() {
       <div className="mx-auto max-w-2xl px-6 py-24 text-center">
         <Icon.ruler className="mx-auto h-12 w-12 text-slate-300" />
         <h1 className="mt-4 font-heading text-2xl font-bold text-ink dark:text-white">Calculator temporarily unavailable</h1>
-        <p className="mt-2 text-sm text-slate-400">Please contact us directly for a tile quantity estimate.</p>
+        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Please contact us directly for a tile quantity estimate.</p>
       </div>
     );
   }
 
   return (
     <div className="mx-auto max-w-[1200px] px-4 py-8 sm:px-6">
-      <nav className="mb-4 flex items-center gap-1.5 text-xs text-slate-400">
+      <nav className="mb-4 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
         <a href="/" className="transition hover:text-brand-blue">Home</a>
         <Icon.arrowRight className="h-3.5 w-3.5" />
         <span className="font-semibold text-ink dark:text-white">Tile Calculator</span>
@@ -284,6 +284,7 @@ export default function TileCalculatorClient() {
                   {calcType === 'multiple' && (
                     <div className="mb-3 flex items-center justify-between gap-2">
                       <select
+                        aria-label="Area name"
                         value={areaPresets.includes(a.label) ? a.label : (a.label ? 'Custom' : '')}
                         onChange={e => updateArea(a.id, { label: e.target.value === 'Custom' ? '' : e.target.value })}
                         className={selectClass}
@@ -295,7 +296,7 @@ export default function TileCalculatorClient() {
                         <option value="Custom">Custom name…</option>
                       </select>
                       {areas.length > 1 && (
-                        <button onClick={() => removeArea(a.id)} aria-label="Remove area" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10">
+                        <button onClick={() => removeArea(a.id)} aria-label="Remove area" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-500 transition hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10">
                           <Icon.close className="h-4 w-4" />
                         </button>
                       )}
@@ -361,7 +362,7 @@ export default function TileCalculatorClient() {
               <div className="flex flex-col gap-3">
                 {openings.map(o => (
                   <div key={o.id} className="grid grid-cols-2 gap-2.5 rounded-xl border border-border p-3 dark:border-white/10 sm:grid-cols-[1fr_1fr_1fr_0.7fr_auto]">
-                    <select value={o.type} onChange={e => updateOpening(o.id, { type: e.target.value })} className={selectClass}>
+                    <select value={o.type} onChange={e => updateOpening(o.id, { type: e.target.value })} className={selectClass} aria-label="Opening type">
                       <option>Door</option>
                       <option>Window</option>
                       <option>Other</option>
@@ -369,7 +370,7 @@ export default function TileCalculatorClient() {
                     <input type="number" inputMode="decimal" min="0" placeholder="Width" value={o.width} onChange={e => updateOpening(o.id, { width: e.target.value })} className={inputClass} aria-label="Opening width" />
                     <input type="number" inputMode="decimal" min="0" placeholder="Height" value={o.height} onChange={e => updateOpening(o.id, { height: e.target.value })} className={inputClass} aria-label="Opening height" />
                     <input type="number" inputMode="numeric" min="1" placeholder="Qty" value={o.quantity} onChange={e => updateOpening(o.id, { quantity: e.target.value })} className={inputClass} aria-label="Opening quantity" />
-                    <button onClick={() => removeOpening(o.id)} aria-label="Remove opening" className="flex h-full items-center justify-center rounded-lg text-slate-400 transition hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10">
+                    <button onClick={() => removeOpening(o.id)} aria-label="Remove opening" className="flex h-full items-center justify-center rounded-lg text-slate-500 transition hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10">
                       <Icon.close className="h-4 w-4" />
                     </button>
                   </div>
@@ -387,11 +388,11 @@ export default function TileCalculatorClient() {
             {tileLocked ? (
               <div className="rounded-xl border-[1.5px] border-border bg-brand-light px-4 py-3 text-sm dark:bg-navy dark:border-white/10">
                 <span className="font-bold text-ink dark:text-white">{tileLength} × {tileWidth} {tileUnit}</span>
-                <span className="ml-2 text-xs text-slate-400">(from selected product)</span>
+                <span className="ml-2 text-xs text-slate-500 dark:text-slate-400">(from selected product)</span>
               </div>
             ) : (
               <>
-                <select value={presetKey} onChange={e => applyPreset(e.target.value)} className={`${selectClass} mb-3`}>
+                <select value={presetKey} onChange={e => applyPreset(e.target.value)} className={`${selectClass} mb-3`} aria-label="Tile size preset">
                   <option value="">Choose a preset size…</option>
                   {tileSizePresets.map((p, i) => (
                     <option key={i} value={i}>{p.length} × {p.width} {p.unit}</option>
@@ -468,10 +469,10 @@ export default function TileCalculatorClient() {
                   }}
                   className="w-24 rounded-full border-[1.5px] border-border bg-white px-3.5 py-2 text-sm text-ink outline-none transition focus:border-brand-blue dark:bg-navy2 dark:text-white dark:border-white/10"
                 />
-                <span className="text-sm text-slate-400">%</span>
+                <span className="text-sm text-slate-500 dark:text-slate-400">%</span>
               </div>
             </div>
-            <p className="mt-2 text-xs text-slate-400">Recommended: {settings.default_wastage ?? 10}% for straight laying. Maximum: {maxWastage}%.</p>
+            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Recommended: {settings.default_wastage ?? 10}% for straight laying. Maximum: {maxWastage}%.</p>
           </Card>
 
           <div className="flex gap-3">
@@ -531,9 +532,9 @@ function SectionLabel({ children }) {
 function Field({ label, error, children }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-wide text-slate-400">{label}</span>
+      <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</span>
       {children}
-      {error && <span className="mt-1 block text-[11px] font-semibold text-rose-500">{error}</span>}
+      {error && <span className="mt-1 block text-[11px] font-semibold text-rose-600 dark:text-rose-400">{error}</span>}
     </label>
   );
 }
@@ -544,7 +545,7 @@ function ResultCard({ result, attempted, tileLength, tileWidth, tileUnit, settin
       <div className="rounded-[20px] border-[1.5px] border-dashed border-border bg-brand-light p-10 text-center dark:bg-navy dark:border-white/10">
         <Icon.ruler className="mx-auto h-10 w-10 text-slate-300" />
         <h3 className="mt-3 font-heading text-base font-bold text-ink dark:text-white">Your Tile Requirement</h3>
-        <p className="mt-1.5 text-sm text-slate-400">
+        <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">
           {attempted ? 'Please fix the highlighted fields to see your result.' : 'Fill in your area and tile size to see the calculation.'}
         </p>
       </div>
@@ -619,7 +620,7 @@ function Row({ label, value, sub }) {
       <span className="text-sm text-slate-500 dark:text-slate-400">{label}</span>
       <span className="text-right">
         <span className="block text-sm font-bold text-ink dark:text-white">{value}</span>
-        {sub && <span className="block text-[11px] text-slate-400">{sub}</span>}
+        {sub && <span className="block text-[11px] text-slate-500 dark:text-slate-400">{sub}</span>}
       </span>
     </div>
   );

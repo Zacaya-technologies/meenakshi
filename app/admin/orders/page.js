@@ -37,7 +37,7 @@ export default function AdminOrdersPage() {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-sm lg:min-w-[760px]">
               <thead>
-                <tr className="border-b border-border text-left text-xs uppercase text-slate-400 dark:border-white/10">
+                <tr className="border-b border-border text-left text-xs uppercase text-slate-500 dark:border-white/10">
                   <th className="p-3.5">Order #</th>
                   <th className="hidden p-3.5 md:table-cell">Customer</th>
                   <th className="p-3.5">Amount</th>
@@ -50,7 +50,7 @@ export default function AdminOrdersPage() {
                 {orders.map(o => (
                   <tr key={o.id} className="border-b border-border last:border-0 dark:border-white/5">
                     <td className="p-3.5 font-semibold text-ink dark:text-white">{o.order_number}</td>
-                    <td className="hidden p-3.5 text-xs text-slate-400 md:table-cell">{o.customer_name}<br />{o.customer_phone}</td>
+                    <td className="hidden p-3.5 text-xs text-slate-500 md:table-cell">{o.customer_name}<br />{o.customer_phone}</td>
                     <td className="p-3.5 font-bold text-brand-blue">₹{Number(o.net_payable).toLocaleString('en-IN')}</td>
                     <td className="hidden p-3.5 lg:table-cell"><Badge tone={o.payment_status === 'paid' ? 'green' : 'slate'}>{o.payment_status}</Badge></td>
                     <td className="hidden p-3.5 sm:table-cell"><Badge tone={STATUS_TONE[o.order_status] || 'slate'}>{o.order_status}</Badge></td>

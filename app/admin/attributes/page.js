@@ -88,13 +88,13 @@ export default function AdminAttributesPage() {
               <div className="flex items-start justify-between">
                 <div>
                   <h3 className="font-heading text-sm font-bold text-ink dark:text-white">{attr.name}</h3>
-                  <p className="mt-0.5 text-xs text-slate-400">
+                  <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                     {attr.input_type}{attr.unit ? ` • unit: ${attr.unit}` : ''}
                   </p>
                 </div>
                 <div className="flex gap-3">
                   <button onClick={() => setModal(attr)} className="text-xs font-bold text-brand-blue hover:underline">Edit</button>
-                  <button onClick={() => remove(attr)} className="text-xs font-bold text-rose-500 hover:underline">Delete</button>
+                  <button onClick={() => remove(attr)} className="text-xs font-bold text-rose-600 dark:text-rose-400 hover:underline">Delete</button>
                 </div>
               </div>
 
@@ -104,12 +104,12 @@ export default function AdminAttributesPage() {
                     {attr.values.map(v => (
                       <span key={v.id} className="group flex items-center gap-1 rounded-full bg-brand-light px-2.5 py-1 text-[11px] font-semibold text-slate-600 dark:bg-white/5 dark:text-slate-300">
                         {v.value}
-                        <button onClick={() => removeValue(v.id)} className="text-slate-400 hover:text-rose-500" aria-label="Remove value">
+                        <button onClick={() => removeValue(v.id)} className="text-slate-500 dark:text-slate-400 hover:text-rose-500" aria-label="Remove value">
                           <Icon.close className="h-3 w-3" />
                         </button>
                       </span>
                     ))}
-                    {attr.values.length === 0 && <span className="text-[11px] text-slate-400">No values yet</span>}
+                    {attr.values.length === 0 && <span className="text-[11px] text-slate-500 dark:text-slate-400">No values yet</span>}
                   </div>
                   <button onClick={() => setValueModal({ attributeId: attr.id, value: '' })} className="text-xs font-bold text-brand-blue hover:underline">
                     + Add value

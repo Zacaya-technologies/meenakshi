@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useApp } from '@/lib/store';
 import { useBusiness, waLink } from '@/lib/business';
 import { FALLBACK_IMG, discountPct, formatPrice, hasPrice } from '@/lib/api';
 import { Icon } from '@/components/ui/Icons';
+import { useOverlay } from '@/lib/useOverlay';
 
 export default function QuickView({ product, onClose }) {
   const router = useRouter();
@@ -16,18 +17,16 @@ export default function QuickView({ product, onClose }) {
   // QuickView stays mounted with product=null while closed.
   const inWish = !!product && wishlist.some(p => p.id === product.id);
 
+  const closeRef = useRef(null);
+  useOverlay(!!product, onClose, closeRef);
+
+  // Keep the page behind the dialog from scrolling while it is open.
   useEffect(() => {
-    if (!product) return;
-    const onKey = (e) => e.key === 'Escape' && onClose();
-    document.addEventListener('keydown', onKey);
-    // Keep the page behind the dialog from scrolling while it is open.
+    if (!product) return undefined;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    return () => {
-      document.removeEventListener('keydown', onKey);
-      document.body.style.overflow = prevOverflow;
-    };
-  }, [product, onClose]);
+    return () => { document.body.style.overflow = prevOverflow; };
+  }, [product]);
 
   return (
     <AnimatePresence>
@@ -51,6 +50,7 @@ export default function QuickView({ product, onClose }) {
             onClick={e => e.stopPropagation()}
           >
             <button
+              ref={closeRef}
               onClick={onClose}
               className="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-ink dark:bg-white/10 dark:text-white"
               aria-label="Close"
@@ -74,20 +74,20 @@ export default function QuickView({ product, onClose }) {
                   </span>
                 )}
                 <h3 className="font-heading text-2xl font-bold text-ink dark:text-white">{product.name}</h3>
-                <p className="mb-3 mt-1 text-sm text-slate-400">{product.brand_name} • {product.size}</p>
+                <p className="mb-3 mt-1 text-sm text-slate-500 dark:text-slate-400">{product.brand_name} • {product.size}</p>
 
                 <div className="flex items-baseline gap-2">
                   <span className="font-heading text-3xl font-extrabold text-brand-blue">{formatPrice(product)}</span>
-                  {off > 0 && <span className="text-sm text-slate-400 line-through">₹{Number(product.price).toLocaleString('en-IN')}</span>}
-                  {hasPrice(product) && <span className="text-xs text-slate-400">/sq.ft</span>}
+                  {off > 0 && <span className="text-sm text-slate-500 line-through">₹{Number(product.price).toLocaleString('en-IN')}</span>}
+                  {hasPrice(product) && <span className="text-xs text-slate-500 dark:text-slate-400">/sq.ft</span>}
                 </div>
 
                 {product.stock > 0 ? (
-                  <div className="mt-3 flex items-center gap-1.5 text-sm font-bold text-green-600">
+                  <div className="mt-3 flex items-center gap-1.5 text-sm font-bold text-green-700 dark:text-green-500">
                     <span className="h-2 w-2 rounded-full bg-green-500" /> In Stock
                   </div>
                 ) : (
-                  <div className="mt-3 flex items-center gap-1.5 text-sm font-bold text-rose-500">
+                  <div className="mt-3 flex items-center gap-1.5 text-sm font-bold text-rose-600 dark:text-rose-400">
                     <span className="h-2 w-2 rounded-full bg-rose-500" /> Out of Stock
                   </div>
                 )}
@@ -112,7 +112,7 @@ export default function QuickView({ product, onClose }) {
                   </button>
                   <button
                     onClick={() => toggleWishlist(product)}
-                    className={`flex h-[46px] w-[46px] items-center justify-center rounded-lg border transition-colors ${inWish ? 'border-rose-200 bg-rose-50 text-rose-500 dark:border-rose-500/30 dark:bg-rose-500/10' : 'border-slate-300 text-slate-700 hover:border-slate-900 dark:border-white/20 dark:text-white'}`}
+                    className={`flex h-[46px] w-[46px] items-center justify-center rounded-lg border transition-colors ${inWish ? 'border-rose-200 bg-rose-50 text-rose-600 dark:text-rose-400 dark:border-rose-500/30 dark:bg-rose-500/10' : 'border-slate-300 text-slate-700 hover:border-slate-900 dark:border-white/20 dark:text-white'}`}
                     aria-label={inWish ? 'Remove from wishlist' : 'Add to wishlist'}
                     aria-pressed={inWish}
                   >
@@ -123,7 +123,7 @@ export default function QuickView({ product, onClose }) {
                   href={waLink(business.whatsapp_number, `Hi ${business.business_name}, I'm interested in "${product.name}" (SKU: ${product.sku}${product.size ? `, ${product.size}` : ''}). Please share the price and availability.`)}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#128C7E] hover:underline dark:text-[#25D366]"
+                  className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#0E7A6E] hover:underline dark:text-[#25D366]"
                 >
                   <Icon.whatsapp className="h-4 w-4" /> Enquire on WhatsApp
                 </a>

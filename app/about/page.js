@@ -46,7 +46,7 @@ export default function AboutPage() {
           {stats.map(s => (
             <div key={s.label} className="rounded-2xl border-[1.5px] border-border bg-white p-6 text-center shadow-card dark:border-white/10 dark:bg-navy2">
               <div className="font-heading text-3xl font-black text-brand-blue sm:text-4xl">{s.value}</div>
-              <div className="mt-1 text-xs font-semibold uppercase tracking-wide text-slate-400">{s.label}</div>
+              <div className="mt-1 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{s.label}</div>
             </div>
           ))}
         </div>
@@ -119,7 +119,7 @@ export default function AboutPage() {
               <div key={w.title} className="rounded-2xl border-[1.5px] border-border bg-brand-light p-5 transition hover:-translate-y-0.5 hover:shadow-card dark:border-white/10 dark:bg-navy">
                 <span className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-blue/10 text-brand-blue">{w.icon}</span>
                 <h3 className="font-heading text-sm font-bold text-ink dark:text-white">{w.title}</h3>
-                <p className="mt-1 text-xs leading-relaxed text-slate-400">{w.desc}</p>
+                <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">{w.desc}</p>
               </div>
             ))}
           </div>

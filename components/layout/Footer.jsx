@@ -75,7 +75,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="mb-4 font-heading text-sm font-bold text-brand-blue">Quick Links</h4>
+            <h2 className="mb-4 font-heading text-sm font-bold text-brand-blue">Quick Links</h2>
             <ul className="flex flex-col gap-2.5 text-sm text-slate-400">
               {quickLinks.map(l => (
                 <li key={l.label}>
@@ -86,7 +86,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="mb-4 font-heading text-sm font-bold text-brand-blue">Products</h4>
+            <h2 className="mb-4 font-heading text-sm font-bold text-brand-blue">Products</h2>
             <ul className="flex flex-col gap-2.5 text-sm text-slate-400">
               {productLinks.map(l => (
                 <li key={l.label}>
@@ -97,7 +97,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="mb-4 font-heading text-sm font-bold text-brand-blue">Contact</h4>
+            <h2 className="mb-4 font-heading text-sm font-bold text-brand-blue">Contact</h2>
             <ul className="flex flex-col gap-2.5 text-sm text-slate-400">
               {phones.map(p => (
                 <li key={p}>
@@ -125,14 +125,14 @@ export default function Footer() {
           </div>
 
           <div className="col-span-2 md:col-span-1">
-            <h4 className="mb-4 font-heading text-sm font-bold text-brand-blue">Corporate Office</h4>
+            <h2 className="mb-4 font-heading text-sm font-bold text-brand-blue">Corporate Office</h2>
             <p className="whitespace-pre-line text-sm leading-relaxed text-slate-400">{business.corporate_address}</p>
-            <h4 className="mb-4 mt-6 font-heading text-sm font-bold text-brand-blue">Store</h4>
+            <h2 className="mb-4 mt-6 font-heading text-sm font-bold text-brand-blue">Store</h2>
             <p className="whitespace-pre-line text-sm leading-relaxed text-slate-400">{business.store_address}</p>
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 text-sm text-slate-500 md:flex-row">
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 text-sm text-slate-400 md:flex-row">
           <span>{business.copyright_text}</span>
           <a
             href={waLink(

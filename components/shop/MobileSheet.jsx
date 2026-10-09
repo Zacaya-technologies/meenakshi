@@ -36,7 +36,7 @@ export default function MobileSheet({ open, onClose, title, children }) {
           >
             <span className="absolute left-1/2 top-2.5 h-1 w-10 -translate-x-1/2 rounded-full bg-slate-300 dark:bg-white/20" />
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="font-heading text-base font-bold text-ink dark:text-white">{title}</h3>
+              <h2 className="font-heading text-base font-bold text-ink dark:text-white">{title}</h2>
               <button onClick={onClose} className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-ink dark:bg-white/10 dark:text-white" aria-label="Close">
                 <Icon.close className="h-4.5 w-4.5" />
               </button>

@@ -18,14 +18,14 @@ export default function BrandsPage() {
 
   return (
     <div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-10">
-      <nav className="mb-4 flex items-center gap-1.5 text-xs text-slate-400">
+      <nav className="mb-4 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
         <Link href="/" className="transition hover:text-brand-blue">Home</Link>
         <Icon.arrowRight className="h-3.5 w-3.5" />
         <span className="font-semibold text-ink dark:text-white">Brands</span>
       </nav>
 
       <h1 className="mb-2 font-heading text-3xl font-extrabold text-ink dark:text-white">Our Brand Partners</h1>
-      <p className="mb-8 max-w-2xl text-sm text-slate-400">Manufacturing partners behind every tile in the Meenakshi Build World catalog.</p>
+      <p className="mb-8 max-w-2xl text-sm text-slate-500 dark:text-slate-400">Manufacturing partners behind every tile in the Meenakshi Build World catalog.</p>
 
       {loading ? (
         <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">

@@ -128,8 +128,8 @@ export default function ProductForm({ initial, onSubmit, submitLabel }) {
       ...form,
       // Empty = price on request (stored as 0), like the imported catalogue.
       price: form.price === '' ? 0 : parseFloat(form.price),
-      offer_price: form.offer_price ? parseFloat(form.offer_price) : null,
-      dealer_price: form.dealer_price ? parseFloat(form.dealer_price) : null,
+      offer_price: form.offer_price !== '' ? parseFloat(form.offer_price) : null,
+      dealer_price: form.dealer_price !== '' ? parseFloat(form.dealer_price) : null,
       stock: parseInt(form.stock) || 0,
       brand_id: form.brand_id || null,
       collection_id: form.collection_id || null,
@@ -146,7 +146,7 @@ export default function ProductForm({ initial, onSubmit, submitLabel }) {
     <form onSubmit={submit} className="grid grid-cols-1 gap-5 lg:grid-cols-3">
       <div className="flex flex-col gap-5 lg:col-span-2">
         <Card>
-          <h3 className="mb-4 font-heading text-sm font-bold text-ink dark:text-white">Basic Details</h3>
+          <h2 className="mb-4 font-heading text-sm font-bold text-ink dark:text-white">Basic Details</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field label="Product name" required className="sm:col-span-2">
               <Input value={form.name} onChange={e => set('name', e.target.value)} required autoFocus />
@@ -170,8 +170,8 @@ export default function ProductForm({ initial, onSubmit, submitLabel }) {
         </Card>
 
         <Card>
-          <h3 className="mb-1 font-heading text-sm font-bold text-ink dark:text-white">Category & Taxonomy</h3>
-          <p className="mb-4 text-xs text-slate-400">Pick the main category, then one or more values per facet group — exactly what drives the mega menu, filters and this product's URL tags.</p>
+          <h2 className="mb-1 font-heading text-sm font-bold text-ink dark:text-white">Category & Taxonomy</h2>
+          <p className="mb-4 text-xs text-slate-500 dark:text-slate-400">Pick the main category, then one or more values per facet group — exactly what drives the mega menu, filters and this product's URL tags.</p>
           <Field label="Main category" required>
             <Select value={mainCategoryId} onChange={e => { setMainCategoryId(e.target.value); setFacetSelections({}); }} required>
               <option value="">— Select —</option>
@@ -210,7 +210,7 @@ export default function ProductForm({ initial, onSubmit, submitLabel }) {
 
         {attributes.length > 0 && (
           <Card>
-            <h3 className="mb-4 font-heading text-sm font-bold text-ink dark:text-white">Technical Specifications</h3>
+            <h2 className="mb-4 font-heading text-sm font-bold text-ink dark:text-white">Technical Specifications</h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {attributes.map(attr => (
                 <Field key={attr.id} label={attr.unit ? `${attr.name} (${attr.unit})` : attr.name}>
@@ -236,7 +236,7 @@ export default function ProductForm({ initial, onSubmit, submitLabel }) {
 
         <Card>
           <div className="mb-4 flex items-center justify-between">
-            <h3 className="font-heading text-sm font-bold text-ink dark:text-white">Images</h3>
+            <h2 className="font-heading text-sm font-bold text-ink dark:text-white">Images</h2>
             <Button type="button" variant="outline" onClick={addImage}><Icon.grid className="h-3.5 w-3.5" /> Add Image</Button>
           </div>
           <div className="flex flex-col gap-3">
@@ -247,7 +247,7 @@ export default function ProductForm({ initial, onSubmit, submitLabel }) {
                 <button type="button" onClick={() => setPrimary(i)} className={`shrink-0 rounded-lg px-2.5 py-2 text-[11px] font-bold ${img.is_primary ? 'bg-brand-blue text-white' : 'bg-brand-light text-slate-500 dark:bg-white/5'}`}>
                   Primary
                 </button>
-                <button type="button" onClick={() => removeImage(i)} className="shrink-0 text-slate-400 hover:text-rose-500" aria-label="Remove image">
+                <button type="button" onClick={() => removeImage(i)} className="shrink-0 text-slate-500 hover:text-rose-500" aria-label="Remove image">
                   <Icon.close className="h-4 w-4" />
                 </button>
               </div>
@@ -256,7 +256,7 @@ export default function ProductForm({ initial, onSubmit, submitLabel }) {
         </Card>
 
         <Card>
-          <h3 className="mb-4 font-heading text-sm font-bold text-ink dark:text-white">SEO</h3>
+          <h2 className="mb-4 font-heading text-sm font-bold text-ink dark:text-white">SEO</h2>
           <div className="grid grid-cols-1 gap-4">
             <Field label="SEO title"><Input value={form.seo_title} onChange={e => set('seo_title', e.target.value)} /></Field>
             <Field label="SEO description"><TextArea rows={2} value={form.seo_description} onChange={e => set('seo_description', e.target.value)} /></Field>
@@ -266,7 +266,7 @@ export default function ProductForm({ initial, onSubmit, submitLabel }) {
 
       <div className="flex flex-col gap-5">
         <Card>
-          <h3 className="mb-4 font-heading text-sm font-bold text-ink dark:text-white">Pricing & Stock</h3>
+          <h2 className="mb-4 font-heading text-sm font-bold text-ink dark:text-white">Pricing & Stock</h2>
           <div className="grid grid-cols-1 gap-4">
             <Field label="Price (₹/sq.ft)" hint="Leave empty to show “Price on request”"><Input type="number" step="0.01" min="0" value={form.price} onChange={e => set('price', e.target.value)} /></Field>
             <Field label="Offer price"><Input type="number" step="0.01" value={form.offer_price} onChange={e => set('offer_price', e.target.value)} /></Field>
@@ -276,7 +276,7 @@ export default function ProductForm({ initial, onSubmit, submitLabel }) {
         </Card>
 
         <Card>
-          <h3 className="mb-4 font-heading text-sm font-bold text-ink dark:text-white">Visibility</h3>
+          <h2 className="mb-4 font-heading text-sm font-bold text-ink dark:text-white">Visibility</h2>
           <div className="flex flex-col gap-3">
             <Toggle checked={form.published} onChange={v => set('published', v)} label="Published (visible on storefront)" />
             <Toggle checked={form.is_featured} onChange={v => set('is_featured', v)} label="Featured" />

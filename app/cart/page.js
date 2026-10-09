@@ -42,7 +42,7 @@ export default function CartPage() {
   if (cart.length === 0 && !removed) {
     return (
       <div className="mx-auto flex min-h-[55vh] max-w-[1380px] flex-col items-center justify-center px-4 py-20 text-center sm:px-6">
-        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-white/5">
+        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 text-slate-500 dark:bg-white/5">
           <Icon.bag className="h-7 w-7" />
         </span>
         <h1 className="mt-5 text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">Your cart is empty</h1>
@@ -106,7 +106,7 @@ export default function CartPage() {
                         <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
                           <div className="min-w-0">
                             {p.collection_name && (
-                              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">{p.collection_name}</p>
+                              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{p.collection_name}</p>
                             )}
                             <Link href={`/product/${p.slug}`} className="mt-0.5 block text-[15px] font-medium leading-snug text-slate-900 transition-colors hover:text-brand-deep dark:text-white dark:hover:text-brand-blue">
                               {p.name}
@@ -114,7 +114,7 @@ export default function CartPage() {
                             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                               {[p.size, p.finish, p.color].filter(Boolean).join(' · ')}
                             </p>
-                            {p.sku && <p className="mt-0.5 text-xs text-slate-400">SKU {p.sku}</p>}
+                            {p.sku && <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">SKU {p.sku}</p>}
                           </div>
                           <p className="shrink-0 text-sm text-slate-700 dark:text-slate-200 sm:text-right">
                             {hasPrice(p) ? formatBoxPrice(p) : <span className="text-slate-500 dark:text-slate-400">Price on request</span>}

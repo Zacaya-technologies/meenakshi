@@ -35,7 +35,7 @@ export default function CategoryGrid() {
       <div className="mb-10 text-center">
         <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-blue">Browse the Catalog</span>
         <h2 className="mt-2 font-heading text-4xl font-extrabold text-ink dark:text-white">Shop by Category</h2>
-        <p className="mx-auto mt-3 max-w-xl text-sm text-slate-400">
+        <p className="mx-auto mt-3 max-w-xl text-sm text-slate-500 dark:text-slate-400">
           Every room, every finish, every application — organized so you can find exactly what you need.
         </p>
       </div>

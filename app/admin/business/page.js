@@ -95,7 +95,7 @@ export default function AdminBusinessPage() {
       />
 
       {!form ? (
-        <Card><p className="py-8 text-center text-sm text-slate-400">Loading business settings…</p></Card>
+        <Card><p className="py-8 text-center text-sm text-slate-500 dark:text-slate-400">Loading business settings…</p></Card>
       ) : (
         <>
           {message && (
@@ -111,7 +111,7 @@ export default function AdminBusinessPage() {
           <div className="flex flex-col gap-6">
             {GROUPS.map(g => (
               <Card key={g.title}>
-                <h3 className="mb-4 font-heading text-sm font-extrabold uppercase tracking-wide text-brand-blue">{g.title}</h3>
+                <h2 className="mb-4 font-heading text-sm font-extrabold uppercase tracking-wide text-brand-blue">{g.title}</h2>
                 <div className="grid gap-4 sm:grid-cols-2">
                   {g.fields.map(f => (
                     <Field key={f.key} label={f.label} hint={f.hint} className={f.textarea ? 'sm:col-span-2' : ''}>

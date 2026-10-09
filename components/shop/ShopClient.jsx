@@ -239,7 +239,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
       )}
 
       {/* Breadcrumb */}
-      <nav className="mb-4 flex flex-wrap items-center gap-1.5 text-xs text-slate-400">
+      <nav className="mb-4 flex flex-wrap items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
         {(breadcrumb || [{ name: 'Home', url: '/' }, { name: 'Shop', url: '/shop' }]).map((crumb, i, arr) => (
           <span key={crumb.url} className="flex items-center gap-1.5">
             {i > 0 && <Icon.arrowRight className="h-3.5 w-3.5" />}
@@ -257,7 +257,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
         <div>
           <h1 className="font-heading text-3xl font-extrabold text-ink dark:text-white">{categoryName}</h1>
           {description && <p className="mt-1.5 max-w-2xl text-sm text-slate-500 dark:text-slate-400">{description}</p>}
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             <strong className="text-brand-blue">{pagination.total}</strong> products
           </p>
         </div>
@@ -269,8 +269,9 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
           >
             <Icon.ruler className="h-3.5 w-3.5" /> Calculate Tiles
           </Link>
-          <span className="text-xs text-slate-400">Sort by</span>
+          <span className="text-xs text-slate-500 dark:text-slate-400">Sort by</span>
           <select
+            aria-label="Sort products"
             value={sort}
             onChange={e => setSort(e.target.value)}
             className="cursor-pointer rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition focus:border-brand-blue dark:bg-navy2 dark:text-white dark:border-white/10"
@@ -352,7 +353,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
 
         <div>
           {activeCount > 0 && (
-            <div className="mb-4 flex items-center gap-2 text-xs text-slate-400">
+            <div className="mb-4 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
               <span className="font-semibold">{activeCount} filter{activeCount > 1 ? 's' : ''} applied</span>
               <button onClick={clearFilters} className="font-bold text-brand-blue hover:underline">Clear all</button>
             </div>
@@ -362,7 +363,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
             <div className="mb-8">
               <div className="mb-4 flex items-end justify-between gap-3">
                 <h2 className="font-heading text-xl font-extrabold text-ink dark:text-white">Shop by Subcategory</h2>
-                <span className="text-xs font-semibold text-slate-400">{subcats.length} spaces</span>
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{subcats.length} spaces</span>
               </div>
               {/* Swipeable strip on phones so the products are not pushed a dozen
                   screens down; a grid from sm up. */}
@@ -425,7 +426,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
             <div className="rounded-[20px] border-[1.5px] border-dashed border-border bg-white p-16 text-center dark:bg-navy2 dark:border-white/10">
               <Icon.search className="mx-auto h-14 w-14 text-slate-300" />
               <h3 className="mt-4 font-heading text-lg font-bold text-ink dark:text-white">No products found</h3>
-              <p className="mt-2 text-sm text-slate-400">Try adjusting or clearing your filters.</p>
+              <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Try adjusting or clearing your filters.</p>
               <button onClick={clearFilters} className="mt-5 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep px-6 py-2.5 text-sm font-bold text-white">
                 Clear Filters
               </button>
@@ -451,7 +452,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
               >
                 ← Prev
               </button>
-              <span className="text-sm text-slate-400">
+              <span className="text-sm text-slate-500 dark:text-slate-400">
                 Page <strong className="text-ink dark:text-white">{page}</strong> of {pagination.pages}
               </span>
               <button
@@ -482,7 +483,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
                           >
                             {i.name}
                             {i.count > 0 && (
-                              <span className="ml-1 text-[11px] text-slate-400">({i.count})</span>
+                              <span className="ml-1 text-[11px] text-slate-500 dark:text-slate-400">({i.count})</span>
                             )}
                           </Link>
                         </li>

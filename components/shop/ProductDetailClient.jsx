@@ -38,7 +38,7 @@ export default function ProductDetailClient({ slug }) {
   }, [slug]);
 
   if (loading) {
-    return <div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-16 text-center text-slate-400">Loading product…</div>;
+    return <div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-16 text-center text-slate-500 dark:text-slate-400">Loading product…</div>;
   }
 
   if (!data) {
@@ -64,7 +64,7 @@ export default function ProductDetailClient({ slug }) {
   return (
     <div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-8 pb-28 lg:pb-8">
       {/* Breadcrumb — built from the product's live main-category tag */}
-      <nav className="mb-6 flex flex-wrap items-center gap-1.5 text-xs text-slate-400">
+      <nav className="mb-6 flex flex-wrap items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
         <Link href="/" className="transition hover:text-brand-blue">Home</Link>
         <Icon.arrowRight className="h-3.5 w-3.5" />
         <Link href="/shop" className="transition hover:text-brand-blue">Shop</Link>
@@ -151,19 +151,19 @@ export default function ProductDetailClient({ slug }) {
                 {product.category_name}
               </Link>
             )}
-            {product.type && <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-500 dark:bg-white/10">{product.type}</span>}
-            {product.size && <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-500 dark:bg-white/10">{product.size}</span>}
+            {product.type && <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-white/10 dark:text-slate-300">{product.type}</span>}
+            {product.size && <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-white/10 dark:text-slate-300">{product.size}</span>}
           </div>
 
           <h1 className="font-heading text-3xl font-extrabold text-ink dark:text-white">{product.name}</h1>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             {product.brand_name} • SKU: {product.sku}
           </p>
 
           <div className="mt-4 flex items-baseline gap-3">
             <span className={priced ? 'font-heading text-4xl font-extrabold text-brand-blue' : 'text-xl font-semibold text-slate-700 dark:text-slate-200'}>{formatPrice(product)}</span>
-            {off > 0 && <span className="text-lg text-slate-400 line-through">₹{Number(product.price).toLocaleString('en-IN')}</span>}
-            {hasPrice(product) && <span className="text-sm text-slate-400">/sq.ft</span>}
+            {off > 0 && <span className="text-lg text-slate-500 line-through">₹{Number(product.price).toLocaleString('en-IN')}</span>}
+            {hasPrice(product) && <span className="text-sm text-slate-500 dark:text-slate-400">/sq.ft</span>}
           </div>
 
           {product.description && (
@@ -177,11 +177,11 @@ export default function ProductDetailClient({ slug }) {
                   <Icon.starFill key={i} className={`h-4 w-4 ${i <= Math.round(product.rating_avg || 0) ? '' : 'opacity-25'}`} />
                 ))}
               </div>
-              <span className="text-sm text-slate-400">{`${product.rating_avg} · ${product.reviews_count} reviews`}</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400">{`${product.rating_avg} · ${product.reviews_count} reviews`}</span>
             </div>
           )}
 
-          <div className={`mt-5 flex items-center gap-2 text-sm font-bold ${inStock ? 'text-green-600' : 'text-rose-500'}`}>
+          <div className={`mt-5 flex items-center gap-2 text-sm font-bold ${inStock ? 'text-green-700 dark:text-green-500' : 'text-rose-600 dark:text-rose-400'}`}>
             <span className={`h-2.5 w-2.5 rounded-full ${inStock ? 'bg-green-500' : 'bg-rose-500'}`} /> {inStock ? 'In Stock' : 'Out of Stock'}
           </div>
 
@@ -198,7 +198,7 @@ export default function ProductDetailClient({ slug }) {
           {/* Size / variant picker */}
           {variants.length > 1 && (
             <div className="mt-5">
-              <span className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-400">Available Sizes</span>
+              <span className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Available Sizes</span>
               <div className="flex flex-wrap gap-2">
                 {variants.map(v => (
                   <span
@@ -241,7 +241,7 @@ export default function ProductDetailClient({ slug }) {
             )}
             <button
               onClick={() => toggleWishlist(product)}
-              className={`flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-border transition dark:border-white/10 sm:w-12 ${inWish ? 'border-rose-200 bg-rose-50 text-rose-500 dark:border-rose-500/30 dark:bg-rose-500/10' : 'text-ink dark:text-white'}`}
+              className={`flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-border transition dark:border-white/10 sm:w-12 ${inWish ? 'border-rose-200 bg-rose-50 text-rose-600 dark:text-rose-400 dark:border-rose-500/30 dark:bg-rose-500/10' : 'text-ink dark:text-white'}`}
               aria-label={inWish ? 'Remove from wishlist' : 'Add to wishlist'}
               aria-pressed={inWish}
             >
@@ -275,7 +275,7 @@ export default function ProductDetailClient({ slug }) {
           <div className="grid grid-cols-1 gap-x-8 gap-y-2 rounded-2xl border border-border bg-white p-5 dark:bg-navy2 dark:border-white/10 sm:grid-cols-2">
             {specifications.map(s => (
               <div key={s.name} className="flex items-center justify-between border-b border-dashed border-border py-2 text-sm dark:border-white/10">
-                <span className="text-slate-400">{s.name}</span>
+                <span className="text-slate-500 dark:text-slate-400">{s.name}</span>
                 <span className="font-semibold text-ink dark:text-white">{s.value}</span>
               </div>
             ))}
@@ -313,10 +313,10 @@ export default function ProductDetailClient({ slug }) {
         style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
       >
         <div className="min-w-0 flex-1">
-          <div className="truncate text-[11px] text-slate-400">{product.name}</div>
+          <div className="truncate text-[11px] text-slate-500 dark:text-slate-400">{product.name}</div>
           <div className="flex items-baseline gap-1.5">
             <span className={priced ? 'font-heading text-lg font-extrabold text-brand-blue' : 'whitespace-nowrap text-sm font-semibold text-slate-700 dark:text-slate-200'}>{formatPrice(product)}</span>
-            {hasPrice(product) && <span className="text-[10px] text-slate-400">/sq.ft</span>}
+            {hasPrice(product) && <span className="text-[10px] text-slate-500 dark:text-slate-400">/sq.ft</span>}
           </div>
         </div>
         <button
@@ -341,7 +341,7 @@ export default function ProductDetailClient({ slug }) {
 function Spec({ label, value }) {
   return (
     <div>
-      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{label}</div>
+      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{label}</div>
       <div className="mt-0.5 text-sm font-semibold text-ink dark:text-white">{value || '—'}</div>
     </div>
   );

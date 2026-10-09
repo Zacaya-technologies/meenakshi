@@ -23,7 +23,7 @@ function FacetGroup({ label, icon, options, selected, onToggle, searchable }) {
           {icon}
           {label}
         </span>
-        <Icon.chevronDown className={`h-4 w-4 text-slate-400 transition-transform duration-250 ${open ? 'rotate-180' : ''}`} />
+        <Icon.chevronDown className={`h-4 w-4 text-slate-500 transition-transform duration-250 ${open ? 'rotate-180' : ''}`} />
       </button>
 
       <AnimatePresence initial={false}>
@@ -59,13 +59,13 @@ function FacetGroup({ label, icon, options, selected, onToggle, searchable }) {
                         />
                         <span className="truncate">{opt.name}</span>
                         {typeof opt.count === 'number' && (
-                          <span className="ml-auto shrink-0 text-[11px] text-slate-400">{opt.count}</span>
+                          <span className="ml-auto shrink-0 text-[11px] text-slate-500 dark:text-slate-400">{opt.count}</span>
                         )}
                       </label>
                     </li>
                   );
                 })}
-                {filtered.length === 0 && <li className="text-xs text-slate-400">No options</li>}
+                {filtered.length === 0 && <li className="text-xs text-slate-500 dark:text-slate-400">No options</li>}
               </ul>
             </div>
           </motion.div>
@@ -106,14 +106,14 @@ export default function FilterSidebar({ facets, selected, onToggle, onPriceChang
   return (
     <aside className="scrollbar-mega mb-6 w-full rounded-[20px] border-[1.5px] border-border bg-white p-5 shadow-card lg:sticky lg:top-[calc(var(--header-h)+16px)] lg:mb-0 lg:max-h-[calc(100vh-var(--header-h)-32px)] lg:overflow-y-auto dark:bg-navy2 dark:border-white/10">
       <div className="mb-3 flex items-center justify-between border-b border-border pb-4 dark:border-white/10">
-        <h4 className="flex items-center gap-2 font-heading text-[15px] font-bold text-ink dark:text-white">
+        <h2 className="flex items-center gap-2 font-heading text-[15px] font-bold text-ink dark:text-white">
           <Icon.filter className="h-4 w-4 text-brand-blue" /> Filters
           {activeCount > 0 && (
             <span className="rounded-full bg-brand-blue px-2 py-0.5 text-[11px] font-extrabold text-white">{activeCount}</span>
           )}
-        </h4>
+        </h2>
         {activeCount > 0 && (
-          <button onClick={onClear} className="text-xs font-medium text-slate-400 transition hover:text-brand-blue">
+          <button onClick={onClear} className="text-xs font-medium text-slate-500 transition hover:text-brand-blue">
             Clear all
           </button>
         )}
@@ -140,7 +140,7 @@ export default function FilterSidebar({ facets, selected, onToggle, onPriceChang
             placeholder={String(priceRange.min)}
             className="w-full rounded-lg border-[1.5px] border-border bg-brand-light px-2.5 py-2 text-xs text-ink outline-none transition focus:border-brand-blue dark:bg-navy dark:text-white dark:border-white/10"
           />
-          <span className="text-slate-400">–</span>
+          <span className="text-slate-500 dark:text-slate-400">–</span>
           <input
             name="max"
             type="number"

@@ -142,3 +142,21 @@
     bottom: calc(max(1.5rem, env(safe-area-inset-bottom)) + 4.5rem);
   }
 }
+
+/* Brand blue #1EA7FD is only ~2.6:1 on white: right for the navy chrome, too
+   light for small text on light surfaces. Text there uses a deeper shade
+   (~5.3:1); inside dark areas and in dark mode the original blue returns.
+   :where() keeps specificity at a single class so hover/dark variants win. */
+.text-brand-blue {
+  color: #0a6ebd;
+}
+:where(.dark, footer, [aria-label="Navigation menu"], .bg-brand-navy, .bg-brand-navy2,
+  .bg-brand-chrome, .bg-navy, .bg-navy2, .bg-ink, .bg-slate-900) .text-brand-blue {
+  color: #1ea7fd;
+}
+
+/* White text on solid brand blue is ~2.6:1; give those fills (selected pills,
+   badges, solid buttons) the deeper brand shade instead (~5.3:1). */
+.bg-brand-blue.text-white {
+  background-color: #0a6ebd;
+}

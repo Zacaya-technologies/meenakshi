@@ -9,7 +9,7 @@ export function PageHeader({ title, subtitle, action }) {
     <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
       <div>
         <h1 className="font-heading text-2xl font-extrabold text-ink dark:text-white">{title}</h1>
-        {subtitle && <p className="mt-1 text-sm text-slate-400">{subtitle}</p>}
+        {subtitle && <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{subtitle}</p>}
       </div>
       {action}
     </div>
@@ -29,7 +29,7 @@ export function Button({ children, variant = 'primary', className = '', ...props
     primary: 'bg-gradient-to-r from-brand-blue to-brand-deep text-white shadow-glow hover:-translate-y-0.5',
     outline: 'border-[1.5px] border-brand-blue text-brand-blue hover:bg-brand-blue/5',
     ghost: 'text-slate-500 hover:bg-brand-light dark:text-slate-400 dark:hover:bg-white/5',
-    danger: 'border-[1.5px] border-rose-400 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10'
+    danger: 'border-[1.5px] border-rose-400 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10'
   };
   return (
     <button
@@ -45,10 +45,10 @@ export function Field({ label, hint, required, children, className = '' }) {
   return (
     <label className={`block ${className}`}>
       <span className="mb-1.5 flex items-center gap-1 text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-        {label} {required && <span className="text-rose-500">*</span>}
+        {label} {required && <span className="text-rose-600 dark:text-rose-400">*</span>}
       </span>
       {children}
-      {hint && <span className="mt-1 block text-[11px] text-slate-400">{hint}</span>}
+      {hint && <span className="mt-1 block text-[11px] text-slate-500 dark:text-slate-400">{hint}</span>}
     </label>
   );
 }
@@ -116,7 +116,7 @@ export function Modal({ open, onClose, title, children, wide }) {
             onClick={e => e.stopPropagation()}
           >
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="font-heading text-lg font-bold text-ink dark:text-white">{title}</h3>
+              <h2 className="font-heading text-lg font-bold text-ink dark:text-white">{title}</h2>
               <button onClick={onClose} className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-ink dark:bg-white/10 dark:text-white" aria-label="Close">
                 <Icon.close className="h-5 w-5" />
               </button>
@@ -130,5 +130,5 @@ export function Modal({ open, onClose, title, children, wide }) {
 }
 
 export function EmptyState({ label }) {
-  return <p className="py-10 text-center text-sm text-slate-400">{label}</p>;
+  return <p className="py-10 text-center text-sm text-slate-500 dark:text-slate-400">{label}</p>;
 }

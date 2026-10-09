@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { API, FALLBACK_IMG, formatPrice } from '@/lib/api';
 import { Icon } from '@/components/ui/Icons';
+import { useOverlay } from '@/lib/useOverlay';
 
 export default function SearchModal({ open, onClose }) {
   const router = useRouter();
@@ -14,13 +15,13 @@ export default function SearchModal({ open, onClose }) {
   // once the response for what is typed has actually arrived.
   const [resultsFor, setResultsFor] = useState('');
   const inputRef = useRef(null);
+  useOverlay(open, onClose, inputRef);
 
   useEffect(() => {
     if (open) {
       setQ('');
       setSuggestions([]);
       setResultsFor('');
-      setTimeout(() => inputRef.current?.focus(), 60);
     }
   }, [open]);
 
@@ -60,6 +61,9 @@ export default function SearchModal({ open, onClose }) {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -16, opacity: 0 }}
             transition={{ duration: 0.22, ease: 'easeOut' }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Search products"
             className="h-fit w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl dark:bg-navy2"
             onClick={e => e.stopPropagation()}
           >
@@ -97,7 +101,7 @@ export default function SearchModal({ open, onClose }) {
                     <img src={s.image || FALLBACK_IMG} alt={s.name} className="h-12 w-12 rounded-lg object-cover" loading="lazy" />
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-semibold text-ink dark:text-white">{s.name}</div>
-                      <div className="text-xs text-slate-400">{s.kind === 'category' ? `Browse ${s.group_name || 'category'}` : s.size}</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400">{s.kind === 'category' ? `Browse ${s.group_name || 'category'}` : s.size}</div>
                     </div>
                     {s.kind === 'product' ? (
                       <span className="text-sm font-bold text-brand-blue">{formatPrice(s)}</span>
@@ -109,7 +113,7 @@ export default function SearchModal({ open, onClose }) {
               </div>
             )}
             {q.length >= 2 && resultsFor === q && suggestions.length === 0 && (
-              <div className="mt-4 text-center text-sm text-slate-400">
+              <div className="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">
                 No quick matches for “{q}” — press Enter to search the full catalogue.
               </div>
             )}

@@ -8,6 +8,7 @@ import { useApp } from '@/lib/store';
 import { useBusiness, cartQuoteLink } from '@/lib/business';
 import { FALLBACK_IMG, formatBoxPrice, hasPrice } from '@/lib/api';
 import { Icon } from '@/components/ui/Icons';
+import { useOverlay } from '@/lib/useOverlay';
 
 const UNDO_MS = 5000;
 
@@ -23,15 +24,9 @@ export default function CartDrawer({ open, onClose }) {
   const boxes = cart.reduce((n, i) => n + i.quantityBoxes, 0);
   const onRequest = cart.some(i => !hasPrice(i.product));
 
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
-    document.addEventListener('keydown', onKey);
-    // Move focus into the dialog (the panel itself, so no focus ring flashes
-    // on the close button for mouse users).
-    const t = setTimeout(() => panelRef.current?.focus(), 60);
-    return () => { document.removeEventListener('keydown', onKey); clearTimeout(t); };
-  }, [open, onClose]);
+  // Focus goes to the panel itself (no ring flashes on the close button for
+  // mouse users) and back to the cart button on close.
+  useOverlay(open, onClose, panelRef);
 
   // Drop the undo offer when the drawer closes.
   useEffect(() => { if (!open) setRemoved(null); }, [open]);
@@ -63,7 +58,7 @@ export default function CartDrawer({ open, onClose }) {
           exit={{ opacity: 0 }}
           onClick={onClose}
         >
-          <motion.aside
+          <motion.div
             ref={panelRef}
             tabIndex={-1}
             role="dialog"
@@ -81,7 +76,7 @@ export default function CartDrawer({ open, onClose }) {
               <div className="flex items-baseline gap-2">
                 <h2 className="text-lg font-semibold tracking-tight text-slate-900 dark:text-white">Cart</h2>
                 {cart.length > 0 && (
-                  <span className="text-sm text-slate-400">
+                  <span className="text-sm text-slate-500 dark:text-slate-400">
                     {cart.length} {cart.length === 1 ? 'item' : 'items'}
                   </span>
                 )}
@@ -100,7 +95,7 @@ export default function CartDrawer({ open, onClose }) {
             <div className="flex-1 overflow-y-auto px-6">
               {cart.length === 0 && !removed ? (
                 <div className="flex h-full flex-col items-center justify-center pb-16 text-center">
-                  <span className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400 dark:bg-white/5">
+                  <span className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-500 dark:bg-white/5">
                     <Icon.bag className="h-6 w-6" />
                   </span>
                   <p className="mt-4 font-semibold text-slate-900 dark:text-white">Your cart is empty</p>
@@ -159,7 +154,7 @@ export default function CartDrawer({ open, onClose }) {
                                 {[p.size, p.finish].filter(Boolean).join(' · ')}
                               </p>
                               {!hasPrice(p) && (
-                                <p className="mt-0.5 text-xs text-slate-400">Price on request</p>
+                                <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Price on request</p>
                               )}
 
                               <div className="mt-auto flex items-center justify-between pt-3">
@@ -254,7 +249,7 @@ export default function CartDrawer({ open, onClose }) {
                 </button>
               </div>
             )}
-          </motion.aside>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>

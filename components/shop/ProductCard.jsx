@@ -85,7 +85,7 @@ export default function ProductCard({ product, onQuickView }) {
           )}
           <button
             onClick={() => toggleWishlist(product)}
-            className={`${ACTION_BTN} ${inWish ? 'text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10' : 'text-slate-600 hover:bg-rose-50 hover:text-rose-500 dark:text-slate-300 dark:hover:bg-rose-500/10'}`}
+            className={`${ACTION_BTN} ${inWish ? 'text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10' : 'text-slate-600 hover:bg-rose-50 hover:text-rose-500 dark:text-slate-300 dark:hover:bg-rose-500/10'}`}
             aria-label={inWish ? 'Remove from wishlist' : 'Add to wishlist'}
             aria-pressed={inWish}
           >
@@ -106,7 +106,7 @@ export default function ProductCard({ product, onQuickView }) {
 
       <div className="flex flex-1 flex-col px-4 pb-4 pt-3.5">
         {eyebrow && (
-          <span className="truncate text-[10.5px] font-semibold uppercase tracking-[0.12em] text-slate-400">
+          <span className="truncate text-[10.5px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
             {eyebrow}
           </span>
         )}
@@ -130,7 +130,7 @@ export default function ProductCard({ product, onQuickView }) {
                 </span>
                 <span className="text-[11px] text-slate-500">/sq.ft</span>
                 {off > 0 && (
-                  <span className="text-[12px] text-slate-400 line-through">₹{Number(product.price).toLocaleString('en-IN')}</span>
+                  <span className="text-[12px] text-slate-500 line-through">₹{Number(product.price).toLocaleString('en-IN')}</span>
                 )}
               </div>
             ) : (
@@ -140,7 +140,7 @@ export default function ProductCard({ product, onQuickView }) {
               href={enquireHref}
               target="_blank"
               rel="noreferrer"
-              className="mt-0.5 inline-flex items-center gap-1 text-[12.5px] font-semibold text-[#128C7E] hover:underline dark:text-[#25D366]"
+              className="mt-0.5 inline-flex items-center gap-1 text-[12.5px] font-semibold text-[#0E7A6E] hover:underline dark:text-[#25D366]"
             >
               <Icon.whatsapp className="h-3.5 w-3.5" /> Enquire
             </a>

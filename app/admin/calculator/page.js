@@ -33,7 +33,7 @@ export default function AdminCalculatorPage() {
     return (
       <div>
         <PageHeader title="Tile Calculator" subtitle="Configure the customer-facing tile quantity calculator." />
-        <Card><p className="py-8 text-center text-sm text-slate-400">Loading settings…</p></Card>
+        <Card><p className="py-8 text-center text-sm text-slate-500 dark:text-slate-400">Loading settings…</p></Card>
       </div>
     );
   }
@@ -118,7 +118,7 @@ export default function AdminCalculatorPage() {
 
         <Card>
           <h3 className="mb-4 font-heading text-sm font-extrabold uppercase tracking-wide text-brand-blue">Area Presets</h3>
-          <p className="mb-3 text-xs text-slate-400">Organizational labels shown when a customer names an area in Multiple Areas mode — these never auto-fill dimensions.</p>
+          <p className="mb-3 text-xs text-slate-500 dark:text-slate-400">Organizational labels shown when a customer names an area in Multiple Areas mode — these never auto-fill dimensions.</p>
           <ListEditor
             items={areaPresets}
             onChange={items => setField('area_presets', items)}
@@ -148,7 +148,7 @@ function ListEditor({ items, onChange, renderItem, newItem }) {
           <button
             onClick={() => remove(i)}
             aria-label="Remove"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-500 transition hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-500/10 dark:text-slate-400"
           >
             <Icon.close className="h-4 w-4" />
           </button>

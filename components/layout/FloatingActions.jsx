@@ -32,7 +32,8 @@ export default function FloatingActions() {
   if (pathname?.startsWith('/admin')) return null;
 
   return (
-    <div
+    <aside
+      aria-label="Contact us"
       className={`floating-rail fixed right-4 z-[1200] flex flex-col items-end gap-3 ${overBottomBar ? 'floating-rail--above-bar' : ''}`}
     >
       <AnimatePresence>
@@ -120,7 +121,7 @@ export default function FloatingActions() {
           {chatOpen ? <Icon.close className="h-5 w-5" /> : <Icon.chatSolid className="h-5 w-5" />}
         </DockButton>
       </div>
-    </div>
+    </aside>
   );
 }
 

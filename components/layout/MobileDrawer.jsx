@@ -8,6 +8,7 @@ import { groupHeading } from '@/lib/menuData';
 import { useBusiness, telHref, waLink, waGreeting } from '@/lib/business';
 import { useApp } from '@/lib/store';
 import { Icon, NavIcon, AnyIcon } from '@/components/ui/Icons';
+import { useOverlay } from '@/lib/useOverlay';
 
 const PAGE_LINKS = [
   { label: 'Home', url: '/' },
@@ -30,16 +31,7 @@ export default function MobileDrawer({ open, onClose, menuItems }) {
 
   // Escape closes; focus lands on the close button so the drawer is immediately
   // dismissable by keyboard and announced by screen readers on open.
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
-    document.addEventListener('keydown', onKey);
-    const t = setTimeout(() => closeRef.current?.focus(), 80);
-    return () => {
-      document.removeEventListener('keydown', onKey);
-      clearTimeout(t);
-    };
-  }, [open, onClose]);
+  useOverlay(open, onClose, closeRef);
 
   // Collapse back to the top level each time the drawer is dismissed.
   useEffect(() => {

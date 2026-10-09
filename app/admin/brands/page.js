@@ -47,12 +47,12 @@ export default function AdminBrandsPage() {
               <div className="flex items-start justify-between">
                 <div>
                   <h3 className="font-heading text-sm font-bold text-ink dark:text-white">{b.name}</h3>
-                  <p className="text-xs text-slate-400">/{b.slug}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">/{b.slug}</p>
                 </div>
                 {b.is_featured ? <Badge tone="blue">Featured</Badge> : null}
               </div>
-              <p className="mt-2 line-clamp-2 text-xs text-slate-400">{b.description}</p>
-              <button onClick={() => remove(b)} className="mt-3 text-xs font-bold text-rose-500 hover:underline">Delete</button>
+              <p className="mt-2 line-clamp-2 text-xs text-slate-500 dark:text-slate-400">{b.description}</p>
+              <button onClick={() => remove(b)} className="mt-3 text-xs font-bold text-rose-600 dark:text-rose-400 hover:underline">Delete</button>
             </Card>
           ))}
         </div>

@@ -6,7 +6,7 @@ export const metadata = { title: 'Page not found | Meenakshi Build World', robot
 export default function NotFound() {
   return (
     <section className="mx-auto flex min-h-[60vh] max-w-[1380px] flex-col items-center justify-center px-4 py-20 text-center sm:px-6">
-      <span className="font-heading text-7xl font-black text-brand-blue/20 sm:text-8xl">404</span>
+      <span aria-hidden="true" className="font-heading text-7xl font-black tracking-tight text-brand-blue sm:text-8xl">404</span>
       <h1 className="mt-2 font-heading text-2xl font-extrabold text-ink dark:text-white sm:text-3xl">We couldn&apos;t find that page</h1>
       <p className="mt-3 max-w-md text-sm text-slate-500 dark:text-slate-400">
         The link may be old or the product may have moved. Browse the catalogue or get in touch and we&apos;ll help you find it.
