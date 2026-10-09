@@ -5,3 +5,8 @@ node_modules/
 tile_marketplace.sqlite
 .next/
 server.pid
+
+# Raw image packs and scraped sheets dropped into public/ for import — the
+# importer turns them into public/images/products/<slug>.webp; not shipped.
+public/images/products/Folder_*/
+public/images/products_overall.csv
