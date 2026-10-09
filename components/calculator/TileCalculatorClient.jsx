@@ -133,17 +133,18 @@ export default function TileCalculatorClient() {
   };
 
   // ---- Validation ----
+  const isNum = v => v !== '' && v !== null && !isNaN(Number(v));
   const errors = useMemo(() => {
     const e = {};
     areas.forEach((a, i) => {
-      if (a.length === '' || a.length === null) e[`area-${a.id}-length`] = 'Please enter the length.';
+      if (!isNum(a.length)) e[`area-${a.id}-length`] = 'Please enter a valid length.';
       else if (Number(a.length) <= 0) e[`area-${a.id}-length`] = 'Must be greater than zero.';
-      if (a.width === '' || a.width === null) e[`area-${a.id}-width`] = calcType === 'wall' ? 'Please enter the height.' : 'Please enter the width.';
+      if (!isNum(a.width)) e[`area-${a.id}-width`] = calcType === 'wall' ? 'Please enter the height.' : 'Please enter the width.';
       else if (Number(a.width) <= 0) e[`area-${a.id}-width`] = 'Must be greater than zero.';
     });
-    if (tileLength === '' || tileLength === null) e.tileLength = 'Please enter the tile length.';
+    if (!isNum(tileLength)) e.tileLength = 'Please enter a valid tile length.';
     else if (Number(tileLength) <= 0) e.tileLength = 'Must be greater than zero.';
-    if (tileWidth === '' || tileWidth === null) e.tileWidth = 'Please enter the tile width.';
+    if (!isNum(tileWidth)) e.tileWidth = 'Please enter a valid tile width.';
     else if (Number(tileWidth) <= 0) e.tileWidth = 'Must be greater than zero.';
     return e;
   }, [areas, tileLength, tileWidth, calcType]);
