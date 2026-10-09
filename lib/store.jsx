@@ -91,6 +91,17 @@ export function AppProvider({ children }) {
     });
   };
 
+  // Puts a just-removed line back where it was (cart "Undo").
+  const restoreCartItem = (item, index) => {
+    setCart(prev => {
+      if (prev.some(i => i.product.id === item.product.id)) return prev;
+      const next = [...prev];
+      next.splice(Math.min(Math.max(index, 0), next.length), 0, item);
+      persist(LS.cart, next);
+      return next;
+    });
+  };
+
   const toggleWishlist = (product) => {
     setWishlist(prev => {
       const exists = prev.some(p => p.id === product.id);
@@ -139,7 +150,7 @@ export function AppProvider({ children }) {
     () => ({
       user, token, cart, wishlist, compare, darkMode, hydrated,
       cartCount, cartTotal,
-      addToCart, updateCartQty, removeFromCart, toggleWishlist, toggleCompare,
+      addToCart, updateCartQty, removeFromCart, restoreCartItem, toggleWishlist, toggleCompare,
       login, logout, setDarkMode
     }),
     [user, token, cart, wishlist, compare, darkMode, hydrated, cartCount, cartTotal]
