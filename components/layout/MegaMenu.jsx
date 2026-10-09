@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import Link from 'next/link';
 import { API, FALLBACK_IMG, formatPrice, hasPrice } from '@/lib/api';
-import { groupHeading } from '@/lib/menuData';
 import { Icon, AnyIcon } from '@/components/ui/Icons';
 
 export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeepOpen }) {
@@ -107,7 +106,7 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
 
               {columns[0] && (
                 <>
-                  <ColumnHeading icon={columns[0].icon}>{groupHeading(categoryName, columns[0].label)}</ColumnHeading>
+                  <ColumnHeading icon={columns[0].icon}>{columns[0].label}</ColumnHeading>
                   <FacetList items={columns[0].items} isLoading={isLoading} onNavigate={onClose} />
                 </>
               )}
@@ -116,7 +115,7 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
             {/* Columns 2–6 — remaining facet groups (Size / Design / Type / Finish / Color) */}
             {columns.slice(1).map(col => (
               <div key={col.key} className="min-w-0">
-                <ColumnHeading icon={col.icon}>{groupHeading(categoryName, col.label)}</ColumnHeading>
+                <ColumnHeading icon={col.icon}>{col.label}</ColumnHeading>
                 <FacetList items={col.items} isLoading={isLoading} onNavigate={onClose} />
               </div>
             ))}
@@ -139,12 +138,14 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
               </h4>
 
               {isLoadingLatest ? (
-                <div className="grid grid-cols-2 gap-2.5">
+                <div className="flex flex-col gap-3">
                   {Array.from({ length: 4 }).map((_, i) => (
-                    <div key={i}>
-                      <div className="aspect-square animate-pulse rounded-lg bg-white/[0.06]" />
-                      <div className="mt-2 h-2.5 w-4/5 animate-pulse rounded bg-white/[0.06]" />
-                      <div className="mt-1.5 h-2.5 w-1/2 animate-pulse rounded bg-white/[0.05]" />
+                    <div key={i} className="flex items-center gap-3">
+                      <div className="h-12 w-12 shrink-0 animate-pulse rounded-lg bg-white/[0.06]" />
+                      <div className="flex-1">
+                        <div className="h-2.5 w-4/5 animate-pulse rounded bg-white/[0.06]" />
+                        <div className="mt-1.5 h-2.5 w-1/2 animate-pulse rounded bg-white/[0.05]" />
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -153,35 +154,37 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
                   No products listed in this category yet.
                 </p>
               ) : (
-                <div className="grid grid-cols-2 gap-2.5">
+                // A list (thumb + name) instead of a 2-up grid: the column is
+                // narrow, and the grid squeezed names to "Sedimen Avorio…".
+                <ul className="flex flex-col gap-2.5">
                   {latest.slice(0, 4).map(p => (
-                    <Link
-                      key={p.id}
-                      href={`/product/${p.slug}`}
-                      onClick={onClose}
-                      className="group overflow-hidden rounded-xl transition duration-200"
-                    >
-                      <div className="aspect-square overflow-hidden rounded-lg bg-brand-navy2 ring-1 ring-inset ring-white/[0.06] transition group-hover:ring-brand-blue/40">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={p.image_url || FALLBACK_IMG}
-                          alt=""
-                          width={120}
-                          height={120}
-                          loading="lazy"
-                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-                        />
-                      </div>
-                      <div className="mt-2">
-                        <div className="line-clamp-2 text-[12px] font-semibold leading-tight text-white transition group-hover:text-brand-blue">{p.name}</div>
-                        <div className="mt-1 text-[12px] font-bold text-brand-blue">
-                          {formatPrice(p)}
-                          {hasPrice(p) && <span className="ml-1 text-[10px] font-normal text-brand-slate">/sq.ft</span>}
-                        </div>
-                      </div>
-                    </Link>
+                    <li key={p.id}>
+                      <Link
+                        href={`/product/${p.slug}`}
+                        onClick={onClose}
+                        className="group -m-1 flex items-start gap-2.5 rounded-lg p-1 transition-colors hover:bg-white/[0.05]"
+                      >
+                        <span className="h-10 w-10 shrink-0 overflow-hidden rounded-md bg-brand-navy2 ring-1 ring-inset ring-white/[0.06]">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={p.image_url || FALLBACK_IMG}
+                            alt=""
+                            width={40}
+                            height={40}
+                            loading="lazy"
+                            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                          />
+                        </span>
+                        <span className="min-w-0">
+                          <span className="line-clamp-3 text-[12px] font-medium leading-snug text-white [overflow-wrap:anywhere] transition-colors group-hover:text-brand-blue">{p.name}</span>
+                          <span className="mt-0.5 block text-[11.5px] text-brand-slate">
+                            {formatPrice(p)}{hasPrice(p) && ' /sq.ft'}
+                          </span>
+                        </span>
+                      </Link>
+                    </li>
                   ))}
-                </div>
+                </ul>
               )}
             </div>
           </motion.div>

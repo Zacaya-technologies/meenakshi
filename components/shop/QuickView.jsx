@@ -18,7 +18,8 @@ export default function QuickView({ product, onClose }) {
   const inWish = !!product && wishlist.some(p => p.id === product.id);
 
   const closeRef = useRef(null);
-  useOverlay(!!product, onClose, closeRef);
+  const dialogRef = useRef(null);
+  useOverlay(!!product, onClose, dialogRef);
 
   // Keep the page behind the dialog from scrolling while it is open.
   useEffect(() => {
@@ -43,10 +44,12 @@ export default function QuickView({ product, onClose }) {
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 24, opacity: 0, scale: 0.98 }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            ref={dialogRef}
+            tabIndex={-1}
             role="dialog"
             aria-modal="true"
             aria-label={product.name}
-            className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl dark:bg-navy2"
+            className="relative outline-none max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl dark:bg-navy2"
             onClick={e => e.stopPropagation()}
           >
             <button
@@ -73,11 +76,11 @@ export default function QuickView({ product, onClose }) {
                     {off}% OFF
                   </span>
                 )}
-                <h3 className="font-heading text-2xl font-bold text-ink dark:text-white">{product.name}</h3>
+                <h3 className="pr-10 font-heading text-2xl font-bold text-ink dark:text-white">{product.name}</h3>
                 <p className="mb-3 mt-1 text-sm text-slate-500 dark:text-slate-400">{product.brand_name} • {product.size}</p>
 
                 <div className="flex items-baseline gap-2">
-                  <span className="font-heading text-3xl font-extrabold text-brand-blue">{formatPrice(product)}</span>
+                  <span className={hasPrice(product) ? 'font-heading text-3xl font-extrabold text-brand-blue' : 'text-lg font-semibold text-slate-700 dark:text-slate-200'}>{formatPrice(product)}</span>
                   {off > 0 && <span className="text-sm text-slate-500 line-through">₹{Number(product.price).toLocaleString('en-IN')}</span>}
                   {hasPrice(product) && <span className="text-xs text-slate-500 dark:text-slate-400">/sq.ft</span>}
                 </div>

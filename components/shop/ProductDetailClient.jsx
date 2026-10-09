@@ -299,7 +299,7 @@ export default function ProductDetailClient({ slug }) {
                 </div>
                 <div className="p-3">
                   <div className="line-clamp-2 text-sm font-semibold text-ink dark:text-white">{r.name}</div>
-                  <div className="mt-1 text-sm font-bold text-brand-blue">{formatPrice(r)}</div>
+                  <div className={`mt-1 text-sm ${hasPrice(r) ? 'font-bold text-brand-blue' : 'text-slate-500 dark:text-slate-400'}`}>{formatPrice(r)}</div>
                 </div>
               </button>
             ))}

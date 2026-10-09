@@ -134,7 +134,7 @@ export default function ProductCard({ product, onQuickView }) {
                 )}
               </div>
             ) : (
-              <span className="text-[13px] font-medium text-slate-600 dark:text-slate-300">Price on request</span>
+              <span className="block text-[13px] font-medium text-slate-600 dark:text-slate-300">Price on request</span>
             )}
             <a
               href={enquireHref}

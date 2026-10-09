@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
-import { API, FALLBACK_IMG, formatPrice } from '@/lib/api';
+import { API, FALLBACK_IMG, formatPrice, hasPrice } from '@/lib/api';
 import { Icon } from '@/components/ui/Icons';
 import { useOverlay } from '@/lib/useOverlay';
 
@@ -101,10 +101,10 @@ export default function SearchModal({ open, onClose }) {
                     <img src={s.image || FALLBACK_IMG} alt={s.name} className="h-12 w-12 rounded-lg object-cover" loading="lazy" />
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-semibold text-ink dark:text-white">{s.name}</div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400">{s.kind === 'category' ? `Browse ${s.group_name || 'category'}` : s.size}</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400">{s.kind === 'category' ? `${(s.group_name || 'Category').replace(/^By\s+/i, '')}${s.count ? ` · ${s.count} products` : ''}` : s.size}</div>
                     </div>
                     {s.kind === 'product' ? (
-                      <span className="text-sm font-bold text-brand-blue">{formatPrice(s)}</span>
+                      <span className={`shrink-0 text-sm ${hasPrice(s) ? 'font-bold text-brand-blue' : 'text-slate-500 dark:text-slate-400'}`}>{formatPrice(s)}</span>
                     ) : (
                       <span className="rounded-full bg-brand-blue/10 px-2.5 py-1 text-[11px] font-bold text-brand-blue">Category</span>
                     )}

@@ -288,17 +288,34 @@ router.get('/suggest', async (req, res) => {
                     JOIN category_groups gg ON cc.group_id = gg.id
                     WHERE pcx.product_id = p.id AND gg.group_key = 'size' ${FLATTENED_ORDER.size} LIMIT 1) as size
             FROM products p
-            WHERE (p.published = 1 OR p.published = true) AND (p.name LIKE ? OR p.sku LIKE ?)
+            WHERE (p.published = 1 OR p.published = true)
+              AND (p.name LIKE ? OR p.sku LIKE ? OR EXISTS (
+                    SELECT 1 FROM product_categories pcq JOIN categories ccq ON pcq.category_id = ccq.id
+                    WHERE pcq.product_id = p.id AND ccq.name LIKE ?))
+            ORDER BY CASE WHEN p.name LIKE ? OR p.sku LIKE ? THEN 0 ELSE 1 END, p.id
             LIMIT 5
-        `, [like, like]);
+        `, [like, like, like, like, like]);
 
+        // Every main category has its own "Marble", "Matt", "White"…: merge
+        // same-slug facets into one suggestion with a distinct product count,
+        // skip empty ones, and link merged facets to the catalogue-wide filter.
         const categories = await db.query(`
-            SELECT c.id, c.name, c.slug, c.image, pr.slug as parent_slug, g.name as group_name
-            FROM categories c
-            JOIN categories pr ON c.parent_id = pr.id
-            LEFT JOIN category_groups g ON c.group_id = g.id
-            WHERE c.status = 'active' AND c.name LIKE ?
-            LIMIT 5
+            SELECT * FROM (
+                SELECT MIN(c.id) as id, MIN(c.name) as name, c.slug, MIN(c.image) as image,
+                       MIN(g.name) as group_name, MIN(g.group_key) as group_key,
+                       COUNT(DISTINCT c.parent_id) as parents, MIN(pr.slug) as parent_slug,
+                       (SELECT COUNT(DISTINCT pc.product_id) FROM product_categories pc
+                          JOIN categories c2 ON c2.id = pc.category_id
+                         WHERE c2.slug = c.slug AND c2.group_id = c.group_id) as product_count
+                FROM categories c
+                JOIN categories pr ON c.parent_id = pr.id
+                LEFT JOIN category_groups g ON c.group_id = g.id
+                WHERE c.status = 'active' AND c.name LIKE ?
+                GROUP BY c.group_id, c.slug
+            ) t
+            WHERE t.product_count > 0
+            ORDER BY t.product_count DESC
+            LIMIT 4
         `, [like]);
 
         // Top-level categories (rooms, etc.) are searchable targets too.
@@ -312,7 +329,13 @@ router.get('/suggest', async (req, res) => {
         const suggestions = [
             ...products.map(p => ({ kind: 'product', ...p, url: `/product/${p.slug}` })),
             ...mainCategories.map(c => ({ kind: 'category', ...c, parent_slug: null, group_name: 'Main Category', url: `/${c.slug}` })),
-            ...categories.map(c => ({ kind: 'category', ...c, url: `/${c.parent_slug}/${c.slug}` }))
+            ...categories.map(c => ({
+                kind: 'category', ...c,
+                count: parseInt(c.product_count) || 0,
+                url: parseInt(c.parents) === 1 || !c.group_key
+                    ? `/${c.parent_slug}/${c.slug}`
+                    : `/shop?${c.group_key}=${encodeURIComponent(c.slug)}`
+            }))
         ];
 
         res.json({ success: true, suggestions });
