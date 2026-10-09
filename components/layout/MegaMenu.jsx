@@ -5,7 +5,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import Link from 'next/link';
 import { API, FALLBACK_IMG, formatPrice, hasPrice } from '@/lib/api';
 import { groupHeading } from '@/lib/menuData';
-import { Icon } from '@/components/ui/Icons';
+import { Icon, AnyIcon } from '@/components/ui/Icons';
 
 export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeepOpen }) {
   const reduceMotion = useReducedMotion();
@@ -74,7 +74,7 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
           : { height: 0, transitionEnd: { visibility: 'hidden' } }
       }
       transition={{ duration: open ? enter : exit, ease: open ? [0, 0, 0.2, 1] : [0.4, 0, 1, 1] }}
-      className="overflow-hidden border-t border-slate-200 bg-white shadow-[0_28px_40px_-28px_rgba(15,23,42,0.35)] dark:border-white/10 dark:bg-navy2"
+      className="overflow-hidden border-t border-white/10 bg-brand-navy shadow-mega"
       aria-hidden={!open}
     >
       <motion.div
@@ -99,10 +99,10 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
               <Link
                 href={viewAllUrl}
                 onClick={onClose}
-                className="group/all mb-6 inline-flex items-center gap-2 text-[13px] font-semibold text-slate-900 underline-offset-4 hover:underline dark:text-white"
+                className="mb-5 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-brand-blue to-brand-deep px-4 py-2.5 text-[13px] font-bold text-white shadow-glow transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(30,167,253,0.45)]"
               >
-                Shop all {categoryName}
-                <Icon.arrowRight className="h-3.5 w-3.5 transition-transform group-hover/all:translate-x-0.5" />
+                <Icon.grid className="h-4 w-4" />
+                View All {categoryName}
               </Link>
 
               {columns[0] && (
@@ -123,33 +123,33 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
 
             {isLoading && columns.length === 0 && Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="min-w-0">
-                <div className="mb-3 h-3 w-24 animate-pulse rounded bg-slate-100 dark:bg-white/10" />
+                <div className="mb-2.5 h-3 w-24 animate-pulse rounded bg-white/[0.08]" />
                 <div className="flex flex-col gap-2">
                   {Array.from({ length: 6 }).map((__, j) => (
-                    <div key={j} className="h-3 w-full animate-pulse rounded bg-slate-100 dark:bg-white/5" />
+                    <div key={j} className="h-3 w-full animate-pulse rounded bg-white/[0.05]" />
                   ))}
                 </div>
               </div>
             ))}
 
             {/* Last column — Latest products */}
-            <div className="col-span-2 min-w-0 rounded-lg bg-slate-50 p-4 dark:bg-white/[0.04] md:col-span-3 xl:col-span-1">
-              <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
-                New arrivals
-              </h3>
+            <div className="col-span-2 min-w-0 rounded-2xl border border-white/[0.07] bg-white/[0.035] p-4 md:col-span-3 xl:col-span-1">
+              <h4 className="mb-3 flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-brand-blue">
+                <Icon.fire className="h-4 w-4" /> Latest Products
+              </h4>
 
               {isLoadingLatest ? (
                 <div className="grid grid-cols-2 gap-2.5">
                   {Array.from({ length: 4 }).map((_, i) => (
                     <div key={i}>
-                      <div className="aspect-square animate-pulse rounded-md bg-slate-200 dark:bg-white/10" />
-                      <div className="mt-2 h-2.5 w-4/5 animate-pulse rounded bg-slate-200 dark:bg-white/10" />
-                      <div className="mt-1.5 h-2.5 w-1/2 animate-pulse rounded bg-slate-200 dark:bg-white/5" />
+                      <div className="aspect-square animate-pulse rounded-lg bg-white/[0.06]" />
+                      <div className="mt-2 h-2.5 w-4/5 animate-pulse rounded bg-white/[0.06]" />
+                      <div className="mt-1.5 h-2.5 w-1/2 animate-pulse rounded bg-white/[0.05]" />
                     </div>
                   ))}
                 </div>
               ) : latest.length === 0 ? (
-                <p className="py-6 text-[13px] text-slate-500 dark:text-slate-400">
+                <p className="py-6 text-[13px] text-brand-slate">
                   No products listed in this category yet.
                 </p>
               ) : (
@@ -159,9 +159,9 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
                       key={p.id}
                       href={`/product/${p.slug}`}
                       onClick={onClose}
-                      className="group overflow-hidden"
+                      className="group overflow-hidden rounded-xl transition duration-200"
                     >
-                      <div className="aspect-square overflow-hidden rounded-md bg-slate-200 ring-1 ring-inset ring-black/5 dark:bg-navy">
+                      <div className="aspect-square overflow-hidden rounded-lg bg-brand-navy2 ring-1 ring-inset ring-white/[0.06] transition group-hover:ring-brand-blue/40">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={p.image_url || FALLBACK_IMG}
@@ -169,14 +169,14 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
                           width={120}
                           height={120}
                           loading="lazy"
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
                         />
                       </div>
                       <div className="mt-2">
-                        <div className="line-clamp-2 text-[12px] font-medium leading-snug text-slate-800 group-hover:underline dark:text-slate-100">{p.name}</div>
-                        <div className="mt-0.5 text-[11.5px] text-slate-500 dark:text-slate-400">
+                        <div className="line-clamp-2 text-[12px] font-semibold leading-tight text-white transition group-hover:text-brand-blue">{p.name}</div>
+                        <div className="mt-1 text-[12px] font-bold text-brand-blue">
                           {formatPrice(p)}
-                          {hasPrice(p) && <span className="ml-1">/sq.ft</span>}
+                          {hasPrice(p) && <span className="ml-1 text-[10px] font-normal text-brand-slate">/sq.ft</span>}
                         </div>
                       </div>
                     </Link>
@@ -193,25 +193,26 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
 
 function ColumnHeading({ icon, children }) {
   return (
-    <h3 className="mb-3 truncate text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
-      {children}
-    </h3>
+    <h4 className="mb-2.5 flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-brand-blue">
+      <AnyIcon id={icon} className="h-4 w-4" />
+      <span className="truncate">{children}</span>
+    </h4>
   );
 }
 
 function FacetList({ items, isLoading, onNavigate }) {
   const list = items || [];
   if (!list.length) {
-    return <p className="text-[13px] text-slate-400">{isLoading ? '' : 'Coming soon'}</p>;
+    return <p className="text-[13px] text-brand-slate/60">{isLoading ? '' : 'Coming soon'}</p>;
   }
   return (
-    <ul className="flex flex-col gap-0.5">
+    <ul className="flex flex-col">
       {list.map(item => (
         <li key={item.id}>
           <Link
             href={item.url}
             onClick={onNavigate}
-            className="block py-[5px] text-[13.5px] text-slate-600 transition-colors hover:text-slate-900 hover:underline hover:underline-offset-4 dark:text-slate-300 dark:hover:text-white"
+            className="block border-b border-dashed border-white/[0.07] py-[6px] text-[13px] text-brand-slate transition-all duration-200 hover:pl-1.5 hover:text-brand-blue"
           >
             {item.name}
           </Link>

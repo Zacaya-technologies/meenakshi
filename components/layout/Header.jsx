@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useApp } from '@/lib/store';
 import { useBusiness, telHref, waLink } from '@/lib/business';
 import { API } from '@/lib/api';
-import { Icon } from '@/components/ui/Icons';
+import { Icon, NavIcon } from '@/components/ui/Icons';
 import MegaMenu from './MegaMenu';
 import MobileDrawer from './MobileDrawer';
 import SearchModal from './SearchModal';
@@ -260,37 +260,43 @@ export default function Header() {
   return (
     <>
       {/* Utility bar — scrolls away, it is not part of the sticky unit */}
-      <nav aria-label="Contact and account" className="bg-slate-950 text-white/70">
-        <div className="mx-auto flex h-9 max-w-shell items-center justify-between gap-4 px-4 text-[12px] sm:px-6">
-          <div className="flex min-w-0 items-center gap-5">
-            <span className="hidden truncate tracking-wide text-white/55 xl:inline">{business.tagline}</span>
-            <a href={telHref(business.primary_phone)} className="flex shrink-0 items-center gap-1.5 transition-colors hover:text-white">
-              <Icon.phone className="h-3.5 w-3.5 text-white/50" />
-              <span className="font-medium text-white/85">{business.primary_phone}</span>
-            </a>
+      <nav aria-label="Contact and account" className="bg-brand-chrome text-white/85">
+        <div className="mx-auto flex h-9 max-w-shell items-center justify-between gap-4 px-4 text-xs sm:px-6">
+          <div className="flex items-center gap-5 overflow-hidden">
             <a
               href={waLink(business.whatsapp_number, `Hello ${business.business_name}, I would like to know more about your products.`)}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden shrink-0 items-center gap-1.5 transition-colors hover:text-white sm:flex"
+              className="flex shrink-0 items-center gap-1.5 transition hover:text-brand-blue"
             >
-              <Icon.whatsapp className="h-3.5 w-3.5 text-white/50" /> WhatsApp
+              <Icon.whatsapp className="h-4 w-4 text-[#25D366]" />
+              <span className="hidden sm:inline">WhatsApp</span>
+              <strong className="font-semibold text-white">{business.primary_phone}</strong>
             </a>
-            <a href={`mailto:${business.email}`} className="hidden shrink-0 items-center gap-1.5 transition-colors hover:text-white lg:flex">
-              <Icon.mail className="h-3.5 w-3.5 text-white/50" /> {business.email}
+            <a href={telHref(business.primary_phone)} className="hidden shrink-0 items-center gap-1.5 transition hover:text-brand-blue md:flex">
+              <Icon.phone className="h-4 w-4 text-brand-blue" />
+              Call <strong className="font-semibold text-white">{business.primary_phone}</strong>
+            </a>
+            <a
+              href={`mailto:${business.email}`}
+              className="hidden shrink-0 items-center gap-1.5 transition hover:text-brand-blue lg:flex"
+            >
+              <Icon.mail className="h-4 w-4 text-brand-blue" />
+              {business.email}
             </a>
           </div>
 
-          <div className="flex shrink-0 items-center gap-5">
-            <Link href="/calculator" className="hidden transition-colors hover:text-white sm:inline">Tile Calculator</Link>
-            <Link href="/contact" className="hidden transition-colors hover:text-white md:inline">Visit Showroom</Link>
-            {user ? (
+          <div className="flex shrink-0 items-center gap-4">
+            <Link href="/calculator" className="hidden transition hover:text-brand-blue sm:inline">Tile Calculator</Link>
+            <Link href="/contact" className="hidden transition hover:text-brand-blue md:inline">Store Locator</Link>            {user ? (
               <span className="flex items-center gap-3">
-                <span className="hidden max-w-[160px] truncate align-middle text-white/85 sm:inline-block">Hi, {user.name}</span>
-                <button onClick={logout} className="transition-colors hover:text-white">Logout</button>
+                <span className="hidden max-w-[160px] truncate align-middle text-brand-blue sm:inline-block">Hi, <strong>{user.name}</strong></span>
+                <button onClick={logout} className="transition hover:text-brand-blue">Logout</button>
               </span>
             ) : (
-              <Link href="/dealer-login" className="transition-colors hover:text-white">Dealer Login</Link>
+              <Link href="/dealer-login" className="flex items-center gap-1.5 transition hover:text-brand-blue">
+                <Icon.user className="h-4 w-4" /> Dealer Login
+              </Link>
             )}
           </div>
         </div>
@@ -308,51 +314,58 @@ export default function Header() {
       <header
         ref={shellRef}
         onMouseLeave={handleShellLeave}
-        className="sticky top-0 z-rail border-b border-slate-200 bg-white/95 text-slate-900 backdrop-blur supports-[backdrop-filter]:bg-white/90 dark:border-white/10 dark:bg-navy2/95 dark:text-white"
+        className="sticky top-0 z-rail bg-brand-navy text-white shadow-[0_2px_20px_rgba(0,0,0,0.25)]"
       >
         {/* Main row */}
-        <div className="mx-auto flex h-20 max-w-shell items-center gap-2 px-4 sm:gap-6 sm:px-6">
+        <div className="mx-auto flex h-20 max-w-shell items-center gap-2 px-3 sm:gap-3 sm:px-6">
           <button
             onClick={() => setDrawerOpen(true)}
-            className="-ml-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-slate-700 transition-colors hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/10 lg:hidden"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/12 bg-white/5 text-white transition hover:border-brand-blue hover:text-brand-blue lg:hidden"
             aria-label="Open navigation menu"
           >
             <Icon.menu className="h-5 w-5" />
           </button>
 
-          <Link href="/" className="flex shrink-0 items-center" onClick={closeMega} aria-label={`${business.business_name} — home`}>
-            <img
-              src="/images/logo.png"
-              alt={business.business_name}
-              className="h-9 w-auto dark:rounded-md dark:bg-white dark:px-2 dark:py-1 sm:h-12"
-            />
+          <Link href="/" className="flex shrink-0 items-center rounded-xl bg-white px-2.5 py-1.5 shadow-glow sm:px-3" onClick={closeMega}>
+            <img src="/images/logo.png" alt="Meenakshi Build World" className="h-7 w-auto sm:h-9 lg:h-10" />
           </Link>
 
           {/* Search — opens the search overlay, which autofocuses its own input */}
           <button
             onClick={() => setSearchOpen(true)}
-            className="group mx-auto hidden h-11 w-full max-w-[520px] items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-4 text-left transition-colors hover:border-slate-300 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10 lg:flex"
+            className="mx-auto hidden h-11 w-full max-w-[440px] items-center gap-3 rounded-full border border-white/12 bg-white/[0.06] pl-5 pr-1.5 text-left transition hover:border-brand-blue/60 lg:flex"
           >
-            <Icon.search className="h-[18px] w-[18px] shrink-0 text-slate-500 dark:text-slate-400" />
-            <span className="flex-1 truncate text-sm text-slate-500 dark:text-slate-400">
-              Search tiles, slabs, finishes or SKU
+            <span className="flex-1 truncate text-sm text-white/65">
+              Search tiles, marble, sanitaryware, SKU…
+            </span>
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-blue to-brand-deep text-white">
+              <Icon.search className="h-4 w-4" />
             </span>
           </button>
 
-          <div className="ml-auto flex items-center sm:gap-1">
+          <div className="ml-auto flex items-center gap-0.5 sm:gap-1.5">
             <IconAction onClick={() => setSearchOpen(true)} label="Search" className="lg:hidden">
               <Icon.search className="h-5 w-5" />
             </IconAction>
-            <IconAction onClick={() => router.push('/compare')} label="Compare" badge={compare.length} className="hidden sm:flex">
+
+            <IconAction
+              onClick={() => router.push('/compare')}
+              label="Compare"
+              badge={compare.length}
+              caption="Compare"
+              className="hidden sm:flex"
+            >
               <Icon.scales className="h-5 w-5" />
             </IconAction>
-            <IconAction onClick={() => router.push('/wishlist')} label="Wishlist" badge={wishlist.length}>
+
+            <IconAction onClick={() => router.push('/wishlist')} label="Wishlist" badge={wishlist.length} caption="Wishlist">
               <Icon.heart className="h-5 w-5" />
             </IconAction>
-            <IconAction onClick={() => setCartOpen(true)} label="Cart" badge={cartCount}>
+
+            <IconAction onClick={() => setCartOpen(true)} label="Cart" badge={cartCount} caption="Cart">
               <Icon.bag className="h-5 w-5" />
             </IconAction>
-            <span className="mx-1 hidden h-6 w-px bg-slate-200 dark:bg-white/10 sm:block" aria-hidden="true" />
+
             <IconAction
               onClick={() => setDarkMode(!darkMode)}
               label={darkMode ? 'Switch to light theme' : 'Switch to dark theme'}
@@ -364,7 +377,7 @@ export default function Header() {
         </div>
 
         {/* Category rail — every item is a mega-menu trigger, never a link */}
-        <div className="relative border-t border-slate-100 dark:border-white/5">
+        <div className="relative border-t border-white/[0.07] bg-brand-navy2/60">
           <div className="mx-auto max-w-shell px-4 sm:px-6">
             <div className="relative">
               {railEdges.left && (
@@ -377,7 +390,7 @@ export default function Header() {
               <nav
                 ref={railRef}
                 aria-label="Product categories"
-                className={`-mx-3 flex items-stretch overflow-x-auto scrollbar-none ${railMask}`}
+                className={`flex items-stretch gap-1 overflow-x-auto scrollbar-none ${railMask}`}
               >
                 {menuItems.map((item, index) => {
                   const isActive = megaOpen && activeSlug === item.slug;
@@ -394,14 +407,18 @@ export default function Header() {
                       aria-haspopup="true"
                       aria-expanded={isActive}
                       aria-controls="mega-panel"
-                      className={`relative inline-flex shrink-0 cursor-pointer items-center whitespace-nowrap px-3 py-[15px] text-[14px] font-medium transition-colors duration-200 ${
-                        isActive ? 'text-slate-900 dark:text-white' : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
+                      className={`relative inline-flex shrink-0 cursor-pointer items-center gap-2 whitespace-nowrap px-3.5 py-3.5 text-[13.5px] font-semibold transition-colors duration-200 ${
+                        isActive ? 'text-brand-blue' : 'text-white/85 hover:text-brand-blue'
                       }`}
                     >
+                      <NavIcon
+                        id={item.icon}
+                        className={`h-4 w-4 transition-colors ${isActive ? 'text-brand-blue' : 'text-white/45'}`}
+                      />
                       {item.name}
-                      {/* Active underline */}
+                      {/* Active underline — matches the reference's indicator */}
                       <span
-                        className={`pointer-events-none absolute inset-x-3 bottom-0 h-0.5 bg-slate-900 transition-transform duration-200 ease-out-expo dark:bg-white ${
+                        className={`pointer-events-none absolute inset-x-2.5 bottom-0 h-[3px] rounded-t-full bg-brand-blue transition-transform duration-200 ease-out-expo ${
                           isActive ? 'scale-x-100' : 'scale-x-0'
                         }`}
                       />
@@ -433,20 +450,21 @@ export default function Header() {
  * Sub-components
  * -------------------------------------------------------------------- */
 
-// 40px round icon button with a small count badge.
-function IconAction({ onClick, label, badge = 0, className = '', children }) {
+// 44px minimum target, badge, and an optional caption under the glyph so the
+// action is not icon-only on wide screens.
+function IconAction({ onClick, label, badge = 0, caption, className = '', children }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      aria-label={badge > 0 ? `${label} (${badge})` : label}
-      title={label}
-      className={`relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-white/10 dark:hover:text-white ${className}`}
+      aria-label={label}
+      className={`relative flex h-11 min-w-[44px] cursor-pointer flex-col items-center justify-center gap-0.5 rounded-xl px-2 text-white/85 transition hover:bg-white/[0.07] hover:text-brand-blue ${className}`}
     >
       {children}
+      {caption && <span className="hidden text-[9px] font-semibold leading-none xl:block">{caption}</span>}
       {badge > 0 && (
         <span
-          className="absolute right-0.5 top-0.5 flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-slate-900 px-1 text-[10px] font-semibold tabular-nums text-white ring-2 ring-white dark:bg-white dark:text-slate-900 dark:ring-navy2"
+          className="absolute right-0 top-0 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-brand-blue px-1 text-[10px] font-extrabold text-white shadow-glow"
           aria-hidden="true"
         >
           {badge > 99 ? '99+' : badge}
@@ -463,11 +481,12 @@ function RailArrow({ side, onClick }) {
       type="button"
       onClick={onClick}
       aria-label={isLeft ? 'Scroll categories left' : 'Scroll categories right'}
-      className={`absolute top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition-colors hover:text-slate-900 dark:border-white/10 dark:bg-navy2 dark:text-slate-200 ${
-        isLeft ? '-left-1' : '-right-1'
+      className={`absolute top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-white/15 bg-brand-navy text-white shadow-lg transition hover:border-brand-blue hover:text-brand-blue ${
+        isLeft ? 'left-0' : 'right-0'
       }`}
     >
       {isLeft ? <Icon.chevronLeft className="h-4 w-4" /> : <Icon.chevronRight className="h-4 w-4" />}
     </button>
   );
 }
+

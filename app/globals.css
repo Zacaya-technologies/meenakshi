@@ -150,7 +150,7 @@
 .text-brand-blue {
   color: #0a6ebd;
 }
-:where(.dark, footer, [aria-label="Navigation menu"], .bg-brand-navy, .bg-brand-navy2,
+:where(.dark, header, footer, #mega-panel, [aria-label="Navigation menu"], .bg-brand-navy, .bg-brand-navy2,
   .bg-brand-chrome, .bg-navy, .bg-navy2, .bg-ink, .bg-slate-900) .text-brand-blue {
   color: #1ea7fd;
 }
