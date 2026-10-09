@@ -150,7 +150,7 @@ export default function AboutPage() {
               href={waLink(business.whatsapp_number, waGreeting(business))}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl bg-[#25D366] px-4 py-2.5 text-sm font-bold text-white transition hover:scale-105"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#0E7A6E] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#0B655B]"
             >
               <Icon.whatsapp className="h-4 w-4" /> WhatsApp
             </a>

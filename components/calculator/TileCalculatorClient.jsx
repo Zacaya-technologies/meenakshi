@@ -601,7 +601,7 @@ function ResultCard({ result, attempted, tileLength, tileWidth, tileUnit, settin
             href={waLink(business.whatsapp_number, enquireMessage)}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] py-3.5 text-sm font-bold text-white transition hover:brightness-95"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0E7A6E] hover:bg-[#0B655B] py-3.5 text-sm font-bold text-white transition hover:brightness-95"
           >
             <Icon.whatsapp className="h-4 w-4" /> Enquire For These Tiles
           </a>

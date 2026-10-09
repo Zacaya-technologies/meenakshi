@@ -25,17 +25,21 @@ router.get('/analytics', authenticateToken, requireRole('admin'), async (req, re
 
         const mainIds = (await db.query(`SELECT id FROM categories WHERE parent_id IS NULL`)).map(r => r.id);
         const placeholders = mainIds.map(() => '?').join(',');
+        // Every main category carries its own "Marble", "Matt", "White"…, so
+        // grouping per category listed the same facet several times with
+        // partial counts (and duplicate React keys). Group by slug instead and
+        // count distinct products across all of them.
         const rows = await db.query(`
-            SELECT g.group_key, g.name as group_name, g.display_order as g_order,
-                   c.id as cat_id, c.name as cat_name, c.slug as cat_slug,
+            SELECT g.group_key, MIN(g.name) as group_name, MIN(g.display_order) as g_order,
+                   MIN(c.name) as cat_name, c.slug as cat_slug,
                    COUNT(DISTINCT CASE WHEN ${PUBLISHED} THEN pc.product_id END) as count
             FROM category_groups g
             JOIN categories c ON c.group_id = g.id
             LEFT JOIN product_categories pc ON pc.category_id = c.id
             LEFT JOIN products pp ON pc.product_id = pp.id
             WHERE c.parent_id IN (${placeholders}) AND c.status = 'active'
-            GROUP BY g.id, c.id
-            ORDER BY g.display_order ASC, count DESC, c.name ASC
+            GROUP BY g.group_key, c.slug
+            ORDER BY g_order ASC, count DESC, cat_name ASC
         `, mainIds);
 
         const groupsMap = new Map();

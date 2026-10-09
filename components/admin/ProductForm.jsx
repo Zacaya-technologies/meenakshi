@@ -126,7 +126,8 @@ export default function ProductForm({ initial, onSubmit, submitLabel }) {
     setSaving(true);
     const res = await onSubmit({
       ...form,
-      price: parseFloat(form.price),
+      // Empty = price on request (stored as 0), like the imported catalogue.
+      price: form.price === '' ? 0 : parseFloat(form.price),
       offer_price: form.offer_price ? parseFloat(form.offer_price) : null,
       dealer_price: form.dealer_price ? parseFloat(form.dealer_price) : null,
       stock: parseInt(form.stock) || 0,
@@ -267,7 +268,7 @@ export default function ProductForm({ initial, onSubmit, submitLabel }) {
         <Card>
           <h3 className="mb-4 font-heading text-sm font-bold text-ink dark:text-white">Pricing & Stock</h3>
           <div className="grid grid-cols-1 gap-4">
-            <Field label="Price (₹/sq.ft)" required><Input type="number" step="0.01" value={form.price} onChange={e => set('price', e.target.value)} required /></Field>
+            <Field label="Price (₹/sq.ft)" hint="Leave empty to show “Price on request”"><Input type="number" step="0.01" min="0" value={form.price} onChange={e => set('price', e.target.value)} /></Field>
             <Field label="Offer price"><Input type="number" step="0.01" value={form.offer_price} onChange={e => set('offer_price', e.target.value)} /></Field>
             <Field label="Dealer price"><Input type="number" step="0.01" value={form.dealer_price} onChange={e => set('dealer_price', e.target.value)} /></Field>
             <Field label="Stock (boxes)"><Input type="number" value={form.stock} onChange={e => set('stock', e.target.value)} /></Field>

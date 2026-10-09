@@ -429,8 +429,14 @@ router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
             category_ids, images, attributes, variants
         } = req.body;
 
-        if (!name || !price || !category_ids || !category_ids.length) {
-            return res.status(400).json({ success: false, message: 'name, price and category_ids (main + facet tags) are required' });
+        if (!name || !category_ids || !category_ids.length) {
+            return res.status(400).json({ success: false, message: 'name and category_ids (main + facet tags) are required' });
+        }
+        // Price is optional: 0 means "Price on request" (the whole imported
+        // catalogue is priced that way), so it must not be rejected as falsy.
+        const priceValue = price === undefined || price === null || price === '' ? 0 : parseFloat(price);
+        if (!Number.isFinite(priceValue) || priceValue < 0) {
+            return res.status(400).json({ success: false, message: 'price must be a non-negative number' });
         }
 
         const generatedSku = sku || `MBW-${Math.floor(100000 + Math.random() * 900000)}`;
@@ -442,7 +448,7 @@ router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [
             name, generatedSku, slug, brand_id || null, collection_id || null,
-            parseFloat(price), offer_price ? parseFloat(offer_price) : null, dealer_price ? parseFloat(dealer_price) : null,
+            priceValue, offer_price ? parseFloat(offer_price) : null, dealer_price ? parseFloat(dealer_price) : null,
             parseInt(stock || 100), description || '', is_featured ? 1 : 0, is_trending ? 1 : 0,
             published === false ? 0 : 1, seo_title || `${name} | Meenakshi Build World`, seo_description || description || ''
         ]);
@@ -480,7 +486,7 @@ router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
                 await db.query(`INSERT INTO inventory (variant_id, quantity_boxes, reserved_boxes, reorder_level) VALUES (?, ?, 0, 20)`, [variantId, v.stock || stock || 100]);
             }
         } else {
-            await createDefaultVariant(productId, generatedSku, parseFloat(price), offer_price, dealer_price, parseInt(stock || 100), category_ids);
+            await createDefaultVariant(productId, generatedSku, priceValue, offer_price, dealer_price, parseInt(stock || 100), category_ids);
         }
 
         res.json({ success: true, message: `Product '${name}' published. Live at /product/${slug}`, id: productId, slug });

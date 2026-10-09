@@ -141,7 +141,7 @@ export default function Footer() {
             )}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-2 text-sm font-bold text-white transition hover:scale-105"
+            className="flex items-center gap-2 rounded-full bg-[#0E7A6E] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#0B655B]"
           >
             <Icon.whatsapp className="h-4 w-4" /> WhatsApp Support
           </a>

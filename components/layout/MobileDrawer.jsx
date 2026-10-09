@@ -254,7 +254,7 @@ export default function MobileDrawer({ open, onClose, menuItems }) {
                 href={waLink(business.whatsapp_number, waGreeting(business))}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex min-h-[48px] flex-1 items-center justify-center gap-2 rounded-xl bg-[#25D366] text-sm font-bold text-white"
+                className="flex min-h-[48px] flex-1 items-center justify-center gap-2 rounded-xl bg-[#0E7A6E] text-sm font-bold text-white active:bg-[#0B655B]"
               >
                 <Icon.whatsapp className="h-4 w-4" /> WhatsApp
               </a>
