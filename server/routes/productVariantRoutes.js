@@ -32,7 +32,7 @@ router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
         } = req.body;
         if (!product_id || !price) return res.status(400).json({ success: false, message: 'product_id and price are required' });
 
-        const isSqlite = db.getMode() === 'sqlite';
+        const hasInsertId = db.getMode() !== 'pg'; // SQLite and MySQL return insertId
         const generatedSku = sku || `VAR-${Date.now()}`;
 
         if (is_default) {
@@ -47,7 +47,7 @@ router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
             stock || 100, thickness_mm || 9.0, coverage_sqft_per_box || 15.5, weight_kg_per_box || 28.0,
             pieces_per_box || 4, is_default ? 1 : 0
         ]);
-        const variantId = isSqlite ? resDb.insertId : (await db.queryOne(`SELECT id FROM product_variants WHERE sku = ?`, [generatedSku])).id;
+        const variantId = hasInsertId ? resDb.insertId : (await db.queryOne(`SELECT id FROM product_variants WHERE sku = ?`, [generatedSku])).id;
         await db.query(`INSERT INTO inventory (variant_id, quantity_boxes, reserved_boxes, reorder_level) VALUES (?, ?, 0, 20)`, [variantId, stock || 100]);
 
         res.json({ success: true, message: 'Variant added', id: variantId });

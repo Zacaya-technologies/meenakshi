@@ -6,6 +6,7 @@ const nextConfig = {
     serverComponentsExternalPackages: [
       'express',
       'sqlite3',
+      'mysql2',
       'pg',
       'multer',
       'bcryptjs',

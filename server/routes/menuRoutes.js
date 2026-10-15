@@ -110,7 +110,7 @@ router.get('/:categorySlug', async (req, res) => {
                        (SELECT image_url FROM product_images WHERE product_id = p.id ORDER BY is_primary DESC LIMIT 1) as image_url
                 FROM products p
                 WHERE ${published} AND ${slug === ALL_PRODUCTS_SLUG ? '1=1' : scopeExists}
-                ORDER BY p.created_at DESC LIMIT 5
+                ORDER BY p.created_at DESC, p.id DESC LIMIT 5
             `, slug === ALL_PRODUCTS_SLUG ? [] : scopeParams),
             db.query(`
                 SELECT p.id, p.name, p.slug, p.sku, p.price, p.offer_price,
@@ -118,7 +118,7 @@ router.get('/:categorySlug', async (req, res) => {
                 FROM products p
                 WHERE ${published} AND ((p.is_featured = 1 OR p.is_featured = true) OR (p.is_trending = 1 OR p.is_trending = true))
                       AND ${slug === ALL_PRODUCTS_SLUG ? '1=1' : scopeExists}
-                ORDER BY p.rating_avg DESC LIMIT 5
+                ORDER BY p.rating_avg DESC, p.id DESC LIMIT 5
             `, slug === ALL_PRODUCTS_SLUG ? [] : scopeParams)
         ]);
 

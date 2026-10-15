@@ -44,7 +44,7 @@ router.post('/checkout', async (req, res) => {
         const orderNumber = 'ORD-' + Date.now().toString().slice(-6) + '-' + Math.floor(100 + Math.random() * 900);
         const trackingNumber = 'TRK-LUXE-' + Math.floor(100000 + Math.random() * 900000);
 
-        const isSqlite = db.getMode() === 'sqlite';
+        const hasInsertId = db.getMode() !== 'pg'; // SQLite and MySQL return insertId
         const resDb = await db.query(`
             INSERT INTO orders (order_number, user_id, customer_name, customer_email, customer_phone, shipping_address, city, state, pincode, gstin, total_amount, gst_amount, net_payable, payment_status, payment_method, order_status, tracking_number)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'paid', ?, 'Processing', ?)
@@ -54,7 +54,7 @@ router.post('/checkout', async (req, res) => {
             totalSubtotal, gstAmount, netPayable, payment_method, trackingNumber
         ]);
 
-        const orderId = isSqlite ? resDb.insertId : (await db.queryOne(`SELECT id FROM orders WHERE order_number = ?`, [orderNumber])).id;
+        const orderId = hasInsertId ? resDb.insertId : (await db.queryOne(`SELECT id FROM orders WHERE order_number = ?`, [orderNumber])).id;
 
         for (let item of processedItems) {
             await db.query(`

@@ -264,7 +264,7 @@ router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
         const baseSlug = slugOverride && slugify(slugOverride).length ? slugify(slugOverride) : slugify(name);
         const slug = await uniqueSlug(baseSlug, parentId, groupKey, null);
 
-        const isSqlite = db.getMode() === 'sqlite';
+        const hasInsertId = db.getMode() !== 'pg'; // SQLite and MySQL return insertId
         const resDb = await db.query(`
             INSERT INTO categories (name, slug, parent_id, group_id, description, image, banner_url, icon, seo_title, seo_description, status, display_order, parent_main_id, composite_filters)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -274,7 +274,7 @@ router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
             status || 'active', display_order || 0, parent_main_id || null,
             composite_filters ? JSON.stringify(composite_filters) : null
         ]);
-        const id = isSqlite ? resDb.insertId : (await db.queryOne(`SELECT id FROM categories WHERE slug = ? AND (parent_id = ? OR (? IS NULL AND parent_id IS NULL))`, [slug, parentId, parentId])).id;
+        const id = hasInsertId ? resDb.insertId : (await db.queryOne(`SELECT id FROM categories WHERE slug = ? AND (parent_id = ? OR (? IS NULL AND parent_id IS NULL))`, [slug, parentId, parentId])).id;
 
         res.json({
             success: true,

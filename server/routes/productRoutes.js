@@ -23,12 +23,12 @@ const FACET_GROUP_KEYS = ['area', 'application', 'size', 'design', 'type', 'fini
 // Tiles", "2x4", "Large Vitrified Tiles"…); the displayed size must be the
 // exact millimetre one, which the calculator link also parses.
 const FLATTENED_ORDER = {
-    size: `ORDER BY CASE WHEN cc.name LIKE '% mm' THEN 0 WHEN cc.name LIKE '% mm %' THEN 1 ELSE 2 END, LENGTH(cc.name)`
+    size: `ORDER BY CASE WHEN cc.name LIKE '% mm' THEN 0 WHEN cc.name LIKE '% mm %' THEN 1 ELSE 2 END, LENGTH(cc.name), pcx.id`
 };
 const FLATTENED_FIELDS = FACET_GROUP_KEYS.map(key => `
     (SELECT cc.name FROM product_categories pcx JOIN categories cc ON pcx.category_id = cc.id
      JOIN category_groups gg ON cc.group_id = gg.id
-     WHERE pcx.product_id = p.id AND gg.group_key = '${key}' ${FLATTENED_ORDER[key] || ''} LIMIT 1) as ${key}
+     WHERE pcx.product_id = p.id AND gg.group_key = '${key}' ${FLATTENED_ORDER[key] || 'ORDER BY pcx.id'} LIMIT 1) as ${key}
 `).join(',');
 const MAIN_CATEGORY_FIELDS = `
     (SELECT cc.name FROM product_categories pcx JOIN categories cc ON pcx.category_id = cc.id
@@ -98,10 +98,10 @@ router.get('/', async (req, res) => {
         const whereClause = `WHERE ${conditions.join(' AND ')}`;
 
         let orderClause = 'ORDER BY p.id DESC';
-        if (sort === 'price_asc') orderClause = 'ORDER BY COALESCE(p.offer_price, p.price) ASC';
-        if (sort === 'price_desc') orderClause = 'ORDER BY COALESCE(p.offer_price, p.price) DESC';
-        if (sort === 'rating') orderClause = 'ORDER BY p.rating_avg DESC';
-        if (sort === 'popular') orderClause = 'ORDER BY p.views_count DESC';
+        if (sort === 'price_asc') orderClause = 'ORDER BY COALESCE(p.offer_price, p.price) ASC, p.id DESC';
+        if (sort === 'price_desc') orderClause = 'ORDER BY COALESCE(p.offer_price, p.price) DESC, p.id DESC';
+        if (sort === 'rating') orderClause = 'ORDER BY p.rating_avg DESC, p.id DESC';
+        if (sort === 'popular') orderClause = 'ORDER BY p.views_count DESC, p.id DESC';
 
         // Clamp paging: junk like ?page=abc used to reach the SQL as NaN (500 +
         // leaked error) and ?limit=100000 returned the whole catalogue at once.
@@ -162,7 +162,7 @@ router.get('/facets', async (req, res) => {
                     WHERE pc.category_id = c.id AND (pp.published = 1 OR pp.published = true)) as product_count
             FROM categories c
             WHERE c.parent_id IN (${mainIds.map(() => '?').join(',')}) AND c.status = 'active'
-            ORDER BY c.display_order ASC, c.name ASC
+            ORDER BY c.display_order ASC, c.name ASC, c.id ASC
         `, mainIds);
 
         // A "composite" category (e.g. "Anti Skid Terrace Tiles") is never
@@ -196,7 +196,7 @@ router.get('/facets', async (req, res) => {
                         WHERE pc.category_id = c.id AND (pp.published = 1 OR pp.published = true)) as product_count
                 FROM categories c
                 WHERE c.parent_id IS NULL AND c.parent_main_id = ? AND c.status = 'active'
-                ORDER BY c.display_order ASC, c.name ASC
+                ORDER BY c.display_order ASC, c.name ASC, c.id ASC
             `, [mainCategory.id]);
         }
 
@@ -314,7 +314,7 @@ router.get('/suggest', async (req, res) => {
                 GROUP BY c.group_id, c.slug
             ) t
             WHERE t.product_count > 0
-            ORDER BY t.product_count DESC
+            ORDER BY t.product_count DESC, t.id ASC
             LIMIT 4
         `, [like]);
 
@@ -395,7 +395,7 @@ router.get('/:slug', async (req, res) => {
                 JOIN products p2 ON p2.id = pc2.product_id
                 WHERE pc1.product_id = ? AND (p2.published = 1 OR p2.published = true)
                 GROUP BY p2.id, p2.name, p2.slug, p2.price, p2.offer_price, p2.rating_avg
-                ORDER BY overlap DESC
+                ORDER BY overlap DESC, p2.id ASC
                 LIMIT 4
             `, [product.id]),
             db.query(`SELECT category_id FROM product_categories WHERE product_id = ?`, [product.id]),
@@ -433,13 +433,13 @@ async function tagCategories(productId, categoryIds) {
 
 async function createDefaultVariant(productId, sku, price, offer_price, dealer_price, stock, categoryIds) {
     const sizeCat = await db.query(`SELECT c.id FROM categories c JOIN category_groups g ON c.group_id = g.id WHERE g.group_key = 'size' AND c.id IN (${categoryIds.map(() => '?').join(',') || 'NULL'})`, categoryIds);
-    const isSqlite = db.getMode() === 'sqlite';
+    const hasInsertId = db.getMode() !== 'pg'; // SQLite and MySQL return insertId
     const variantSku = `${sku}-V1`;
     const vRes = await db.query(`
         INSERT INTO product_variants (product_id, sku, size_category_id, price, offer_price, dealer_price, stock, is_default, status)
         VALUES (?, ?, ?, ?, ?, ?, ?, 1, 'active')
     `, [productId, variantSku, sizeCat[0]?.id || null, price, offer_price || null, dealer_price || null, stock]);
-    const variantId = isSqlite ? vRes.insertId : (await db.queryOne(`SELECT id FROM product_variants WHERE sku = ?`, [variantSku])).id;
+    const variantId = hasInsertId ? vRes.insertId : (await db.queryOne(`SELECT id FROM product_variants WHERE sku = ?`, [variantSku])).id;
     await db.query(`INSERT INTO inventory (variant_id, quantity_boxes, reserved_boxes, reorder_level) VALUES (?, ?, 0, 20)`, [variantId, stock]);
 }
 
@@ -464,7 +464,7 @@ router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
 
         const generatedSku = sku || `MBW-${Math.floor(100000 + Math.random() * 900000)}`;
         const slug = `${slugify(name)}-${generatedSku.toLowerCase()}`;
-        const isSqlite = db.getMode() === 'sqlite';
+        const hasInsertId = db.getMode() !== 'pg'; // SQLite and MySQL return insertId
 
         const resDb = await db.query(`
             INSERT INTO products (name, sku, slug, brand_id, collection_id, price, offer_price, dealer_price, stock, description, is_featured, is_trending, published, seo_title, seo_description)
@@ -475,7 +475,7 @@ router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
             parseInt(stock || 100), description || '', is_featured ? 1 : 0, is_trending ? 1 : 0,
             published === false ? 0 : 1, seo_title || `${name} | Meenakshi Build World`, seo_description || description || ''
         ]);
-        const productId = isSqlite ? resDb.insertId : (await db.queryOne(`SELECT id FROM products WHERE slug = ?`, [slug])).id;
+        const productId = hasInsertId ? resDb.insertId : (await db.queryOne(`SELECT id FROM products WHERE slug = ?`, [slug])).id;
 
         await tagCategories(productId, category_ids);
 
@@ -505,7 +505,7 @@ router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
                     INSERT INTO product_variants (product_id, sku, size_category_id, price, offer_price, dealer_price, stock, is_default, status)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'active')
                 `, [productId, variantSku, v.size_category_id || null, v.price || price, v.offer_price || null, v.dealer_price || null, v.stock || stock || 100, v.is_default ? 1 : 0]);
-                const variantId = isSqlite ? vRes.insertId : (await db.queryOne(`SELECT id FROM product_variants WHERE sku = ?`, [variantSku])).id;
+                const variantId = hasInsertId ? vRes.insertId : (await db.queryOne(`SELECT id FROM product_variants WHERE sku = ?`, [variantSku])).id;
                 await db.query(`INSERT INTO inventory (variant_id, quantity_boxes, reserved_boxes, reorder_level) VALUES (?, ?, 0, 20)`, [variantId, v.stock || stock || 100]);
             }
         } else {
@@ -574,7 +574,7 @@ router.post('/:id/duplicate', authenticateToken, requireRole('admin'), async (re
         const source = await db.queryOne(`SELECT * FROM products WHERE id = ?`, [req.params.id]);
         if (!source) return res.status(404).json({ success: false, message: 'Product not found' });
 
-        const isSqlite = db.getMode() === 'sqlite';
+        const hasInsertId = db.getMode() !== 'pg'; // SQLite and MySQL return insertId
         const newSku = `${source.sku}-COPY${Math.floor(10 + Math.random() * 90)}`;
         const newName = `${source.name} (Copy)`;
         const newSlug = `${slugify(newName)}-${newSku.toLowerCase()}`;
@@ -583,7 +583,7 @@ router.post('/:id/duplicate', authenticateToken, requireRole('admin'), async (re
             INSERT INTO products (name, sku, slug, brand_id, collection_id, price, offer_price, dealer_price, stock, description, seo_title, seo_description, published)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
         `, [newName, newSku, newSlug, source.brand_id, source.collection_id, source.price, source.offer_price, source.dealer_price, source.stock, source.description, `${newName} | Meenakshi Build World`, source.seo_description]);
-        const newId = isSqlite ? resDb.insertId : (await db.queryOne(`SELECT id FROM products WHERE slug = ?`, [newSlug])).id;
+        const newId = hasInsertId ? resDb.insertId : (await db.queryOne(`SELECT id FROM products WHERE slug = ?`, [newSlug])).id;
 
         const cats = await db.query(`SELECT category_id FROM product_categories WHERE product_id = ?`, [source.id]);
         await tagCategories(newId, cats.map(c => c.category_id));

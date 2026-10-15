@@ -75,8 +75,8 @@ router.post('/register', async (req, res) => {
             VALUES (?, ?, ?, ?, ?, ?, ?)
         `, [name, email.toLowerCase().trim(), password_hash, userRole, phone || '', company_name || '', gstin || '']);
 
-        const isSqlite = db.getMode() === 'sqlite';
-        const userId = isSqlite ? resDb.insertId : (await db.queryOne(`SELECT id FROM users WHERE email = ?`, [email])).id;
+        const hasInsertId = db.getMode() !== 'pg'; // SQLite and MySQL return insertId
+        const userId = hasInsertId ? resDb.insertId : (await db.queryOne(`SELECT id FROM users WHERE email = ?`, [email])).id;
 
         const tokenPayload = { id: userId, name, email, role: userRole };
         const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '7d' });

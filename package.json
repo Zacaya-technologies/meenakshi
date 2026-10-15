@@ -8,13 +8,14 @@
     "dev:api": "node server/server.js",
     "dev:web": "next dev -p 3001",
     "build": "next build",
-    "start": "node server/server.js",
-    "start:web": "next start -p 3001",
-      "seed": "node server/seed.js",
-      "migrate:parking-tiles": "node server/migrate-parking-tiles.js",
-      "migrate:ceramic-tiles": "node server/migrate-ceramic-tiles.js",
-      "migrate:other-tile-areas": "node server/migrate-other-tile-areas.js",
-      "import:somany": "python3 scripts/import_somany_products.py"
+    "start": "next start",
+    "start:api": "node server/server.js",
+    "seed": "node server/seed.js",
+    "migrate:parking-tiles": "node server/migrate-parking-tiles.js",
+    "migrate:ceramic-tiles": "node server/migrate-ceramic-tiles.js",
+    "migrate:other-tile-areas": "node server/migrate-other-tile-areas.js",
+    "import:somany": "python3 scripts/import_somany_products.py",
+    "export:mysql": "python3 scripts/export_mysql.py"
   },
   "keywords": [
     "tile-marketplace",
@@ -35,6 +36,7 @@
     "framer-motion": "^11.3.28",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
+    "mysql2": "~3.24.4",
     "next": "^14.2.5",
     "nodemailer": "^9.0.4",
     "pg": "^8.12.0",
@@ -47,5 +49,8 @@
     "concurrently": "^8.2.2",
     "postcss": "^8.4.39",
     "tailwindcss": "^3.4.7"
+  },
+  "overrides": {
+    "@types/node": "26.6.3"
   }
 }

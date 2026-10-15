@@ -5,7 +5,7 @@ Production-ready enterprise B2B & B2C marketplace for vitrified slabs, tiles, an
 ## Tech Stack
 
 - **Backend:** Node.js + Express
-- **Database:** PostgreSQL (`pg`) / SQLite (`sqlite3`)
+- **Database:** MySQL / MariaDB (`mysql2`, used on Hostinger) / SQLite (`sqlite3`, local + Vercel) / PostgreSQL (`pg`)
 - **Frontend:** Next.js 14 (App Router) + React 18, Tailwind CSS, Framer Motion
 - **Auth:** JWT + bcryptjs
 
@@ -44,9 +44,12 @@ npm run dev       # start server (http://localhost:PORT)
 
 | Command      | Description            |
 | ------------ | ---------------------- |
-| `npm start`  | Run production server  |
-| `npm run dev`| Run server (dev)       |
+| `npm run build` | Build the Next.js site |
+| `npm start`  | Run the production site (`next start`; the API runs in-process) |
+| `npm run start:api` | Run the Express API on its own (port 3000) |
+| `npm run dev`| Run site + API (dev)   |
 | `npm run seed`| Seed the database      |
+| `npm run export:mysql` | Export the SQLite database to `database/meenakshi_mysql.sql` |
 
 ## Product catalogue (Somany range)
 
@@ -71,3 +74,44 @@ Notes:
   admin panel, or add a price column and extend the script.
 - Pieces/coverage per box are standard values for each size — adjust per product if needed.
 - `npm run seed` recreates the old demo products — run `npm run import:somany` after it.
+
+## Deploying on Hostinger (MySQL)
+
+Hostinger runs the site as a Node.js web app with its MySQL database. The app switches to
+MySQL whenever the `DB_*` variables below are set; without them it uses the bundled SQLite file.
+
+**1. Load the database (once).** In hPanel open **Databases → phpMyAdmin**, select your
+database (e.g. `u141162847_meenakshi_db`), open **Import**, choose
+`database/meenakshi_mysql.sql` (or the smaller `.sql.gz`) and click **Import**. This creates
+all tables and loads the full catalogue, settings and the admin account.
+
+**2. Create the web app.** hPanel → **Websites → Add website → Node.js Apps**, import this
+GitHub repository (branch `main`). Framework: **Next.js**, Node **20** or newer,
+build command `npm run build`, start command `npm start`.
+
+**3. Set environment variables** (see `.env.example`):
+
+| Variable | Value |
+| --- | --- |
+| `DB_HOST` | `localhost` (or the MySQL host shown in hPanel → Databases) |
+| `DB_PORT` | `3306` |
+| `DB_NAME` | your database name, e.g. `u141162847_meenakshi_db` |
+| `DB_USER` | the database user from hPanel → Databases |
+| `DB_PASSWORD` | that user's password |
+| `JWT_SECRET` | a long random string (signs admin logins) |
+
+Deploy; product images ship with the repo (`public/images/products`).
+
+**Updating the catalogue later.** Import products locally as usual (`npm run import:somany`,
+SQLite), then export **only the catalogue tables** and import that file in phpMyAdmin:
+
+```bash
+python3 scripts/export_mysql.py --catalog-only   # -> database/meenakshi_catalog_mysql.sql
+```
+
+It replaces products, categories, brands and collections but keeps the live site's orders,
+inquiries, users, blogs and settings. (Importing the full `meenakshi_mysql.sql` again would
+replace those too.) Product edits made in the live admin panel are overwritten by a catalogue
+import, so make catalogue changes locally.
+
+After deploying, sign in to `/admin` with the seeded admin account and change its password.

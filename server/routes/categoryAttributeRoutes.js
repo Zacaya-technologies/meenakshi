@@ -37,12 +37,12 @@ router.post('/', authenticateToken, requireRole('admin'), async (req, res) => {
         const { category_id, name, input_type, unit, display_order } = req.body;
         if (!category_id || !name) return res.status(400).json({ success: false, message: 'category_id and name are required' });
         const slug = slugify(name);
-        const isSqlite = db.getMode() === 'sqlite';
+        const hasInsertId = db.getMode() !== 'pg'; // SQLite and MySQL return insertId
         const resDb = await db.query(`
             INSERT INTO category_attributes (category_id, name, slug, input_type, unit, display_order)
             VALUES (?, ?, ?, ?, ?, ?)
         `, [category_id, name, slug, input_type || 'text', unit || null, display_order || 0]);
-        const id = isSqlite ? resDb.insertId : (await db.queryOne(`SELECT id FROM category_attributes WHERE category_id = ? AND slug = ?`, [category_id, slug])).id;
+        const id = hasInsertId ? resDb.insertId : (await db.queryOne(`SELECT id FROM category_attributes WHERE category_id = ? AND slug = ?`, [category_id, slug])).id;
         res.json({ success: true, message: `Attribute '${name}' created`, id });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
