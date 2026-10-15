@@ -43,7 +43,7 @@
     "react-dom": "^19.2.8"
   },
   "optionalDependencies": {
-    "sqlite3": "^6.0.1"
+    "sqlite3": "5.1.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
@@ -54,6 +54,10 @@
   "overrides": {
     "@types/node": "26.6.3",
     "shell-quote": "1.11.0",
-    "postcss": "$postcss"
+    "postcss": "$postcss",
+    "sqlite3": {
+      "tar": "7.5.22",
+      "node-gyp": "12.4.0"
+    }
   }
 }

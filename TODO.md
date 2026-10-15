@@ -19,8 +19,9 @@ On Vercel the Express app runs inside Next.js via `app/api/[...path]/route.js`.
       layout at 320–1920px, dark mode, keyboard navigation and focus return,
       axe-core accessibility scan (0 violations)
 - [x] Legacy SPA removed from `public/`; Express is API-only
-- [x] Security upgrades: Next.js 15.5, React 19, nodemailer 10, sqlite3 6, Tailwind CSS 4
-      (`npm audit`: 0 vulnerabilities); unused multer removed
+- [x] Security upgrades: Next.js 15.5, React 19, nodemailer 10, Tailwind CSS 4
+      (`npm audit`: 0 vulnerabilities); unused multer removed. sqlite3 stays on 5.1.7:
+      6.x Linux binaries need glibc 2.38, which Vercel's runtime lacks
 
 ## Not yet done
 - [ ] Change the seeded admin password (`Password123!` is public in `server/seed.js`)
