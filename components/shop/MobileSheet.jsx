@@ -19,7 +19,7 @@ export default function MobileSheet({ open, onClose, title, children }) {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[2200] flex items-end justify-center bg-navy/60 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-2200 flex items-end justify-center bg-navy/60 backdrop-blur-xs lg:hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

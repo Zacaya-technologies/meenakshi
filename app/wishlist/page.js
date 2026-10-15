@@ -11,11 +11,11 @@ export default function WishlistPage() {
 
   if (wishlist.length === 0) {
     return (
-      <div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-24 text-center">
+      <div className="mx-auto max-w-shell px-4 sm:px-6 py-24 text-center">
         <Icon.heart className="mx-auto h-14 w-14 text-slate-300" />
         <h1 className="mt-4 font-heading text-2xl font-bold text-ink dark:text-white">Your wishlist is empty</h1>
         <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Tap the heart icon on any product to save it here.</p>
-        <button onClick={() => router.push('/shop')} className="mt-5 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep px-6 py-3 text-sm font-bold text-white">
+        <button onClick={() => router.push('/shop')} className="mt-5 rounded-xl bg-linear-to-r from-brand-blue to-brand-deep px-6 py-3 text-sm font-bold text-white">
           Discover Tiles
         </button>
       </div>
@@ -23,7 +23,7 @@ export default function WishlistPage() {
   }
 
   return (
-    <div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-10">
+    <div className="mx-auto max-w-shell px-4 sm:px-6 py-10">
       <h1 className="mb-6 font-heading text-3xl font-extrabold text-ink dark:text-white">
         My Wishlist <span className="text-lg font-normal text-slate-500 dark:text-slate-400">({wishlist.length})</span>
       </h1>

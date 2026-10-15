@@ -29,10 +29,10 @@ export default function AboutPage() {
     <div className="bg-brand-light dark:bg-navy">
       {/* Hero */}
       <section className="bg-brand-navy py-16 text-white">
-        <div className="mx-auto max-w-[1380px] px-4 sm:px-6 text-center">
+        <div className="mx-auto max-w-shell px-4 sm:px-6 text-center">
           <p className="text-xs font-bold uppercase tracking-[0.25em] text-brand-blue">About Meenakshi Build World</p>
           <h1 className="mt-3 font-heading text-3xl font-black sm:text-4xl md:text-5xl">Building Trust Since 1996</h1>
-          <p className="mx-auto mt-5 max-w-3xl text-sm leading-relaxed text-slate-300 sm:text-base">
+          <p className="mx-auto mt-5 max-w-3xl text-sm leading-relaxed text-slate-300 sm:text-base sm:leading-6">
             Meenakshi Build World has been serving Bangalore&apos;s building material requirements since 1996.
             Founded by Mr. Anil Kumar A and Mr. Naresh Kumar A, the company has developed into a trusted
             destination for tiles, sanitary ware, steel, cement, plumbing and kitchen products.
@@ -41,7 +41,7 @@ export default function AboutPage() {
       </section>
 
       {/* Stats */}
-      <section className="mx-auto -mt-8 max-w-[1380px] px-4 sm:px-6">
+      <section className="mx-auto -mt-8 max-w-shell px-4 sm:px-6">
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {stats.map(s => (
             <div key={s.label} className="rounded-2xl border-[1.5px] border-border bg-white p-6 text-center shadow-card dark:border-white/10 dark:bg-navy2">
@@ -53,7 +53,7 @@ export default function AboutPage() {
       </section>
 
       {/* Our Story + Experience */}
-      <section className="mx-auto grid max-w-[1380px] gap-8 px-6 py-14 lg:grid-cols-2">
+      <section className="mx-auto grid max-w-shell gap-8 px-6 py-14 lg:grid-cols-2">
         <SectionCard title="Our Story">
           <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">
             Meenakshi Build World is a trusted building-material destination in Bangalore, offering a
@@ -82,7 +82,7 @@ export default function AboutPage() {
       </section>
 
       {/* Our Products */}
-      <section className="mx-auto max-w-[1380px] px-4 sm:px-6 pb-14">
+      <section className="mx-auto max-w-shell px-4 sm:px-6 pb-14">
         <SectionCard title="Our Products">
           <p className="mb-5 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
             One-stop destination covering every major category of construction and building materials:
@@ -112,7 +112,7 @@ export default function AboutPage() {
 
       {/* Why Choose Us */}
       <section className="bg-white py-14 dark:bg-navy2">
-        <div className="mx-auto max-w-[1380px] px-4 sm:px-6">
+        <div className="mx-auto max-w-shell px-4 sm:px-6">
           <h2 className="text-center font-heading text-2xl font-extrabold uppercase tracking-wide text-ink dark:text-white">Why Choose Us</h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {whyUs.map(w => (
@@ -127,13 +127,13 @@ export default function AboutPage() {
       </section>
 
       {/* Brands + Customer Support */}
-      <section className="mx-auto grid max-w-[1380px] gap-8 px-6 py-14 lg:grid-cols-2">
+      <section className="mx-auto grid max-w-shell gap-8 px-6 py-14 lg:grid-cols-2">
         <SectionCard title="Our Brands">
           <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">
             We partner with leading manufacturers across every category we serve. Browse the brands currently
             available on our marketplace.
           </p>
-          <Link href="/brands" className="mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep px-4 py-2.5 text-sm font-bold text-white shadow-glow">
+          <Link href="/brands" className="mt-4 inline-flex items-center gap-2 rounded-xl bg-linear-to-r from-brand-blue to-brand-deep px-4 py-2.5 text-sm font-bold text-white shadow-glow">
             View Brands <Icon.arrowRight className="h-4 w-4" />
           </Link>
         </SectionCard>
@@ -143,7 +143,7 @@ export default function AboutPage() {
             Questions about products, pricing or project quantities? Our team is here to help.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
-            <a href={telHref(business.primary_phone)} className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep px-4 py-2.5 text-sm font-bold text-white shadow-glow">
+            <a href={telHref(business.primary_phone)} className="inline-flex items-center gap-2 rounded-xl bg-linear-to-r from-brand-blue to-brand-deep px-4 py-2.5 text-sm font-bold text-white shadow-glow">
               <Icon.phoneCall className="h-4 w-4" /> {business.primary_phone}
             </a>
             <a

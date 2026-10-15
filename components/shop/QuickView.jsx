@@ -33,7 +33,7 @@ export default function QuickView({ product, onClose }) {
     <AnimatePresence>
       {product && (
         <motion.div
-          className="fixed inset-0 z-[4000] flex items-center justify-center bg-navy/70 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-modal flex items-center justify-center bg-navy/70 p-4 backdrop-blur-xs"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -49,7 +49,7 @@ export default function QuickView({ product, onClose }) {
             role="dialog"
             aria-modal="true"
             aria-label={product.name}
-            className="relative outline-none max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl dark:bg-navy2"
+            className="relative outline-hidden max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl dark:bg-navy2"
             onClick={e => e.stopPropagation()}
           >
             <button

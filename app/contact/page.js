@@ -28,9 +28,9 @@ export default function ContactPage() {
     <div className="bg-brand-light dark:bg-navy">
       {/* Hero */}
       <section className="bg-brand-navy py-16 text-white">
-        <div className="mx-auto max-w-[1380px] px-4 sm:px-6 text-center">
+        <div className="mx-auto max-w-shell px-4 sm:px-6 text-center">
           <p className="text-xs font-bold uppercase tracking-[0.25em] text-brand-blue">Contact Us</p>
-          <h1 className="mt-3 font-heading text-3xl font-black uppercase leading-tight sm:text-4xl md:text-5xl">
+          <h1 className="mt-3 font-heading text-3xl font-black uppercase leading-tight sm:text-4xl sm:leading-10 md:text-5xl md:leading-none">
             Get in Touch with<br className="hidden sm:block" /> Meenakshi Build World
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-sm text-slate-300 sm:text-base">
@@ -40,7 +40,7 @@ export default function ContactPage() {
       </section>
 
       {/* Action buttons */}
-      <section className="mx-auto -mt-8 max-w-[1380px] px-4 sm:px-6">
+      <section className="mx-auto -mt-8 max-w-shell px-4 sm:px-6">
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           <ActionCard href={telHref(business.primary_phone)} icon={<Icon.phoneCall className="h-6 w-6" />} label="Call Now" sub={business.primary_phone} tone="from-brand-blue to-brand-deep" />
           <ActionCard href={waLink(business.whatsapp_number, waGreeting(business))} external icon={<Icon.whatsapp className="h-6 w-6" />} label="WhatsApp" sub={business.primary_phone} tone="from-[#25D366] to-[#128C7E]" />
@@ -50,7 +50,7 @@ export default function ContactPage() {
       </section>
 
       {/* Info + form */}
-      <section className="mx-auto grid max-w-[1380px] gap-8 px-6 py-14 lg:grid-cols-5">
+      <section className="mx-auto grid max-w-shell gap-8 px-6 py-14 lg:grid-cols-5">
         <div className="flex flex-col gap-6 lg:col-span-3">
           <InfoBlock title="Contact Information">
             <div className="grid gap-4 sm:grid-cols-2">
@@ -113,7 +113,7 @@ export default function ContactPage() {
                 required
                 value={form.name}
                 onChange={e => setForm({ ...form, name: e.target.value })}
-                className="w-full rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm outline-none transition focus:border-brand-blue dark:border-white/10 dark:bg-navy dark:text-white"
+                className="w-full rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm outline-hidden transition focus:border-brand-blue dark:border-white/10 dark:bg-navy dark:text-white"
                 placeholder="Your full name"
               />
             </label>
@@ -124,7 +124,7 @@ export default function ContactPage() {
                 type="tel"
                 value={form.phone}
                 onChange={e => setForm({ ...form, phone: e.target.value })}
-                className="w-full rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm outline-none transition focus:border-brand-blue dark:border-white/10 dark:bg-navy dark:text-white"
+                className="w-full rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm outline-hidden transition focus:border-brand-blue dark:border-white/10 dark:bg-navy dark:text-white"
                 placeholder="+91"
               />
             </label>
@@ -134,7 +134,7 @@ export default function ContactPage() {
                 type="email"
                 value={form.email}
                 onChange={e => setForm({ ...form, email: e.target.value })}
-                className="w-full rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm outline-none transition focus:border-brand-blue dark:border-white/10 dark:bg-navy dark:text-white"
+                className="w-full rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm outline-hidden transition focus:border-brand-blue dark:border-white/10 dark:bg-navy dark:text-white"
                 placeholder="you@example.com"
               />
             </label>
@@ -145,7 +145,7 @@ export default function ContactPage() {
                 rows={4}
                 value={form.message}
                 onChange={e => setForm({ ...form, message: e.target.value })}
-                className="w-full rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm outline-none transition focus:border-brand-blue dark:border-white/10 dark:bg-navy dark:text-white"
+                className="w-full rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm outline-hidden transition focus:border-brand-blue dark:border-white/10 dark:bg-navy dark:text-white"
                 placeholder="Products, quantities or project details…"
               />
             </label>
@@ -153,7 +153,7 @@ export default function ContactPage() {
             <button
               type="submit"
               disabled={status === 'sending'}
-              className="w-full rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep px-4 py-3 text-sm font-bold text-white shadow-glow transition hover:-translate-y-0.5 disabled:opacity-50"
+              className="w-full rounded-xl bg-linear-to-r from-brand-blue to-brand-deep px-4 py-3 text-sm font-bold text-white shadow-glow transition hover:-translate-y-0.5 disabled:opacity-50"
             >
               {status === 'sending' ? 'Sending…' : 'Submit Enquiry'}
             </button>
@@ -193,7 +193,7 @@ function ActionCard({ href, icon, label, sub, tone, external }) {
       {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
       className="group flex min-w-0 flex-col items-start gap-3 rounded-2xl border-[1.5px] border-border bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:border-brand-blue dark:border-white/10 dark:bg-navy2 sm:flex-row sm:items-center"
     >
-      <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${tone} text-white sm:h-12 sm:w-12`}>
+      <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-linear-to-br ${tone} text-white sm:h-12 sm:w-12`}>
         {icon}
       </span>
       <span className="w-full min-w-0">

@@ -107,7 +107,7 @@ export default function AdminCalculatorPage() {
                 <select
                   value={item.unit}
                   onChange={e => onEdit({ ...item, unit: e.target.value })}
-                  className="w-full cursor-pointer rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition focus:border-brand-blue dark:bg-navy dark:text-white dark:border-white/10"
+                  className="w-full cursor-pointer rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm text-ink outline-hidden transition focus:border-brand-blue dark:bg-navy dark:text-white dark:border-white/10"
                 >
                   {TILE_UNITS.map(u => <option key={u.value} value={u.value}>{u.label}</option>)}
                 </select>

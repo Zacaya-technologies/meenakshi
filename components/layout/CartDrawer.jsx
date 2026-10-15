@@ -52,7 +52,7 @@ export default function CartDrawer({ open, onClose }) {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[2500] bg-slate-950/50 backdrop-blur-[2px]"
+          className="fixed inset-0 z-2500 bg-slate-950/50 backdrop-blur-[2px]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -68,7 +68,7 @@ export default function CartDrawer({ open, onClose }) {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'tween', duration: reduceMotion ? 0 : 0.32, ease }}
-            className="absolute right-0 top-0 flex h-full w-full max-w-[420px] flex-col bg-white outline-none shadow-[-24px_0_48px_-24px_rgba(15,23,42,0.35)] dark:bg-navy2"
+            className="absolute right-0 top-0 flex h-full w-full max-w-[420px] flex-col bg-white outline-hidden shadow-[-24px_0_48px_-24px_rgba(15,23,42,0.35)] dark:bg-navy2"
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}
@@ -83,7 +83,7 @@ export default function CartDrawer({ open, onClose }) {
               </div>
               <button
                 onClick={onClose}
-                className="-mr-2 flex h-9 w-9 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
+                className="-mr-2 flex h-9 w-9 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand-blue dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
                 aria-label="Close cart"
               >
                 <Icon.close className="h-5 w-5" />
@@ -167,7 +167,7 @@ export default function CartDrawer({ open, onClose }) {
                                   >
                                     <span aria-hidden className="text-base leading-none">−</span>
                                   </button>
-                                  <span className="min-w-[4.25rem] text-center text-xs font-medium tabular-nums text-slate-900 dark:text-white" aria-live="polite">
+                                  <span className="min-w-17 text-center text-xs font-medium tabular-nums text-slate-900 dark:text-white" aria-live="polite">
                                     {item.quantityBoxes} {item.quantityBoxes === 1 ? 'box' : 'boxes'}
                                   </span>
                                   <button
@@ -237,7 +237,7 @@ export default function CartDrawer({ open, onClose }) {
                   href={cartQuoteLink(business, cart)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-slate-900 text-sm font-semibold text-white transition-colors hover:bg-brand-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200 dark:focus-visible:ring-offset-navy2"
+                  className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-slate-900 text-sm font-semibold text-white transition-colors hover:bg-brand-deep focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200 dark:focus-visible:ring-offset-navy2"
                 >
                   <Icon.whatsapp className="h-4 w-4" /> Request quote on WhatsApp
                 </a>

@@ -19,7 +19,8 @@ async function fetchProduct(slug) {
 }
 
 export async function generateMetadata({ params }) {
-  const data = await fetchProduct(params.slug);
+  const { slug } = await params;
+  const data = await fetchProduct(slug);
   if (!data || data === MISSING) return { title: 'Product not found | Meenakshi Build World', robots: { index: false } };
   const { product, images } = data;
   const image = images?.[0]?.image_url;
@@ -32,7 +33,8 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function ProductDetailPage({ params }) {
-  const data = await fetchProduct(params.slug);
+  const { slug } = await params;
+  const data = await fetchProduct(slug);
   // A real 404 status, not a 200 "Product not found" page search engines index.
   if (data === MISSING) notFound();
   const jsonLd = data ? buildProductSchema(data) : null;
@@ -46,8 +48,8 @@ export default async function ProductDetailPage({ params }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       )}
-      <Suspense fallback={<div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-16 text-center text-slate-500 dark:text-slate-400">Loading product…</div>}>
-        <ProductDetailClient slug={params.slug} />
+      <Suspense fallback={<div className="mx-auto max-w-shell px-4 sm:px-6 py-16 text-center text-slate-500 dark:text-slate-400">Loading product…</div>}>
+        <ProductDetailClient slug={slug} />
       </Suspense>
     </>
   );

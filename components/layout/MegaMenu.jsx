@@ -98,7 +98,7 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
               <Link
                 href={viewAllUrl}
                 onClick={onClose}
-                className="mb-5 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-brand-blue to-brand-deep px-4 py-2.5 text-[13px] font-bold text-white shadow-glow transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(30,167,253,0.45)]"
+                className="mb-5 inline-flex items-center gap-2 rounded-full bg-linear-to-r from-brand-blue to-brand-deep px-4 py-2.5 text-[13px] font-bold text-white shadow-glow transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(30,167,253,0.45)]"
               >
                 <Icon.grid className="h-4 w-4" />
                 View All {categoryName}
@@ -122,10 +122,10 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
 
             {isLoading && columns.length === 0 && Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="min-w-0">
-                <div className="mb-2.5 h-3 w-24 animate-pulse rounded bg-white/[0.08]" />
+                <div className="mb-2.5 h-3 w-24 animate-pulse rounded-sm bg-white/8" />
                 <div className="flex flex-col gap-2">
                   {Array.from({ length: 6 }).map((__, j) => (
-                    <div key={j} className="h-3 w-full animate-pulse rounded bg-white/[0.05]" />
+                    <div key={j} className="h-3 w-full animate-pulse rounded-sm bg-white/5" />
                   ))}
                 </div>
               </div>
@@ -141,10 +141,10 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
                 <div className="flex flex-col gap-3">
                   {Array.from({ length: 4 }).map((_, i) => (
                     <div key={i} className="flex items-center gap-3">
-                      <div className="h-12 w-12 shrink-0 animate-pulse rounded-lg bg-white/[0.06]" />
+                      <div className="h-12 w-12 shrink-0 animate-pulse rounded-lg bg-white/6" />
                       <div className="flex-1">
-                        <div className="h-2.5 w-4/5 animate-pulse rounded bg-white/[0.06]" />
-                        <div className="mt-1.5 h-2.5 w-1/2 animate-pulse rounded bg-white/[0.05]" />
+                        <div className="h-2.5 w-4/5 animate-pulse rounded-sm bg-white/6" />
+                        <div className="mt-1.5 h-2.5 w-1/2 animate-pulse rounded-sm bg-white/5" />
                       </div>
                     </div>
                   ))}
@@ -162,9 +162,9 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
                       <Link
                         href={`/product/${p.slug}`}
                         onClick={onClose}
-                        className="group -m-1 flex items-start gap-2.5 rounded-lg p-1 transition-colors hover:bg-white/[0.05]"
+                        className="group -m-1 flex items-start gap-2.5 rounded-lg p-1 transition-colors hover:bg-white/5"
                       >
-                        <span className="h-10 w-10 shrink-0 overflow-hidden rounded-md bg-brand-navy2 ring-1 ring-inset ring-white/[0.06]">
+                        <span className="h-10 w-10 shrink-0 overflow-hidden rounded-md bg-brand-navy2 ring-1 ring-inset ring-white/6">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={p.image_url || FALLBACK_IMG}
@@ -176,7 +176,7 @@ export default function MegaMenu({ open, activeSlug, activeItem, onClose, onKeep
                           />
                         </span>
                         <span className="min-w-0">
-                          <span className="line-clamp-3 text-[12px] font-medium leading-snug text-white [overflow-wrap:anywhere] transition-colors group-hover:text-brand-blue">{p.name}</span>
+                          <span className="line-clamp-3 text-[12px] font-medium leading-snug text-white wrap-anywhere transition-colors group-hover:text-brand-blue">{p.name}</span>
                           <span className="mt-0.5 block text-[11.5px] text-brand-slate">
                             {formatPrice(p)}{hasPrice(p) && ' /sq.ft'}
                           </span>

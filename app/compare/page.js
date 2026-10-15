@@ -22,11 +22,11 @@ export default function ComparePage() {
 
   if (compare.length === 0) {
     return (
-      <div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-24 text-center">
+      <div className="mx-auto max-w-shell px-4 sm:px-6 py-24 text-center">
         <Icon.scales className="mx-auto h-14 w-14 text-slate-300" />
         <h1 className="mt-4 font-heading text-2xl font-bold text-ink dark:text-white">Nothing to compare yet</h1>
         <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Add products to compare using the scale icon on any product card.</p>
-        <button onClick={() => router.push('/shop')} className="mt-5 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep px-6 py-3 text-sm font-bold text-white">
+        <button onClick={() => router.push('/shop')} className="mt-5 rounded-xl bg-linear-to-r from-brand-blue to-brand-deep px-6 py-3 text-sm font-bold text-white">
           Browse Tiles
         </button>
       </div>
@@ -34,7 +34,7 @@ export default function ComparePage() {
   }
 
   return (
-    <div className="mx-auto max-w-[1380px] px-4 py-8 sm:px-6 sm:py-10">
+    <div className="mx-auto max-w-shell px-4 py-8 sm:px-6 sm:py-10">
       <h1 className="mb-6 font-heading text-3xl font-extrabold text-ink dark:text-white">Compare Products</h1>
 
       <div className="overflow-x-auto rounded-2xl border border-border bg-white dark:bg-navy2 dark:border-white/10">
@@ -93,7 +93,7 @@ export default function ComparePage() {
               <td className="sticky left-0 z-10 bg-white p-3 text-xs font-bold uppercase text-slate-500 dark:bg-navy2 sm:p-4 dark:text-slate-400">Action</td>
               {compare.map(p => (
                 <td key={p.id} className="p-3 text-center sm:p-4">
-                  <button onClick={() => addToCart(p)} className="whitespace-nowrap rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep px-4 py-2 text-xs font-bold text-white">
+                  <button onClick={() => addToCart(p)} className="whitespace-nowrap rounded-xl bg-linear-to-r from-brand-blue to-brand-deep px-4 py-2 text-xs font-bold text-white">
                     Add to Cart
                   </button>
                 </td>

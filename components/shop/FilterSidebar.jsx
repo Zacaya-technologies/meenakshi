@@ -41,7 +41,7 @@ function FacetGroup({ label, icon, options, selected, onToggle, searchable }) {
                   value={q}
                   onChange={e => setQ(e.target.value)}
                   placeholder={`Search ${label.toLowerCase()}...`}
-                  className="mb-2 w-full rounded-lg border-[1.5px] border-border bg-brand-light px-3 py-2 text-xs text-ink outline-none transition focus:border-brand-blue dark:bg-navy dark:text-white dark:border-white/10"
+                  className="mb-2 w-full rounded-lg border-[1.5px] border-border bg-brand-light px-3 py-2 text-xs text-ink outline-hidden transition focus:border-brand-blue dark:bg-navy dark:text-white dark:border-white/10"
                 />
               )}
 
@@ -55,7 +55,7 @@ function FacetGroup({ label, icon, options, selected, onToggle, searchable }) {
                           type="checkbox"
                           checked={isSel}
                           onChange={() => onToggle(opt.slug)}
-                          className="h-4 w-4 cursor-pointer rounded accent-brand-blue"
+                          className="h-4 w-4 cursor-pointer rounded-sm accent-brand-blue"
                         />
                         <span className="truncate">{opt.name}</span>
                         {typeof opt.count === 'number' && (
@@ -138,7 +138,7 @@ export default function FilterSidebar({ facets, selected, onToggle, onPriceChang
             type="number"
             defaultValue={selected.min_price || ''}
             placeholder={String(priceRange.min)}
-            className="w-full rounded-lg border-[1.5px] border-border bg-brand-light px-2.5 py-2 text-xs text-ink outline-none transition focus:border-brand-blue dark:bg-navy dark:text-white dark:border-white/10"
+            className="w-full rounded-lg border-[1.5px] border-border bg-brand-light px-2.5 py-2 text-xs text-ink outline-hidden transition focus:border-brand-blue dark:bg-navy dark:text-white dark:border-white/10"
           />
           <span className="text-slate-500 dark:text-slate-400">–</span>
           <input
@@ -146,7 +146,7 @@ export default function FilterSidebar({ facets, selected, onToggle, onPriceChang
             type="number"
             defaultValue={selected.max_price || ''}
             placeholder={String(priceRange.max)}
-            className="w-full rounded-lg border-[1.5px] border-border bg-brand-light px-2.5 py-2 text-xs text-ink outline-none transition focus:border-brand-blue dark:bg-navy dark:text-white dark:border-white/10"
+            className="w-full rounded-lg border-[1.5px] border-border bg-brand-light px-2.5 py-2 text-xs text-ink outline-hidden transition focus:border-brand-blue dark:bg-navy dark:text-white dark:border-white/10"
           />
           <button type="submit" className="shrink-0 rounded-lg bg-brand-blue px-3 py-2 text-xs font-bold text-white">Go</button>
         </form>

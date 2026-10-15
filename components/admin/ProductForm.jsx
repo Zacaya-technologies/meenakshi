@@ -193,7 +193,7 @@ export default function ProductForm({ initial, onSubmit, submitLabel }) {
                           onClick={() => toggleFacet(g.key, item.id)}
                           className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                             active
-                              ? 'bg-brand-blue text-white shadow-sm'
+                              ? 'bg-brand-blue text-white shadow-xs'
                               : 'bg-brand-light text-slate-500 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-400'
                           }`}
                         >

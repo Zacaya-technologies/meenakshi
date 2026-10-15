@@ -468,7 +468,7 @@ export default function TileCalculatorClient() {
                     setCustomWastage(v);
                     if (v !== '') setWastagePercent(Math.min(Number(v), maxWastage));
                   }}
-                  className="w-24 rounded-full border-[1.5px] border-border bg-white px-3.5 py-2 text-sm text-ink outline-none transition focus:border-brand-blue dark:bg-navy2 dark:text-white dark:border-white/10"
+                  className="w-24 rounded-full border-[1.5px] border-border bg-white px-3.5 py-2 text-sm text-ink outline-hidden transition focus:border-brand-blue dark:bg-navy2 dark:text-white dark:border-white/10"
                 />
                 <span className="text-sm text-slate-500 dark:text-slate-400">%</span>
               </div>
@@ -479,7 +479,7 @@ export default function TileCalculatorClient() {
           <div className="flex gap-3">
             <button
               onClick={handleCalculate}
-              className="flex-1 rounded-2xl bg-gradient-to-r from-brand-blue to-brand-deep py-4 text-sm font-bold text-white shadow-glow transition hover:-translate-y-0.5"
+              className="flex-1 rounded-2xl bg-linear-to-r from-brand-blue to-brand-deep py-4 text-sm font-bold text-white shadow-glow transition hover:-translate-y-0.5"
             >
               Calculate Tiles
             </button>
@@ -515,8 +515,8 @@ export default function TileCalculatorClient() {
  * Sub-components
  * -------------------------------------------------------------------- */
 
-const inputClass = 'w-full rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition focus:border-brand-blue dark:bg-navy2 dark:text-white dark:border-white/10';
-const selectClass = 'w-full cursor-pointer rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition focus:border-brand-blue dark:bg-navy2 dark:text-white dark:border-white/10';
+const inputClass = 'w-full rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm text-ink outline-hidden transition focus:border-brand-blue dark:bg-navy2 dark:text-white dark:border-white/10';
+const selectClass = 'w-full cursor-pointer rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm text-ink outline-hidden transition focus:border-brand-blue dark:bg-navy2 dark:text-white dark:border-white/10';
 
 function Card({ children }) {
   return (
@@ -573,7 +573,7 @@ function ResultCard({ result, attempted, tileLength, tileWidth, tileUnit, settin
         <Row label="Base Requirement" value={`${result.baseTiles} tiles`} />
         <Row label={`Wastage (${result.wastagePercent}%)`} value={`${result.wastageTiles} tiles`} />
 
-        <div className="my-1 rounded-2xl bg-gradient-to-r from-brand-blue to-brand-deep px-5 py-4 text-white shadow-glow">
+        <div className="my-1 rounded-2xl bg-linear-to-r from-brand-blue to-brand-deep px-5 py-4 text-white shadow-glow">
           <div className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/80">Recommended Quantity</div>
           <div className="mt-1 font-heading text-3xl font-extrabold">{result.finalTiles} <span className="text-base font-bold">tiles</span></div>
         </div>

@@ -19,12 +19,15 @@ const SORTS = [
 ];
 
 const FACET_KEYS = ['area', 'application', 'size', 'design', 'type', 'finish', 'color', 'surface', 'material', 'brand', 'collection', 'in_stock'];
+// Shared default: a fresh `{}` per render would change `filters` every render
+// and refetch products in an endless loop (as /shop, which passes no preset, did).
+const NO_PRESET = {};
 
 // Renders the full shop grid + filter sidebar. `presetFilters` seeds the
 // starting scope for a taxonomy landing page (e.g. { category: 'floor-tiles' }
 // for /floor-tiles, or { category: 'floor-tiles', design: 'marble' } for
 // /floor-tiles/marble) — the sidebar remains fully interactive on top of it.
-export default function ShopClient({ presetFilters = {}, breadcrumb, heading, description, banner }) {
+export default function ShopClient({ presetFilters = NO_PRESET, breadcrumb, heading, description, banner }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -230,7 +233,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
   }, [menu, filters.category]);
 
   return (
-    <div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-8">
+    <div className="mx-auto max-w-shell px-4 sm:px-6 py-8">
       {/* Optional category banner (admin-managed banner_url) */}
       {!isPlaceholderImage(banner) && (
         <div className="mb-6 overflow-hidden rounded-3xl">
@@ -274,7 +277,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
             aria-label="Sort products"
             value={sort}
             onChange={e => setSort(e.target.value)}
-            className="cursor-pointer rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition focus:border-brand-blue dark:bg-navy2 dark:text-white dark:border-white/10"
+            className="cursor-pointer rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm text-ink outline-hidden transition focus:border-brand-blue dark:bg-navy2 dark:text-white dark:border-white/10"
           >
             {sorts.map(s => (
               <option key={s.value} value={s.value}>{s.label}</option>
@@ -328,7 +331,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
           />
           <button
             onClick={() => setMobileFiltersOpen(false)}
-            className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep py-3 text-sm font-bold text-white shadow-glow"
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-brand-blue to-brand-deep py-3 text-sm font-bold text-white shadow-glow"
           >
             Show {pagination.total} Results
           </button>
@@ -372,7 +375,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
                   <Link
                     key={c.id ?? c.slug}
                     href={`/tiles/${filters.category}/${c.slug}`}
-                    className="group relative isolate block aspect-[4/3] w-60 shrink-0 snap-start overflow-hidden rounded-2xl bg-brand-navy shadow-card transition duration-300 ease-out-expo hover:-translate-y-1 hover:shadow-[0_22px_44px_-14px_rgba(15,23,42,0.5)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-blue/40 sm:w-auto"
+                    className="group relative isolate block aspect-4/3 w-60 shrink-0 snap-start overflow-hidden rounded-2xl bg-brand-navy shadow-card transition duration-300 ease-out-expo hover:-translate-y-1 hover:shadow-[0_22px_44px_-14px_rgba(15,23,42,0.5)] focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-brand-blue/40 sm:w-auto"
                   >
                     {c.image ? (
                       <img
@@ -383,23 +386,23 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
                         className="absolute inset-0 -z-10 h-full w-full object-cover transition duration-700 ease-out-expo group-hover:scale-[1.08]"
                       />
                     ) : (
-                      <div className="absolute inset-0 -z-10 flex items-center justify-center bg-gradient-to-br from-brand-blue to-brand-navy text-4xl font-black text-white/20">
+                      <div className="absolute inset-0 -z-10 flex items-center justify-center bg-linear-to-br from-brand-blue to-brand-navy text-4xl font-black text-white/20">
                         {c.name.slice(0, 2).toUpperCase()}
                       </div>
                     )}
                     {/* Readability scrim; deepens on hover */}
-                    <div className="absolute inset-0 -z-10 bg-gradient-to-t from-brand-navy/90 via-brand-navy/25 to-transparent transition duration-300 group-hover:from-brand-navy group-hover:via-brand-navy/45" />
+                    <div className="absolute inset-0 -z-10 bg-linear-to-t from-brand-navy/90 via-brand-navy/25 to-transparent transition duration-300 group-hover:from-brand-navy group-hover:via-brand-navy/45" />
                     <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-black/5 transition duration-300 group-hover:ring-2 group-hover:ring-brand-blue" />
 
                     {typeof c.count === 'number' && c.count > 0 && (
-                      <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-slate-800 shadow-sm backdrop-blur sm:left-4 sm:top-4">
+                      <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-slate-800 shadow-xs backdrop-blur-sm sm:left-4 sm:top-4">
                         {c.count} {c.count === 1 ? 'design' : 'designs'}
                       </span>
                     )}
 
                     <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 sm:p-5">
                       <div className="min-w-0">
-                        <h3 className="line-clamp-2 font-heading text-base font-bold leading-tight text-white drop-shadow-sm sm:text-lg">
+                        <h3 className="line-clamp-2 font-heading text-base font-bold leading-tight text-white drop-shadow-xs sm:text-lg sm:leading-7">
                           {c.name}
                         </h3>
                         <span className="mt-1 block text-xs font-medium text-white/70 transition duration-300 group-hover:text-brand-blue">
@@ -427,7 +430,7 @@ export default function ShopClient({ presetFilters = {}, breadcrumb, heading, de
               <Icon.search className="mx-auto h-14 w-14 text-slate-300" />
               <h3 className="mt-4 font-heading text-lg font-bold text-ink dark:text-white">No products found</h3>
               <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Try adjusting or clearing your filters.</p>
-              <button onClick={clearFilters} className="mt-5 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep px-6 py-2.5 text-sm font-bold text-white">
+              <button onClick={clearFilters} className="mt-5 rounded-xl bg-linear-to-r from-brand-blue to-brand-deep px-6 py-2.5 text-sm font-bold text-white">
                 Clear Filters
               </button>
             </div>

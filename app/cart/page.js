@@ -41,7 +41,7 @@ export default function CartPage() {
 
   if (cart.length === 0 && !removed) {
     return (
-      <div className="mx-auto flex min-h-[55vh] max-w-[1380px] flex-col items-center justify-center px-4 py-20 text-center sm:px-6">
+      <div className="mx-auto flex min-h-[55vh] max-w-shell flex-col items-center justify-center px-4 py-20 text-center sm:px-6">
         <span className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 text-slate-500 dark:bg-white/5">
           <Icon.bag className="h-7 w-7" />
         </span>
@@ -131,7 +131,7 @@ export default function CartPage() {
                             >
                               <span aria-hidden className="text-lg leading-none">−</span>
                             </button>
-                            <span className="min-w-[4.5rem] text-center text-sm font-medium tabular-nums text-slate-900 dark:text-white" aria-live="polite">
+                            <span className="min-w-18 text-center text-sm font-medium tabular-nums text-slate-900 dark:text-white" aria-live="polite">
                               {item.quantityBoxes} {item.quantityBoxes === 1 ? 'box' : 'boxes'}
                             </span>
                             <button
@@ -162,7 +162,7 @@ export default function CartPage() {
         </section>
 
         <aside aria-label="Summary" className="lg:pt-6">
-          <div className="rounded-xl bg-slate-50 p-6 ring-1 ring-inset ring-slate-200 dark:bg-white/[0.03] dark:ring-white/10 lg:sticky lg:top-[calc(var(--header-h)+24px)]">
+          <div className="rounded-xl bg-slate-50 p-6 ring-1 ring-inset ring-slate-200 dark:bg-white/3 dark:ring-white/10 lg:sticky lg:top-[calc(var(--header-h)+24px)]">
             <h2 className="text-base font-semibold text-slate-900 dark:text-white">Summary</h2>
             <dl className="mt-5 space-y-3 text-sm">
               <div className="flex justify-between text-slate-600 dark:text-slate-300">
@@ -184,7 +184,7 @@ export default function CartPage() {
               href={cartQuoteLink(business, cart)}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-slate-900 text-sm font-semibold text-white transition-colors hover:bg-brand-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+              className="mt-5 flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-slate-900 text-sm font-semibold text-white transition-colors hover:bg-brand-deep focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
             >
               <Icon.whatsapp className="h-4 w-4" /> Request quote on WhatsApp
             </a>

@@ -19,14 +19,15 @@ async function fetchCategory(slug) {
 // database-driven: a brand-new main category created in the admin panel is
 // reachable here the instant it's added, with no route to hand-write.
 export default async function MainCategoryPage({ params }) {
-  const data = await fetchCategory(params.category);
+  const { category: slug } = await params;
+  const data = await fetchCategory(slug);
   if (!data) notFound();
   const { category, breadcrumb } = data;
 
   return (
     <>
       <BreadcrumbSchema breadcrumb={breadcrumb} />
-      <Suspense fallback={<div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-16 text-center text-slate-500 dark:text-slate-400">Loading…</div>}>
+      <Suspense fallback={<div className="mx-auto max-w-shell px-4 sm:px-6 py-16 text-center text-slate-500 dark:text-slate-400">Loading…</div>}>
         <ShopClient
           presetFilters={{ category: category.slug }}
           breadcrumb={breadcrumb}
@@ -40,7 +41,8 @@ export default async function MainCategoryPage({ params }) {
 }
 
 export async function generateMetadata({ params }) {
-  const data = await fetchCategory(params.category);
+  const { category: slug } = await params;
+  const data = await fetchCategory(slug);
   if (!data) return {};
   const { category } = data;
   return {

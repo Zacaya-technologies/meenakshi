@@ -89,7 +89,7 @@ export default function HeroBanner() {
             className="h-full w-full object-cover"
           />
           {/* Scrim: strong enough on the copy side to hold 4.5:1 on white text */}
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-navy/92 via-brand-navy/65 to-brand-navy/15" />
+          <div className="absolute inset-0 bg-linear-to-r from-brand-navy/92 via-brand-navy/65 to-brand-navy/15" />
         </motion.div>
       </AnimatePresence>
 
@@ -103,12 +103,12 @@ export default function HeroBanner() {
           transition={{ duration: reduceMotion ? 0 : 0.5, ease: 'easeOut', delay: reduceMotion ? 0 : 0.12 }}
           className="max-w-xl"
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white backdrop-blur">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white backdrop-blur-sm">
             <Icon.gem className="h-3.5 w-3.5 text-brand-blue" />
             {slide.eyebrow}
           </span>
 
-          <h1 className="mt-5 font-heading text-[2rem] font-extrabold uppercase leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl">
+          <h1 className="mt-5 font-heading text-[2rem] font-extrabold uppercase leading-[1.08] tracking-tight text-white sm:text-5xl sm:leading-none lg:text-6xl lg:leading-none">
             {slide.title}
           </h1>
 
@@ -119,13 +119,13 @@ export default function HeroBanner() {
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href={slide.cta.href}
-              className="inline-flex min-h-[48px] items-center rounded-2xl bg-gradient-to-r from-brand-blue to-brand-deep px-7 font-heading text-sm font-bold text-white shadow-glow transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_38px_rgba(30,167,253,0.5)]"
+              className="inline-flex min-h-[48px] items-center rounded-2xl bg-linear-to-r from-brand-blue to-brand-deep px-7 font-heading text-sm font-bold text-white shadow-glow transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_38px_rgba(30,167,253,0.5)]"
             >
               {slide.cta.label}
             </Link>
             <Link
               href="/shop"
-              className="inline-flex min-h-[48px] items-center rounded-2xl border-[1.5px] border-white/35 bg-white/10 px-7 font-heading text-sm font-bold text-white backdrop-blur transition duration-200 hover:border-white hover:bg-white/20"
+              className="inline-flex min-h-[48px] items-center rounded-2xl border-[1.5px] border-white/35 bg-white/10 px-7 font-heading text-sm font-bold text-white backdrop-blur-sm transition duration-200 hover:border-white hover:bg-white/20"
             >
               Browse All Tiles
             </Link>
@@ -173,7 +173,7 @@ function SlideArrow({ onClick, label, children }) {
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur transition hover:border-white hover:bg-white/25"
+      className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-sm transition hover:border-white hover:bg-white/25"
     >
       {children}
     </button>

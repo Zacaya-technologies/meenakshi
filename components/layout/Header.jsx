@@ -333,12 +333,12 @@ export default function Header() {
           {/* Search — opens the search overlay, which autofocuses its own input */}
           <button
             onClick={() => setSearchOpen(true)}
-            className="mx-auto hidden h-11 w-full max-w-[440px] items-center gap-3 rounded-full border border-white/12 bg-white/[0.06] pl-5 pr-1.5 text-left transition hover:border-brand-blue/60 lg:flex"
+            className="mx-auto hidden h-11 w-full max-w-[440px] items-center gap-3 rounded-full border border-white/12 bg-white/6 pl-5 pr-1.5 text-left transition hover:border-brand-blue/60 lg:flex"
           >
             <span className="flex-1 truncate text-sm text-white/65">
               Search tiles, marble, sanitaryware, SKU…
             </span>
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-blue to-brand-deep text-white">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-brand-blue to-brand-deep text-white">
               <Icon.search className="h-4 w-4" />
             </span>
           </button>

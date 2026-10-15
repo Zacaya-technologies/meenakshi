@@ -17,7 +17,7 @@ export default function CollectionsPage() {
   }, []);
 
   return (
-    <div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-10">
+    <div className="mx-auto max-w-shell px-4 sm:px-6 py-10">
       <nav className="mb-4 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
         <Link href="/" className="transition hover:text-brand-blue">Home</Link>
         <Icon.arrowRight className="h-3.5 w-3.5" />
@@ -41,7 +41,7 @@ export default function CollectionsPage() {
               href={`/shop?collection=${c.slug}`}
               className="group relative overflow-hidden rounded-2xl border-[1.5px] border-border bg-white transition hover:-translate-y-1 hover:border-brand-blue/50 hover:shadow-hover dark:bg-navy2 dark:border-white/10"
             >
-              <div className="aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-navy">
+              <div className="aspect-4/3 overflow-hidden bg-slate-100 dark:bg-navy">
                 <img src={c.banner_url || FALLBACK_IMG} alt={c.name} className="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
               </div>
               <div className="p-3 sm:p-5">

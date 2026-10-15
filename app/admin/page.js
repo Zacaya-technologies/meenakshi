@@ -103,7 +103,7 @@ export default function AdminDashboard() {
                     </span>
                   </div>
                   <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-brand-light dark:bg-white/10">
-                    <div className="h-full rounded-full bg-gradient-to-r from-brand-blue to-brand-deep" style={{ width: `${Math.round((m.product_count / max) * 100)}%` }} />
+                    <div className="h-full rounded-full bg-linear-to-r from-brand-blue to-brand-deep" style={{ width: `${Math.round((m.product_count / max) * 100)}%` }} />
                   </div>
                 </Card>
               );

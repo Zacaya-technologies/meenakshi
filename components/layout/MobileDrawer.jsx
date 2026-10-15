@@ -155,7 +155,7 @@ export default function MobileDrawer({ open, onClose, menuItems }) {
                     <div className="pb-4">
                       <button
                         onClick={() => go(item.url)}
-                        className="mb-3 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep text-sm font-bold text-white shadow-glow"
+                        className="mb-3 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-brand-blue to-brand-deep text-sm font-bold text-white shadow-glow"
                       >
                         <Icon.grid className="h-4 w-4" /> View All {item.name}
                       </button>
@@ -163,7 +163,7 @@ export default function MobileDrawer({ open, onClose, menuItems }) {
                       {columns.length === 0 && openSlug === item.slug && !liveData[item.slug] && (
                         <div className="space-y-2 px-1 py-2">
                           {Array.from({ length: 3 }).map((_, i) => (
-                            <div key={i} className="h-10 animate-pulse rounded-xl bg-white/[0.05]" />
+                            <div key={i} className="h-10 animate-pulse rounded-xl bg-white/5" />
                           ))}
                         </div>
                       )}
@@ -177,7 +177,7 @@ export default function MobileDrawer({ open, onClose, menuItems }) {
                         const groupOpen = openGroup === groupId;
 
                         return (
-                          <div key={col.key} className="mb-1.5 overflow-hidden rounded-xl bg-white/[0.04]">
+                          <div key={col.key} className="mb-1.5 overflow-hidden rounded-xl bg-white/4">
                             <button
                               onClick={() => setOpenGroup(groupOpen ? null : groupId)}
                               aria-expanded={groupOpen}
@@ -238,7 +238,7 @@ export default function MobileDrawer({ open, onClose, menuItems }) {
             <div className="flex gap-3 py-5">
               <a
                 href={telHref(business.primary_phone)}
-                className="flex min-h-[48px] flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep text-sm font-bold text-white shadow-glow"
+                className="flex min-h-[48px] flex-1 items-center justify-center gap-2 rounded-xl bg-linear-to-r from-brand-blue to-brand-deep text-sm font-bold text-white shadow-glow"
               >
                 <Icon.phoneCall className="h-4 w-4" /> Call Now
               </a>

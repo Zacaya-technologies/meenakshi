@@ -49,7 +49,7 @@ export default function AdminShell({ children }) {
       {/* Sidebar */}
       <aside className={`fixed inset-y-0 left-0 z-40 w-64 shrink-0 flex-col border-r border-border bg-white transition-transform dark:bg-navy2 dark:border-white/10 lg:static lg:flex lg:translate-x-0 ${navOpen ? 'flex translate-x-0' : 'hidden -translate-x-full'}`}>
         <div className="flex h-16 items-center gap-2 border-b border-border px-5 dark:border-white/10">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-brand-blue to-brand-deep font-heading text-sm font-black text-white">M</span>
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-linear-to-br from-brand-blue to-brand-deep font-heading text-sm font-black text-white">M</span>
           <span className="font-heading text-sm font-extrabold text-ink dark:text-white">Admin Console</span>
         </div>
         <nav className="flex-1 space-y-1 overflow-y-auto p-3">

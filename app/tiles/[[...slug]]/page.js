@@ -21,7 +21,7 @@ async function fetchResolved(path) {
 }
 
 export default async function TilesCategoryPage({ params }) {
-  const { slug = [] } = params;
+  const { slug = [] } = await params;
   if (!slug.length) redirect('/tiles/living-room-tiles');
 
   const data = await fetchResolved(slug.join('/'));
@@ -42,7 +42,7 @@ export default async function TilesCategoryPage({ params }) {
   return (
     <>
       <BreadcrumbSchema breadcrumb={breadcrumb} />
-      <Suspense fallback={<div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-16 text-center text-slate-500 dark:text-slate-400">Loading…</div>}>
+      <Suspense fallback={<div className="mx-auto max-w-shell px-4 sm:px-6 py-16 text-center text-slate-500 dark:text-slate-400">Loading…</div>}>
         <ShopClient
           presetFilters={presetFilters}
           breadcrumb={breadcrumb}
@@ -56,7 +56,7 @@ export default async function TilesCategoryPage({ params }) {
 }
 
 export async function generateMetadata({ params }) {
-  const { slug = [] } = params;
+  const { slug = [] } = await params;
   if (!slug.length) return {};
 
   const data = await fetchResolved(slug.join('/'));

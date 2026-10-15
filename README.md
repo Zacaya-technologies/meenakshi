@@ -6,7 +6,7 @@ Production-ready enterprise B2B & B2C marketplace for vitrified slabs, tiles, an
 
 - **Backend:** Node.js + Express
 - **Database:** MySQL / MariaDB (`mysql2`, used on Hostinger) / SQLite (`sqlite3`, local + Vercel) / PostgreSQL (`pg`)
-- **Frontend:** Next.js 14 (App Router) + React 18, Tailwind CSS, Framer Motion
+- **Frontend:** Next.js 15 (App Router) + React 19, Tailwind CSS 4, Framer Motion (Node.js 20.17+)
 - **Auth:** JWT + bcryptjs
 
 ## Project Structure
@@ -86,7 +86,7 @@ database (e.g. `u141162847_meenakshi_db`), open **Import**, choose
 all tables and loads the full catalogue, settings and the admin account.
 
 **2. Create the web app.** hPanel → **Websites → Add website → Node.js Apps**, import this
-GitHub repository (branch `main`). Framework: **Next.js**, Node **20** or newer,
+GitHub repository (branch `main`). Framework: **Next.js**, Node **22** (20.17 or newer),
 build command `npm run build`, start command `npm start`.
 
 **3. Set environment variables** (see `.env.example`):

@@ -26,7 +26,7 @@ export function Card({ children, className = '' }) {
 
 export function Button({ children, variant = 'primary', className = '', ...props }) {
   const styles = {
-    primary: 'bg-gradient-to-r from-brand-blue to-brand-deep text-white shadow-glow hover:-translate-y-0.5',
+    primary: 'bg-linear-to-r from-brand-blue to-brand-deep text-white shadow-glow hover:-translate-y-0.5',
     outline: 'border-[1.5px] border-brand-blue text-brand-blue hover:bg-brand-blue/5',
     ghost: 'text-slate-500 hover:bg-brand-light dark:text-slate-400 dark:hover:bg-white/5',
     danger: 'border-[1.5px] border-rose-400 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10'
@@ -53,7 +53,7 @@ export function Field({ label, hint, required, children, className = '' }) {
   );
 }
 
-const inputClass = 'w-full rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition focus:border-brand-blue dark:bg-navy dark:text-white dark:border-white/10';
+const inputClass = 'w-full rounded-xl border-[1.5px] border-border bg-white px-3.5 py-2.5 text-sm text-ink outline-hidden transition focus:border-brand-blue dark:bg-navy dark:text-white dark:border-white/10';
 
 export function Input(props) {
   return <input {...props} className={`${inputClass} ${props.className || ''}`} />;
@@ -73,7 +73,7 @@ export function Toggle({ checked, onChange, label }) {
         onClick={() => onChange(!checked)}
         className={`relative h-6 w-11 shrink-0 rounded-full transition ${checked ? 'bg-brand-blue' : 'bg-slate-300 dark:bg-white/15'}`}
       >
-        <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${checked ? 'translate-x-5' : 'translate-x-0.5'}`} />
+        <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${checked ? 'translate-x-5' : 'translate-x-0.5'}`} />
       </button>
       {label && <span className="text-sm font-medium text-ink dark:text-white">{label}</span>}
     </label>
@@ -102,7 +102,7 @@ export function Modal({ open, onClose, title, children, wide }) {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[3000] flex items-start justify-center overflow-y-auto bg-navy/60 p-4 py-10 backdrop-blur-sm"
+          className="fixed inset-0 z-drawer flex items-start justify-center overflow-y-auto bg-navy/60 p-4 py-10 backdrop-blur-xs"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

@@ -7,7 +7,7 @@ import { useBusiness, waLink } from '@/lib/business';
 import { FALLBACK_IMG, discountPct, hasPrice } from '@/lib/api';
 import { Icon } from '@/components/ui/Icons';
 
-const ACTION_BTN = 'group/act relative flex h-9 w-9 items-center justify-center rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/60';
+const ACTION_BTN = 'group/act relative flex h-9 w-9 items-center justify-center rounded-full transition-colors duration-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand-blue/60';
 
 // Label that slides out to the left of a toolbar button on hover (desktop only).
 function ActionTip({ children }) {
@@ -48,7 +48,7 @@ export default function ProductCard({ product, onQuickView }) {
 
   return (
     <article className="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition duration-300 hover:border-slate-300 hover:shadow-[0_12px_32px_-12px_rgba(15,23,42,0.25)] dark:border-white/10 dark:bg-navy2 dark:hover:border-white/20">
-      <div className="relative aspect-[4/5] overflow-hidden bg-slate-100 dark:bg-navy">
+      <div className="relative aspect-4/5 overflow-hidden bg-slate-100 dark:bg-navy">
         <Link href={href} className="block h-full w-full" aria-label={product.name} tabIndex={-1}>
           <img
             src={image}
@@ -63,10 +63,10 @@ export default function ProductCard({ product, onQuickView }) {
         {(off > 0 || !inStock) && (
           <div className="pointer-events-none absolute left-3 top-3 flex flex-col items-start gap-1.5">
             {off > 0 && (
-              <span className="rounded bg-rose-600 px-1.5 py-0.5 text-[11px] font-bold text-white">−{off}%</span>
+              <span className="rounded-sm bg-rose-600 px-1.5 py-0.5 text-[11px] font-bold text-white">−{off}%</span>
             )}
             {!inStock && (
-              <span className="rounded bg-slate-900/80 px-1.5 py-0.5 text-[11px] font-semibold text-white">Out of stock</span>
+              <span className="rounded-sm bg-slate-900/80 px-1.5 py-0.5 text-[11px] font-semibold text-white">Out of stock</span>
             )}
           </div>
         )}
@@ -168,13 +168,13 @@ export default function ProductCard({ product, onQuickView }) {
 export function ProductCardSkeleton() {
   return (
     <div className="overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-white/10 dark:bg-navy2">
-      <div className="aspect-[4/5] animate-pulse bg-slate-100 dark:bg-navy" />
+      <div className="aspect-4/5 animate-pulse bg-slate-100 dark:bg-navy" />
       <div className="space-y-2 px-4 pb-4 pt-3.5">
-        <div className="h-2.5 w-1/3 animate-pulse rounded bg-slate-100 dark:bg-white/5" />
-        <div className="h-4 w-4/5 animate-pulse rounded bg-slate-100 dark:bg-white/5" />
-        <div className="h-3 w-2/3 animate-pulse rounded bg-slate-100 dark:bg-white/5" />
-        <div className="!mt-5 flex items-center justify-between">
-          <div className="h-4 w-24 animate-pulse rounded bg-slate-100 dark:bg-white/5" />
+        <div className="h-2.5 w-1/3 animate-pulse rounded-sm bg-slate-100 dark:bg-white/5" />
+        <div className="h-4 w-4/5 animate-pulse rounded-sm bg-slate-100 dark:bg-white/5" />
+        <div className="h-3 w-2/3 animate-pulse rounded-sm bg-slate-100 dark:bg-white/5" />
+        <div className="mt-5! flex items-center justify-between">
+          <div className="h-4 w-24 animate-pulse rounded-sm bg-slate-100 dark:bg-white/5" />
           <div className="h-10 w-16 animate-pulse rounded-lg bg-slate-100 dark:bg-white/5" />
         </div>
       </div>

@@ -34,7 +34,7 @@ export default function FloatingActions() {
   return (
     <aside
       aria-label="Contact us"
-      className={`floating-rail fixed right-4 z-[1200] flex flex-col items-end gap-3 ${overBottomBar ? 'floating-rail--above-bar' : ''}`}
+      className={`floating-rail fixed right-4 z-1200 flex flex-col items-end gap-3 ${overBottomBar ? 'floating-rail--above-bar' : ''}`}
     >
       <AnimatePresence>
         {chatOpen && (
@@ -94,7 +94,7 @@ export default function FloatingActions() {
       {/* One dock instead of loose glowing circles. Direct WhatsApp/Call
           buttons from sm up; phones get only the enquiry button (its panel
           has WhatsApp, Call and Email) so the dock never covers content. */}
-      <div className="flex flex-col items-center gap-1.5 rounded-full bg-white/95 p-1.5 shadow-[0_12px_32px_-8px_rgba(15,23,42,0.35)] ring-1 ring-slate-900/5 backdrop-blur dark:bg-navy2/95 dark:ring-white/10">
+      <div className="flex flex-col items-center gap-1.5 rounded-full bg-white/95 p-1.5 shadow-[0_12px_32px_-8px_rgba(15,23,42,0.35)] ring-1 ring-slate-900/5 backdrop-blur-sm dark:bg-navy2/95 dark:ring-white/10">
         <DockButton
           href={waLink(business.whatsapp_number, waGreeting(business))}
           external
@@ -125,7 +125,7 @@ export default function FloatingActions() {
   );
 }
 
-const DOCK_BTN = 'group/dock relative h-12 w-12 items-center justify-center rounded-full text-white shadow-sm transition duration-200 ease-out hover:scale-[1.06] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 dark:focus-visible:ring-offset-navy2';
+const DOCK_BTN = 'group/dock relative h-12 w-12 items-center justify-center rounded-full text-white shadow-xs transition duration-200 ease-out hover:scale-[1.06] active:scale-95 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2 dark:focus-visible:ring-offset-navy2';
 
 function DockButton({ href, onClick, external, label, ariaLabel, expanded, className, children }) {
   const tip = (

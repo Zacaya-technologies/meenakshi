@@ -66,7 +66,7 @@ export default function RootLayout({ children }) {
           <BusinessProvider>
             <a
               href="#main"
-              className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[5000] focus:rounded-lg focus:bg-brand-blue focus:px-4 focus:py-2 focus:font-bold focus:text-white"
+              className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-5000 focus:rounded-lg focus:bg-brand-blue focus:px-4 focus:py-2 focus:font-bold focus:text-white"
             >
               Skip to main content
             </a>

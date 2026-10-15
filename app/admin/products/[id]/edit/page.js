@@ -1,20 +1,22 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import { API } from '@/lib/api';
 import { PageHeader, EmptyState } from '@/components/admin/AdminUI';
 import ProductForm from '@/components/admin/ProductForm';
 
-export default function EditProductPage({ params }) {
+export default function EditProductPage() {
+  const { id } = useParams();
   const [data, setData] = useState(null);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    API.getProductBySlug(params.id).then(res => {
+    API.getProductBySlug(id).then(res => {
       if (res.success) setData(res);
       else setNotFound(true);
     });
-  }, [params.id]);
+  }, [id]);
 
   if (notFound) return <EmptyState label="Product not found." />;
   if (!data) return <EmptyState label="Loading product…" />;

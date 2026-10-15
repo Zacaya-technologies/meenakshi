@@ -38,12 +38,12 @@ export default function ProductDetailClient({ slug }) {
   }, [slug]);
 
   if (loading) {
-    return <div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-16 text-center text-slate-500 dark:text-slate-400">Loading product…</div>;
+    return <div className="mx-auto max-w-shell px-4 sm:px-6 py-16 text-center text-slate-500 dark:text-slate-400">Loading product…</div>;
   }
 
   if (!data) {
     return (
-      <div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-24 text-center">
+      <div className="mx-auto max-w-shell px-4 sm:px-6 py-24 text-center">
         <h1 className="font-heading text-2xl font-bold text-ink dark:text-white">Product not found</h1>
         <Link href="/shop" className="mt-4 inline-block rounded-xl bg-brand-blue px-6 py-3 text-sm font-bold text-white">Back to Shop</Link>
       </div>
@@ -62,7 +62,7 @@ export default function ProductDetailClient({ slug }) {
     `Hi ${business.business_name}, please share the price of "${product.name}" (SKU: ${product.sku}${product.size ? `, ${product.size}` : ''}).`);
 
   return (
-    <div className="mx-auto max-w-[1380px] px-4 sm:px-6 py-8 pb-28 lg:pb-8">
+    <div className="mx-auto max-w-shell px-4 sm:px-6 py-8 pb-28 lg:pb-8">
       {/* Breadcrumb — built from the product's live main-category tag */}
       <nav className="mb-6 flex flex-wrap items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
         <Link href="/" className="transition hover:text-brand-blue">Home</Link>
@@ -217,7 +217,7 @@ export default function ProductDetailClient({ slug }) {
             <button
               onClick={() => addToCart(product)}
               disabled={!inStock}
-              className="flex items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep px-4 py-3.5 text-sm font-bold text-white shadow-lg transition enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 sm:px-6"
+              className="flex items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-linear-to-r from-brand-blue to-brand-deep px-4 py-3.5 text-sm font-bold text-white shadow-lg transition enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 sm:px-6"
             >
               <Icon.bag className="h-4 w-4" /> Add to Cart
             </button>
@@ -329,7 +329,7 @@ export default function ProductDetailClient({ slug }) {
         <button
           onClick={() => addToCart(product)}
           disabled={!inStock}
-          className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-blue to-brand-deep px-5 py-3 text-sm font-bold text-white shadow-glow disabled:opacity-50"
+          className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-linear-to-r from-brand-blue to-brand-deep px-5 py-3 text-sm font-bold text-white shadow-glow disabled:opacity-50"
         >
           <Icon.bag className="h-4 w-4" /> Add to Cart
         </button>

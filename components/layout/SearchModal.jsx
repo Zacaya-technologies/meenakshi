@@ -50,7 +50,7 @@ export default function SearchModal({ open, onClose }) {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[2000] flex justify-center bg-navy/60 px-4 pt-24 backdrop-blur-sm"
+          className="fixed inset-0 z-2000 flex justify-center bg-navy/60 px-4 pt-24 backdrop-blur-xs"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -86,7 +86,7 @@ export default function SearchModal({ open, onClose }) {
                   if (e.key === 'Enter' && q.trim()) go(`/shop?q=${encodeURIComponent(q.trim())}`);
                 }}
                 placeholder="Search Statuario, Wood Plank, Vitrified, 600x1200..."
-                className="w-full bg-transparent text-base text-ink outline-none placeholder:text-slate-400 dark:text-white"
+                className="w-full bg-transparent text-base text-ink outline-hidden placeholder:text-slate-400 dark:text-white"
               />
             </div>
 

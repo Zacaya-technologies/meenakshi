@@ -19,6 +19,8 @@ On Vercel the Express app runs inside Next.js via `app/api/[...path]/route.js`.
       layout at 320–1920px, dark mode, keyboard navigation and focus return,
       axe-core accessibility scan (0 violations)
 - [x] Legacy SPA removed from `public/`; Express is API-only
+- [x] Security upgrades: Next.js 15.5, React 19, nodemailer 10, sqlite3 6, Tailwind CSS 4
+      (`npm audit`: 0 vulnerabilities); unused multer removed
 
 ## Not yet done
 - [ ] Change the seeded admin password (`Password123!` is public in `server/seed.js`)
@@ -26,5 +28,5 @@ On Vercel the Express app runs inside Next.js via `app/api/[...path]/route.js`.
 - [ ] Replace the Unsplash hero images with real showroom/project photography
 - [ ] Real figures for the homepage/About stats (2000+ SKUs, 150+ brands, 4.8 rating)
 - [ ] Dealer Login page (currently "coming soon")
-- [ ] Major dependency upgrades: Next.js 14 → 16, nodemailer 9 → 10, sqlite3 5 → 6
+- [ ] Next.js 15 → 16 (15.5 is patched; 16 needs the middleware→proxy and React 19.2 changes)
 - [ ] Persistent database for production writes (SQLite on Vercel is read-only)

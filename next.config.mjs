@@ -1,27 +1,29 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {
-    // Keep native/CommonJS server deps out of the webpack client/server bundles.
-    serverComponentsExternalPackages: [
-      'express',
-      'sqlite3',
-      'mysql2',
-      'pg',
-      'multer',
-      'bcryptjs',
-      'jsonwebtoken',
-      'cors',
-      'nodemailer',
-      'dotenv'
-    ],
-    // Ensure the SQLite DB file ships inside the serverless functions that
-    // serve the API (app/api/[...path]) and the SEO routes.
-    outputFileTracingIncludes: {
-      '/*': ['./tile_marketplace.sqlite'],
-      '/sitemap.xml': ['./tile_marketplace.sqlite'],
-      '/robots.txt': ['./tile_marketplace.sqlite']
-    }
+  // This folder is the app root (not a parent folder that happens to hold a lockfile).
+  outputFileTracingRoot: path.dirname(fileURLToPath(import.meta.url)),
+  // Keep native/CommonJS server deps out of the webpack client/server bundles.
+  serverExternalPackages: [
+    'express',
+    'sqlite3',
+    'mysql2',
+    'pg',
+    'bcryptjs',
+    'jsonwebtoken',
+    'cors',
+    'nodemailer',
+    'dotenv'
+  ],
+  // Ensure the SQLite DB file ships inside the serverless functions that
+  // serve the API (app/api/[...path]) and the SEO routes.
+  outputFileTracingIncludes: {
+    '/*': ['./tile_marketplace.sqlite'],
+    '/sitemap.xml': ['./tile_marketplace.sqlite'],
+    '/robots.txt': ['./tile_marketplace.sqlite']
   },
   async rewrites() {
     // If an external API host is configured, proxy to it (standalone Express).
