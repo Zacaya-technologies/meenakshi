@@ -327,7 +327,7 @@ export default function Header() {
           </button>
 
           <Link href="/" className="flex shrink-0 items-center rounded-xl bg-white px-2.5 py-1.5 shadow-glow sm:px-3" onClick={closeMega}>
-            <img src="/images/logo.png" alt="Meenakshi Build World" className="h-7 w-auto sm:h-9 lg:h-10" />
+            <img src="/images/logo.png" alt="Meenakshi Build World" className="h-8 w-auto sm:h-11 lg:h-14" />
           </Link>
 
           {/* Search — opens the search overlay, which autofocuses its own input */}
