@@ -13,7 +13,7 @@ On Vercel the Express app runs inside Next.js via `app/api/[...path]/route.js`.
 
 ## Done
 - [x] Next.js app, mega menu, mobile drawer, shop, product, cart, compare, calculator, admin
-- [x] Somany catalogue (734 products) with images and category tagging
+- [x] Somany catalogue (2,400 products) with images and category tagging
 - [x] Browser QA pass — scripted in headless Chrome:
       user flows (search, menus, filters, cart, quick view, calculator, contact, admin),
       layout at 320–1920px, dark mode, keyboard navigation and focus return,
