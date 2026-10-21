@@ -85,6 +85,7 @@ router.get('/:categorySlug', async (req, res) => {
             .map(g => {
                 const items = children.filter(c => c.group_id === g.id).slice(0, MENU_ITEM_LIMIT).map(c => ({
                     id: c.id, name: c.name, slug: c.slug, image: c.image,
+                    count: parseInt(c.product_count) || 0,
                     url: slug === ALL_PRODUCTS_SLUG
                         ? `/shop?${g.group_key}=${c.slug}`
                         : `/tiles/${slug}/${c.slug}`
@@ -94,6 +95,7 @@ router.get('/:categorySlug', async (req, res) => {
                 if (g.group_key === 'area' && linkedMains.length) {
                     linkedMains.forEach(c => items.push({
                         id: c.id, name: c.name, slug: c.slug, image: c.image,
+                        count: parseInt(c.product_count) || 0,
                         url: `/tiles/${c.slug}`
                     }));
                 }
