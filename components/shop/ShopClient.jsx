@@ -27,7 +27,7 @@ const NO_PRESET = {};
 // starting scope for a taxonomy landing page (e.g. { category: 'floor-tiles' }
 // for /floor-tiles, or { category: 'floor-tiles', design: 'marble' } for
 // /floor-tiles/marble) — the sidebar remains fully interactive on top of it.
-export default function ShopClient({ presetFilters = NO_PRESET, breadcrumb, heading, description, banner, displayTotal }) {
+export default function ShopClient({ presetFilters = NO_PRESET, breadcrumb, heading, description, banner }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -193,9 +193,6 @@ export default function ShopClient({ presetFilters = NO_PRESET, breadcrumb, head
     if (k === 'category' || k === 'q' || k === 'min_price' || k === 'max_price') return acc;
     return acc + (Array.isArray(v) ? v.length : 0);
   }, 0);
-  const shownTotal = displayTotal != null && Object.keys(filters).length === 0
-    ? displayTotal
-    : pagination.total;
 
   // Subcategory quick-links for a main-category page (the Area/Application
   // column). Shown only while no facet filter is active.
@@ -264,7 +261,7 @@ export default function ShopClient({ presetFilters = NO_PRESET, breadcrumb, head
           <h1 className="font-heading text-3xl font-extrabold text-ink dark:text-white">{categoryName}</h1>
           {description && <p className="mt-1.5 max-w-2xl text-sm text-slate-500 dark:text-slate-400">{description}</p>}
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            <strong className="text-brand-blue">{shownTotal}</strong> products
+            <strong className="text-brand-blue">{pagination.total}</strong> products
           </p>
         </div>
         {/* Desktop sort */}

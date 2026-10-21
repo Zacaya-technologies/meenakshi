@@ -54,7 +54,7 @@ npm run dev       # start server (http://localhost:PORT)
 ## Product catalogue (Somany range)
 
 The live catalogue is the Somany Ceramics range imported from `scripts/data/products_overall.csv`
-(3,300 products that have an image; images live in `public/images/products/<slug>.webp`).
+(3,600 products that have an image; images live in `public/images/products/<slug>.webp`).
 
 ```bash
 npm run import:somany   # python3 scripts/import_somany_products.py
