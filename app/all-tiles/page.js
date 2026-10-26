@@ -23,7 +23,7 @@ export default function AllTilesPage() {
           breadcrumb={BREADCRUMB}
           heading="All Tiles"
           description="Every tile we carry, across every room and application — filter by area, design, type, finish, colour, size, brand or collection."
-          displayTotal={5550}
+          displayTotal={6200}
         />
       </Suspense>
     </>
