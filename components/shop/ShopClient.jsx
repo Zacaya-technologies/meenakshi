@@ -340,7 +340,7 @@ export default function ShopClient({ presetFilters = NO_PRESET, breadcrumb, head
             onClick={() => setMobileFiltersOpen(false)}
             className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-brand-blue to-brand-deep py-3 text-sm font-bold text-white shadow-glow"
           >
-            Show {pagination.total} Results
+            Show {shownTotal} Results
           </button>
         </MobileSheet>
 
@@ -486,7 +486,9 @@ export default function ShopClient({ presetFilters = NO_PRESET, breadcrumb, head
                 ← Prev
               </button>
               <span className="text-sm text-slate-500 dark:text-slate-400">
-                Page <strong className="text-ink dark:text-white">{page}</strong> of {pagination.pages}
+                {/* With a display total the real page count would contradict it. */}
+                Page <strong className="text-ink dark:text-white">{page}</strong>
+                {shownTotal === pagination.total && ` of ${pagination.pages}`}
               </span>
               <button
                 disabled={page >= pagination.pages}
