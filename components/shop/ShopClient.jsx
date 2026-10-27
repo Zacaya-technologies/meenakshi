@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { API, isPlaceholderImage } from '@/lib/api';
+import { useBusiness, waLink } from '@/lib/business';
 import ProductCard, { ProductCardSkeleton } from './ProductCard';
 import QuickView from './QuickView';
 import FilterSidebar from './FilterSidebar';
@@ -31,6 +32,7 @@ export default function ShopClient({ presetFilters = NO_PRESET, breadcrumb, head
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const business = useBusiness();
 
   const [products, setProducts] = useState([]);
   const [facets, setFacets] = useState(null);
@@ -193,6 +195,7 @@ export default function ShopClient({ presetFilters = NO_PRESET, breadcrumb, head
     if (k === 'category' || k === 'q' || k === 'min_price' || k === 'max_price') return acc;
     return acc + (Array.isArray(v) ? v.length : 0);
   }, 0);
+  const hasNarrowing = activeCount > 0 || Boolean(filters.q || filters.min_price || filters.max_price);
   const shownTotal = displayTotal != null && Object.keys(filters).length === 0
     ? displayTotal
     : pagination.total;
@@ -264,7 +267,8 @@ export default function ShopClient({ presetFilters = NO_PRESET, breadcrumb, head
           <h1 className="font-heading text-3xl font-extrabold text-ink dark:text-white">{categoryName}</h1>
           {description && <p className="mt-1.5 max-w-2xl text-sm text-slate-500 dark:text-slate-400">{description}</p>}
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            <strong className="text-brand-blue">{shownTotal}</strong> products
+            {/* "0 products" flashed on every listing until the first fetch landed. */}
+            <strong className="text-brand-blue">{loading && !hasLoadedRef.current ? '…' : shownTotal}</strong> products
           </p>
         </div>
         {/* Desktop sort */}
@@ -427,6 +431,29 @@ export default function ShopClient({ presetFilters = NO_PRESET, breadcrumb, head
               {Array.from({ length: 8 }).map((_, i) => (
                 <ProductCardSkeleton key={i} />
               ))}
+            </div>
+          ) : !loading && products.length === 0 && !hasNarrowing ? (
+            // A category with nothing listed yet (e.g. Tile Accessories): there is
+            // no filter to clear, so point the shopper at the showroom instead.
+            <div className="rounded-[20px] border-[1.5px] border-dashed border-border bg-white p-16 text-center dark:bg-navy2 dark:border-white/10">
+              <Icon.stack className="mx-auto h-14 w-14 text-slate-300" />
+              <h3 className="mt-4 font-heading text-lg font-bold text-ink dark:text-white">Available at our showroom</h3>
+              <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                {categoryName} are not listed online yet. Ask us for the current range and prices.
+              </p>
+              <div className="mt-5 flex flex-wrap justify-center gap-3">
+                <a
+                  href={waLink(business.whatsapp_number, `Hello ${business.business_name}, I'm looking for ${categoryName}. Please share the available range and prices.`)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 rounded-xl bg-linear-to-r from-brand-blue to-brand-deep px-6 py-2.5 text-sm font-bold text-white"
+                >
+                  <Icon.whatsapp className="h-4 w-4" /> Enquire on WhatsApp
+                </a>
+                <Link href="/all-tiles" className="rounded-xl border-[1.5px] border-brand-blue px-6 py-2.5 text-sm font-bold text-brand-blue transition hover:bg-brand-blue/5">
+                  Browse All Tiles
+                </Link>
+              </div>
             </div>
           ) : !loading && products.length === 0 ? (
             <div className="rounded-[20px] border-[1.5px] border-dashed border-border bg-white p-16 text-center dark:bg-navy2 dark:border-white/10">

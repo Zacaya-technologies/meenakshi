@@ -89,8 +89,10 @@ router.get('/', async (req, res) => {
             conditions.push(`EXISTS (SELECT 1 FROM collections colf WHERE colf.id = p.collection_id AND colf.slug IN (${collections.map(() => '?').join(',')}))`);
             params.push(...collections);
         }
-        if (min_price) { conditions.push('COALESCE(p.offer_price, p.price) >= ?'); params.push(parseFloat(min_price)); }
-        if (max_price) { conditions.push('COALESCE(p.offer_price, p.price) <= ?'); params.push(parseFloat(max_price)); }
+        // Ignore junk like ?min_price=abc: NaN reached the SQL and matched nothing.
+        const minPrice = parseFloat(min_price), maxPrice = parseFloat(max_price);
+        if (Number.isFinite(minPrice)) { conditions.push('COALESCE(p.offer_price, p.price) >= ?'); params.push(minPrice); }
+        if (Number.isFinite(maxPrice)) { conditions.push('COALESCE(p.offer_price, p.price) <= ?'); params.push(maxPrice); }
         if (featured) conditions.push('(p.is_featured = 1 OR p.is_featured = true)');
         if (trending) conditions.push('(p.is_trending = 1 OR p.is_trending = true)');
         if (in_stock) conditions.push('p.stock > 0');

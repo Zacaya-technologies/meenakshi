@@ -22,6 +22,9 @@ const businessSettingsRoutes = require('./routes/businessSettingsRoutes');
 const calculatorSettingsRoutes = require('./routes/calculatorSettingsRoutes');
 
 const app = express();
+// Vercel/Hostinger terminate HTTPS at a proxy; without this req.protocol is
+// "http" and the sitemap/robots.txt advertised http:// URLs.
+app.set('trust proxy', true);
 
 // Middlewares
 app.use(cors());

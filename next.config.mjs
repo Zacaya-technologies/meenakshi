@@ -25,6 +25,11 @@ const nextConfig = {
     '/sitemap.xml': ['./tile_marketplace.sqlite'],
     '/robots.txt': ['./tile_marketplace.sqlite']
   },
+  // Browsers ask for /favicon.ico on pages without an icon <link> (404 page,
+  // sitemap.xml); the site icon lives at /icon.png (app/icon.png).
+  async redirects() {
+    return [{ source: '/favicon.ico', destination: '/icon.png', permanent: true }];
+  },
   async rewrites() {
     // If an external API host is configured, proxy to it (standalone Express).
     // Otherwise /api/*, /sitemap.xml and /robots.txt are served directly by

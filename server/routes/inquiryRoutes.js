@@ -4,8 +4,10 @@ const db = require('../db');
 const { authenticateToken, requireRole } = require('../middleware/auth');
 const nodemailer = require('nodemailer');
 
-// Helper to send email (placeholder, configure with real credentials)
+// Helper to send email. Returns true when the message was handed to SMTP.
 async function sendEmail(to, subject, html) {
+  // No SMTP configured: don't try the smtp.example.com placeholder.
+  if (!process.env.SMTP_HOST) return false;
   try {
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || 'smtp.example.com',
@@ -17,9 +19,11 @@ async function sendEmail(to, subject, html) {
       },
     });
     await transporter.sendMail({ from: process.env.SMTP_FROM || 'no-reply@meenakshibuildworld.com', to, subject, html });
+    return true;
   } catch (err) {
-    // Email is best-effort in dev (no real SMTP configured) — never fail the request over it.
+    // Email is best-effort — never fail the request over it.
     console.warn('[Inquiry] Email notification skipped:', err.message);
+    return false;
   }
 }
 
@@ -41,21 +45,25 @@ router.post('/', async (req, res) => {
   if (!n || (!p && !e)) {
     return res.status(400).json({ success: false, message: 'Please share your name and a phone number or email.' });
   }
+  // The bundled SQLite file is read-only on Vercel, so the insert can fail
+  // there; the email still goes out (when SMTP is set) and the lead survives.
+  let saved = false;
   try {
     await db.query(
       'INSERT INTO inquiries (type, name, phone, email, message) VALUES (?, ?, ?, ?, ?)',
       [clean(type, 30) || 'contact', n, p || null, e || null, m]
     );
-    await sendEmail(
-      process.env.SALES_EMAIL || 'info@meenakshibuildworld.com',
-      'New website enquiry',
-      `<p><strong>${n.replace(/</g, '&lt;')}</strong> (${(p || e).replace(/</g, '&lt;')}) sent an enquiry:</p><p>${m.replace(/</g, '&lt;')}</p>`
-    );
-    res.json({ success: true, message: 'Enquiry received' });
+    saved = true;
   } catch (err) {
     console.error('[Inquiry] Failed to save contact enquiry:', err.message);
-    res.status(500).json({ success: false, message: 'Server error' });
   }
+  const emailed = await sendEmail(
+    process.env.SALES_EMAIL || 'info@meenakshibuildworld.com',
+    'New website enquiry',
+    `<p><strong>${n.replace(/</g, '&lt;')}</strong> (${(p || e).replace(/</g, '&lt;')}) sent an enquiry:</p><p>${m.replace(/</g, '&lt;')}</p>`
+  );
+  if (saved || emailed) return res.json({ success: true, message: 'Enquiry received' });
+  res.status(500).json({ success: false, message: 'Server error' });
 });
 
 // POST /api/v1/inquiries/whatsapp - request a WhatsApp quote

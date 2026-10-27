@@ -26,7 +26,12 @@ function readLS(key, fallback) {
 
 function writeLS(key, value) {
   if (typeof window === 'undefined') return;
-  localStorage.setItem(key, JSON.stringify(value));
+  // Blocked storage or a full quota throws; that must not break Add to Cart.
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    /* keep the in-memory state */
+  }
 }
 
 export function AppProvider({ children }) {
@@ -136,8 +141,12 @@ export function AppProvider({ children }) {
   const logout = () => {
     setUser(null);
     setToken('');
-    localStorage.removeItem(LS.user);
-    localStorage.removeItem(LS.token);
+    try {
+      localStorage.removeItem(LS.user);
+      localStorage.removeItem(LS.token);
+    } catch {
+      /* storage blocked */
+    }
   };
 
   const cartCount = useMemo(() => cart.reduce((acc, i) => acc + i.quantityBoxes, 0), [cart]);
