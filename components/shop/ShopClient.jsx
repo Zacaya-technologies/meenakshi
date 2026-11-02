@@ -28,7 +28,7 @@ const NO_PRESET = {};
 // starting scope for a taxonomy landing page (e.g. { category: 'floor-tiles' }
 // for /floor-tiles, or { category: 'floor-tiles', design: 'marble' } for
 // /floor-tiles/marble) — the sidebar remains fully interactive on top of it.
-export default function ShopClient({ presetFilters = NO_PRESET, breadcrumb, heading, description, banner, displayTotal }) {
+export default function ShopClient({ presetFilters = NO_PRESET, breadcrumb, heading, description, banner }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -196,9 +196,6 @@ export default function ShopClient({ presetFilters = NO_PRESET, breadcrumb, head
     return acc + (Array.isArray(v) ? v.length : 0);
   }, 0);
   const hasNarrowing = activeCount > 0 || Boolean(filters.q || filters.min_price || filters.max_price);
-  const shownTotal = displayTotal != null && Object.keys(filters).length === 0
-    ? displayTotal
-    : pagination.total;
 
   // Subcategory quick-links for a main-category page (the Area/Application
   // column). Shown only while no facet filter is active.
@@ -268,7 +265,7 @@ export default function ShopClient({ presetFilters = NO_PRESET, breadcrumb, head
           {description && <p className="mt-1.5 max-w-2xl text-sm text-slate-500 dark:text-slate-400">{description}</p>}
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             {/* "0 products" flashed on every listing until the first fetch landed. */}
-            <strong className="text-brand-blue">{loading && !hasLoadedRef.current ? '…' : shownTotal}</strong> products
+            <strong className="text-brand-blue">{loading && !hasLoadedRef.current ? '…' : pagination.total}</strong> products
           </p>
         </div>
         {/* Desktop sort */}
@@ -340,7 +337,7 @@ export default function ShopClient({ presetFilters = NO_PRESET, breadcrumb, head
             onClick={() => setMobileFiltersOpen(false)}
             className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-brand-blue to-brand-deep py-3 text-sm font-bold text-white shadow-glow"
           >
-            Show {shownTotal} Results
+            Show {pagination.total} Results
           </button>
         </MobileSheet>
 
@@ -486,9 +483,7 @@ export default function ShopClient({ presetFilters = NO_PRESET, breadcrumb, head
                 ← Prev
               </button>
               <span className="text-sm text-slate-500 dark:text-slate-400">
-                {/* With a display total the real page count would contradict it. */}
-                Page <strong className="text-ink dark:text-white">{page}</strong>
-                {shownTotal === pagination.total && ` of ${pagination.pages}`}
+                Page <strong className="text-ink dark:text-white">{page}</strong> of {pagination.pages}
               </span>
               <button
                 disabled={page >= pagination.pages}

@@ -54,11 +54,18 @@ npm run dev       # start server (http://localhost:PORT)
 ## Product catalogue (Somany range)
 
 The live catalogue is the Somany Ceramics range imported from `scripts/data/products_overall.csv`
-(3,600 products that have an image; images live in `public/images/products/<slug>.webp`).
+(5,223 products: all 5,327 sheet rows minus 104 that repeat an earlier product's name;
+images live in `public/images/products/<slug>.webp`).
 
 ```bash
-npm run import:somany   # python3 scripts/import_somany_products.py
+python3 scripts/add_image_packs.py   # unpack public/files/Folder_*.zip into public/images/products
+npm run import:somany                # python3 scripts/import_somany_products.py
 ```
+
+`add_image_packs.py` adds an image for every sheet row that lacks one (re-encoding any over
+150 KB) and records it in `scripts/data/image_map.json`. A row whose product name repeats an
+earlier row (the same design under a second SKU) is skipped, so each design is listed once;
+product ids equal the sheet's S.No. The raw packs in `public/files/` are not committed.
 
 The script clears all products (and their images, variants, inventory, category links and
 reviews), then re-imports every product with an image and tags it to the matching main

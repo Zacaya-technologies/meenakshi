@@ -10,3 +10,6 @@ server.pid
 # importer turns them into public/images/products/<slug>.webp; not shipped.
 public/images/products/Folder_*/
 public/images/products_overall.csv
+public/images/Folder_*
+public/files/
+public/somanyceramics*

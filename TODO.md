@@ -13,7 +13,7 @@ On Vercel the Express app runs inside Next.js via `app/api/[...path]/route.js`.
 
 ## Done
 - [x] Next.js app, mega menu, mobile drawer, shop, product, cart, compare, calculator, admin
-- [x] Somany catalogue (3,600 products) with images and category tagging
+- [x] Somany catalogue (5,223 products, duplicate names removed) with images and category tagging
 - [x] Browser QA pass — scripted in headless Chrome:
       user flows (search, menus, filters, cart, quick view, calculator, contact, admin),
       layout at 320–1920px, dark mode, keyboard navigation and focus return,
@@ -27,7 +27,7 @@ On Vercel the Express app runs inside Next.js via `app/api/[...path]/route.js`.
 - [ ] Change the seeded admin password (`Password123!` is public in `server/seed.js`)
       and set `JWT_SECRET` in Vercel
 - [ ] Replace the Unsplash hero images with real showroom/project photography
-- [ ] Real figures for the homepage/About stats (2000+ SKUs, 150+ brands, 4.8 rating)
+- [ ] Real figures for the homepage/About stats (150+ brands, 50K+ sq.ft, 4.8 rating; SKUs now 5,200+)
 - [ ] Dealer Login page (currently "coming soon")
 - [ ] Next.js 15 → 16 (15.5 is patched; 16 needs the middleware→proxy and React 19.2 changes)
 - [ ] Persistent database for production writes (SQLite on Vercel is read-only)

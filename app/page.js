@@ -9,7 +9,7 @@ import QuickView from '@/components/shop/QuickView';
 import { Icon } from '@/components/ui/Icons';
 
 const HERO_STATS = [
-  { value: '2000+', label: 'Premium SKUs' },
+  { value: '5,200+', label: 'Premium SKUs' },
   { value: '150+', label: 'Brand Partners' },
   { value: '50K+', label: 'Sq.Ft Delivered' },
   { value: '4.8', label: 'Average Rating', star: true }

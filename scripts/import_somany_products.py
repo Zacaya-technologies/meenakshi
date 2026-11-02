@@ -61,6 +61,17 @@ def slugify(t):
     return re.sub(r'-+', '-', t).strip('-')
 
 
+def base_name(sheet_name):
+    """'LITH GRIS 30 SLAB for Counter Top, ...' -> 'LITH GRIS 30 SLAB'."""
+    return re.match(r'(.*?) for ', sheet_name.strip()).group(1).strip()
+
+
+def name_key(sheet_name):
+    """Products sharing this key are one design listed under several SKUs
+    (e.g. T32F243000280101 / ...0102); only the first S.No is kept."""
+    return re.sub(r'\s+', ' ', base_name(sheet_name)).lower()
+
+
 def title_case(base):
     out = []
     for w in base.split():
@@ -549,6 +560,8 @@ def main():
     mapping = json.load(open(os.path.join(ROOT, 'scripts', 'data', 'image_map.json')))
 
     products = []
+    seen_names = set()
+    duplicates = 0
     for r in rows:
         no = r['S.No']
         if no not in mapping:
@@ -556,6 +569,11 @@ def main():
         slug = mapping[no]
         if slug not in images:
             continue
+        key = name_key(r['name'])
+        if key in seen_names:
+            duplicates += 1
+            continue
+        seen_names.add(key)
         m = re.match(r'(.*?) for (.*?)(?:\s+—\s+Somany (.*) collection)?$', r['name'].strip())
         base, apps, coll = m.group(1).strip(), m.group(2), m.group(3)
         tok = set(re.split(r'[\s\-]+', base.upper()))
@@ -693,12 +711,12 @@ def main():
         weight = round(sqm * kg_per_sqm, 1)
         coll_id = coll_ids.get((p['collection'] or '').lower())
         pid = con.execute(
-            '''INSERT INTO products (name, sku, slug, brand_id, collection_id, series, price, offer_price, dealer_price,
+            '''INSERT INTO products (id, name, sku, slug, brand_id, collection_id, series, price, offer_price, dealer_price,
                  gst_percentage, stock, thickness_mm, coverage_sqft_per_box, coverage_sqmt_per_box, weight_kg_per_box,
                  pieces_per_box, warranty_years, description, is_featured, is_trending, published, rating_avg, reviews_count,
                  seo_title, seo_description, seo_keywords)
-               VALUES (?,?,?,?,?,?,0,NULL,NULL,18,100,?,?,?,?,?,10,?,?,?,1,0,0,?,?,?)''',
-            (name, sku, slug, brand_id, coll_id, canonical.get((p['collection'] or '').lower()),
+               VALUES (?,?,?,?,?,?,?,0,NULL,NULL,18,100,?,?,?,?,?,10,?,?,?,1,0,0,?,?,?)''',
+            (p['no'], name, sku, slug, brand_id, coll_id, canonical.get((p['collection'] or '').lower()),
              p['thickness'], sqft, sqm, weight, pcs, desc,
              1 if p['no'] in featured_pick else 0, 1 if p['no'] in trending_pick else 0,
              f'{name} | Somany Tiles | Meenakshi Build World',
@@ -800,7 +818,8 @@ def main():
         w = csv.DictWriter(f, fieldnames=list(report[0].keys()))
         w.writeheader(); w.writerows(report)
 
-    print(f'Removed {old} dummy products; imported {len(products)} Somany products.')
+    print(f'Removed {old} dummy products; imported {len(products)} Somany products '
+          f'({duplicates} duplicate names skipped).')
     print('Products per main category:', dict(plan_counts))
     print('New size categories:', tax.created)
     print('Collections:', len(coll_ids))

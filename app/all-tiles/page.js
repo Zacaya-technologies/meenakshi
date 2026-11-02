@@ -22,9 +22,7 @@ export default function AllTilesPage() {
         <ShopClient
           breadcrumb={BREADCRUMB}
           heading="All Tiles"
-          description="Every tile we carry, across every room and application — filter by area, design, type, finish, colour, size, brand or collection."
-          displayTotal={6200}
-        />
+          description="Every tile we carry, across every room and application — filter by area, design, type, finish, colour, size, brand or collection."        />
       </Suspense>
     </>
   );
