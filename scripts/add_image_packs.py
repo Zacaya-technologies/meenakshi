@@ -18,7 +18,7 @@ import csv, glob, io, json, os, re, sys, zipfile
 from PIL import Image
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from import_somany_products import CSV_PATH, IMG_DIR, ROOT, name_key  # noqa: E402
+from import_somany_products import CSV_PATH, EXTRA_CSV_PATH, IMG_DIR, ROOT, name_key  # noqa: E402
 
 PACK_DIR = os.path.join(ROOT, 'public', 'files')
 MAP_PATH = os.path.join(ROOT, 'scripts', 'data', 'image_map.json')
@@ -42,6 +42,8 @@ def fit(data):
 
 def main():
     rows = list(csv.DictReader(open(CSV_PATH, encoding='utf-8-sig')))
+    if os.path.exists(EXTRA_CSV_PATH):  # its images come from add_somany_scrape.py
+        rows += list(csv.DictReader(open(EXTRA_CSV_PATH, encoding='utf-8-sig')))
     mapping = json.load(open(MAP_PATH))
 
     keep, seen = set(), set()

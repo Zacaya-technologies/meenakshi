@@ -54,13 +54,20 @@ npm run dev       # start server (http://localhost:PORT)
 ## Product catalogue (Somany range)
 
 The live catalogue is the Somany Ceramics range imported from `scripts/data/products_overall.csv`
-(5,223 products: all 5,327 sheet rows minus 104 that repeat an earlier product's name;
-images live in `public/images/products/<slug>.webp`).
+and `scripts/data/products_extra.csv` (6,200 products; images live in
+`public/images/products/<slug>.webp`): 5,223 from the main sheet (all 5,327 rows minus 104
+that repeat an earlier product's name) and 977 from the full Somany site scrape.
 
 ```bash
-python3 scripts/add_image_packs.py   # unpack public/files/Folder_*.zip into public/images/products
-npm run import:somany                # python3 scripts/import_somany_products.py
+python3 scripts/add_image_packs.py                 # unpack public/files/Folder_*.zip
+python3 scripts/add_somany_scrape.py --target 6200 # top up from public/somanyceramics*/
+npm run import:somany                              # python3 scripts/import_somany_products.py
 ```
+
+`add_somany_scrape.py` takes scraped products that are not in the main sheet (by SAP code and
+name) until the catalogue reaches `--target`, best-described first (known size, stated finish).
+Type comes from the SAP prefix, floor/wall use from its 4th character, finish from the scraped
+description. It writes `products_extra.csv`, the images and their `image_map.json` entries.
 
 `add_image_packs.py` adds an image for every sheet row that lacks one (re-encoding any over
 150 KB) and records it in `scripts/data/image_map.json`. A row whose product name repeats an

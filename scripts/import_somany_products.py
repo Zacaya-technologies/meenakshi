@@ -28,6 +28,9 @@ from collections import Counter, defaultdict
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CSV_PATH = os.path.join(ROOT, 'scripts', 'data', 'products_overall.csv')
+# Extra rows (same columns plus `finish`) built from the full Somany site scrape
+# by scripts/add_somany_scrape.py; optional.
+EXTRA_CSV_PATH = os.path.join(ROOT, 'scripts', 'data', 'products_extra.csv')
 IMG_DIR = os.path.join(ROOT, 'public', 'images', 'products')
 DB_PATH = os.path.join(ROOT, 'tile_marketplace.sqlite')
 REPORT_PATH = os.path.join(ROOT, 'scripts', 'data', 'import_report.csv')
@@ -41,13 +44,15 @@ SIZE_BY_CODE = {
     '118': (150, 450), '119': (600, 1200), '120': (600, 600), '121': (605, 605), '124': (800, 800),
     '149': (200, 1200), '220': (300, 300), '227': (200, 1000), '230': (800, 1600), '234': (1200, 2400),
     '237': (800, 2400), '243': (1200, 1800), '252': (800, 3000), '275': (800, 2600),
+    # From the size stated in the scraped product descriptions.
+    '168': (300, 1200), '188': (396, 396), '189': (400, 400), '282': (500, 500),
 }
 # Typical pieces per box by size (industry-standard packing; editable in admin).
 PCS_PER_BOX = {
     (200, 1200): 5, (300, 300): 10, (300, 450): 8, (300, 600): 6, (150, 450): 12,
     (600, 1200): 2, (600, 600): 4, (800, 800): 3, (800, 1600): 2, (1200, 2400): 1,
     (800, 2400): 1, (1200, 1800): 1, (800, 3000): 1, (800, 2600): 1,
-    (200, 1000): 6, (605, 605): 4,
+    (200, 1000): 6, (605, 605): 4, (300, 1200): 3, (396, 396): 6, (400, 400): 6, (500, 500): 4,
 }
 UPPER_TOKENS = {'GVT', 'PVT', 'FP', 'HDVT', 'HL', 'HL01', 'HL02', 'V1', 'V2', 'V3', 'V4', 'MT', 'EL', 'KS', 'FB',
                 'IMP', 'HG', 'VC', 'SS', 'CB', 'DC', 'BM', 'GS', 'RT', 'TFX', 'TXF', 'LGN', 'DH', 'VLT', 'GLS',
@@ -552,6 +557,8 @@ def main():
     tax = Taxonomy(con)
 
     rows = list(csv.DictReader(open(CSV_PATH, encoding='utf-8-sig')))
+    if os.path.exists(EXTRA_CSV_PATH):
+        rows += list(csv.DictReader(open(EXTRA_CSV_PATH, encoding='utf-8-sig')))
     images = {f[:-5] for f in os.listdir(IMG_DIR) if f.endswith('.webp')}
 
     # Image packs are folders named "<S.No>_<slug>" (e.g. "0001_lith-gris-30-slab");
@@ -597,7 +604,9 @@ def main():
         p = dict(no=int(no), base=base, tokens=tok, kind=kind, sap=sap, code=code, w=size[0] if size else 0,
                  h=size[1] if size else 0, floor=floor, wall=wall, counter=counter, collection=coll_name,
                  cladding=cladding, thickness=thickness, slug=slug, url=r['product_url'])
-        p['finish'] = infer_finish(tok, kind, code, wall and not floor)
+        # Scraped rows state their finish (e.g. "FULL POLISHED", "HIGH GLOSS FP").
+        stated = (r.get('finish') or '').upper().replace('POLISHED', 'POLISH').replace('HIGH GLOSS', 'HG')
+        p['finish'] = infer_finish(tok | set(stated.split()), kind, code, wall and not floor)
         p['design'] = infer_design(tok, kind, wall_ceramic)
         p['color'] = infer_color(tok, base.upper())
         products.append(p)
