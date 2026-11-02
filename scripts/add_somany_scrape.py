@@ -14,7 +14,7 @@ known size and finish are taken first; --target caps the catalogue size.
 
 Run  python3 scripts/add_somany_scrape.py --target 6200  then  npm run import:somany
 """
-import argparse, csv, glob, json, os, re, sys
+import argparse, csv, glob, json, os, re, sys, unicodedata
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from import_somany_products import (CSV_PATH, EXTRA_CSV_PATH, IMG_DIR, ROOT, SIZE_BY_CODE,  # noqa: E402
@@ -25,6 +25,11 @@ KIND_BY_PREFIX = {'T11': 'CERAMIC', 'T12': 'CERAMIC', 'T21': 'PVT', 'T22': 'PVT'
                   'T31': 'GVT', 'T41': 'HDVT'}
 # Scrape "collections" that are really product types, not Somany collections.
 GENERIC_COLLECTIONS = {'ceramic', 'vitrified', 'tiles'}
+
+
+def ascii_slug(text):
+    """'KENZO CAFÉ CERAMIC' -> 'kenzo-cafe-ceramic' (URLs and file names stay ASCII)."""
+    return slugify(unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode())
 
 
 def main():
@@ -67,7 +72,7 @@ def main():
         fin = re.search(r'\. ([A-Z][A-Z ]*?) finish', r['original: description'])
         candidates.append(dict(sap=sap, name=name, url=r['product_url'].split('?')[0], finish=fin.group(1) if fin else '',
                                image=os.path.join(scrape_dir, r['image_1_file']), image_url=r['image_1_url'],
-                               slug=slugify(f'{base} {kind}'), sized=sap[4:7] in SIZE_BY_CODE))
+                               slug=ascii_slug(f'{base} {kind}'), sized=sap[4:7] in SIZE_BY_CODE))
     # Best-described first: known size, then a stated finish; scrape order otherwise.
     candidates.sort(key=lambda c: (not c['sized'], not c['finish']))
 

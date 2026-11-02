@@ -91,6 +91,9 @@ Notes:
 
 ## Deploying on Hostinger (MySQL)
 
+Redeploying the 6,200-product release on an existing Hostinger site: see
+[`HOSTINGER_DEPLOY.md`](HOSTINGER_DEPLOY.md).
+
 Hostinger runs the site as a Node.js web app with its MySQL database. The app switches to
 MySQL whenever the `DB_*` variables below are set; without them it uses the bundled SQLite file.
 
