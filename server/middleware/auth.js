@@ -32,8 +32,22 @@ function requireRole(roles = []) {
     };
 }
 
+// For public routes that return extra data to signed-in staff (e.g. dealer
+// prices, unpublished products): returns the token's user or null, never 401s.
+function optionalUser(req) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) return null;
+    try {
+        return jwt.verify(token, JWT_SECRET);
+    } catch {
+        return null;
+    }
+}
+
 module.exports = {
     JWT_SECRET,
     authenticateToken,
-    requireRole
+    requireRole,
+    optionalUser
 };

@@ -16,7 +16,8 @@ export default function ProductDetailClient({ slug }) {
   const router = useRouter();
   const reduceMotion = useReducedMotion();
   const business = useBusiness();
-  const { addToCart, toggleWishlist, wishlist, toggleCompare, compare } = useApp();
+  const { addToCart, toggleWishlist, wishlist, toggleCompare, compare, user } = useApp();
+  const isTrade = user?.role === 'dealer' || user?.role === 'admin';
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeImg, setActiveImg] = useState(0);
@@ -35,7 +36,8 @@ export default function ProductDetailClient({ slug }) {
       setLoading(false);
     });
     return () => { cancelled = true; };
-  }, [slug]);
+    // Refetch on sign-in/out: dealer prices are only returned to dealers.
+  }, [slug, isTrade]);
 
   if (loading) {
     return <div className="mx-auto max-w-shell px-4 sm:px-6 py-16 text-center text-slate-500 dark:text-slate-400">Loading product…</div>;
@@ -165,6 +167,15 @@ export default function ProductDetailClient({ slug }) {
             {off > 0 && <span className="text-lg text-slate-500 line-through">₹{Number(product.price).toLocaleString('en-IN')}</span>}
             {hasPrice(product) && <span className="text-sm text-slate-500 dark:text-slate-400">/sq.ft</span>}
           </div>
+          {isTrade && (
+            <div className="mt-3 inline-flex items-center gap-2 rounded-xl bg-emerald-50 px-3.5 py-2 text-sm font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
+              <Icon.user className="h-4 w-4" />
+              Dealer price:{' '}
+              {Number(product.dealer_price) > 0
+                ? <span className="font-extrabold">₹{Number(product.dealer_price).toLocaleString('en-IN')}/sq.ft</span>
+                : <span>on request</span>}
+            </div>
+          )}
 
           {product.description && (
             <p className="mt-5 leading-relaxed text-slate-500 dark:text-slate-400">{product.description}</p>

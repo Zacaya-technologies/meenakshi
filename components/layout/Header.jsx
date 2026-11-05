@@ -291,6 +291,10 @@ export default function Header() {
             <Link href="/contact" className="hidden transition hover:text-brand-blue md:inline">Store Locator</Link>            {user ? (
               <span className="flex items-center gap-3">
                 <span className="hidden max-w-[160px] truncate align-middle text-brand-blue sm:inline-block">Hi, <strong>{user.name}</strong></span>
+                {user.role === 'admin' && <Link href="/admin" className="transition hover:text-brand-blue">Admin</Link>}
+                {(user.role === 'dealer' || user.role === 'admin') && (
+                  <Link href="/dealer-login" className="hidden transition hover:text-brand-blue sm:inline">Dealer Portal</Link>
+                )}
                 <button onClick={logout} className="transition hover:text-brand-blue">Logout</button>
               </span>
             ) : (

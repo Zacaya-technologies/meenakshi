@@ -23,11 +23,16 @@ On Vercel the Express app runs inside Next.js via `app/api/[...path]/route.js`.
       (`npm audit`: 0 vulnerabilities); unused multer removed. sqlite3 stays on 5.1.7:
       6.x Linux binaries need glibc 2.38, which Vercel's runtime lacks
 
+- [x] Dealer Login page + dealer portal (dealer price on product pages, orders, credit limit,
+      change password); admin "Dealer & Admin Logins" page to create logins / reset passwords
+- [x] Admin product images: select files or drag & drop (resized to WebP in the browser,
+      stored in the `media_uploads` table, served from `/api/v1/uploads/*`); image edits now save
+- [x] Admin product list shows drafts; homepage "New Arrivals" shows newly added products
+
 ## Not yet done
 - [ ] Change the seeded admin password (`Password123!` is public in `server/seed.js`)
       and set `JWT_SECRET` in Vercel
 - [ ] Replace the Unsplash hero images with real showroom/project photography
 - [ ] Real figures for the homepage/About stats (150+ brands, 50K+ sq.ft, 4.8 rating; SKUs now 6,200)
-- [ ] Dealer Login page (currently "coming soon")
 - [ ] Next.js 15 → 16 (15.5 is patched; 16 needs the middleware→proxy and React 19.2 changes)
 - [ ] Persistent database for production writes (SQLite on Vercel is read-only)

@@ -20,6 +20,8 @@ const seoRoutes = require('./routes/seoRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const businessSettingsRoutes = require('./routes/businessSettingsRoutes');
 const calculatorSettingsRoutes = require('./routes/calculatorSettingsRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 // Vercel/Hostinger terminate HTTPS at a proxy; without this req.protocol is
@@ -47,6 +49,8 @@ app.use('/api/v1/blogs', blogRoutes);
 app.use('/api/v1/admin', analyticsRoutes);
 app.use('/api/v1/business', businessSettingsRoutes);
 app.use('/api/v1/calculator-settings', calculatorSettingsRoutes);
+app.use('/api/v1/uploads', uploadRoutes);
+app.use('/api/v1/users', userRoutes);
 app.use('/', seoRoutes);
 
 app.use((req, res) => {

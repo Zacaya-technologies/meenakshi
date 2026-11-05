@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { API } from '@/lib/api';
 import { Card, Button, Field, Input, TextArea, Select, Toggle } from '@/components/admin/AdminUI';
-import { Icon } from '@/components/ui/Icons';
+import ImageUploader from '@/components/admin/ImageUploader';
 
 const FACET_GROUP_ORDER = ['area', 'application', 'size', 'design', 'type', 'finish', 'color', 'surface', 'material'];
 
@@ -34,7 +34,7 @@ export default function ProductForm({ initial, onSubmit, submitLabel }) {
   });
   const [mainCategoryId, setMainCategoryId] = useState('');
   const [facetSelections, setFacetSelections] = useState({});
-  const [images, setImages] = useState(initial?.images?.length ? initial.images.map(i => ({ url: i.image_url, alt: i.alt_text || '', is_primary: !!i.is_primary })) : [{ url: '', alt: '', is_primary: true }]);
+  const [images, setImages] = useState(initial?.images?.length ? initial.images.map(i => ({ url: i.image_url, alt: i.alt_text || '', is_primary: !!i.is_primary })) : []);
   const [attributeAnswers, setAttributeAnswers] = useState({});
 
   // Load categories + brands + collections once.
@@ -105,11 +105,6 @@ export default function ProductForm({ initial, onSubmit, submitLabel }) {
     return { ...s, [key]: next.length ? next : null };
   });
 
-  const addImage = () => setImages(list => [...list, { url: '', alt: '', is_primary: false }]);
-  const removeImage = (i) => setImages(list => list.filter((_, idx) => idx !== i));
-  const updateImage = (i, patch) => setImages(list => list.map((img, idx) => idx === i ? { ...img, ...patch } : img));
-  const setPrimary = (i) => setImages(list => list.map((img, idx) => ({ ...img, is_primary: idx === i })));
-
   const setAttributeAnswer = (attrId, answer) => setAttributeAnswers(a => ({ ...a, [attrId]: answer }));
 
   const submit = async (e) => {
@@ -118,7 +113,7 @@ export default function ProductForm({ initial, onSubmit, submitLabel }) {
     if (!mainCategoryId) { setError('Select a main category.'); return; }
 
     const category_ids = [parseInt(mainCategoryId), ...Object.values(facetSelections).filter(Boolean).flat()];
-    const validImages = images.filter(img => img.url.trim());
+    const validImages = images.filter(img => img.url.trim()).map(img => ({ ...img, alt: img.alt || form.name }));
     const attributesPayload = Object.entries(attributeAnswers)
       .filter(([, ans]) => ans && (ans.attribute_value_id || ans.custom_value))
       .map(([attribute_id, ans]) => ({ attribute_id: parseInt(attribute_id), ...ans }));
@@ -134,12 +129,16 @@ export default function ProductForm({ initial, onSubmit, submitLabel }) {
       brand_id: form.brand_id || null,
       collection_id: form.collection_id || null,
       category_ids,
-      images: validImages.length ? validImages : undefined,
+      // Edit: always send the list so removals/reorders are saved too.
+      // Create: no images -> the API adds a placeholder photo.
+      images: initial ? validImages : (validImages.length ? validImages : undefined),
       attributes: attributesPayload
     });
     setSaving(false);
     if (!res.success) { setError(res.message || 'Failed to save product'); return; }
-    router.push('/admin/products');
+    const slug = res.slug || initial?.product?.slug || '';
+    const qs = new URLSearchParams({ saved: slug, draft: form.published ? '0' : '1', created: initial ? '0' : '1' });
+    router.push(`/admin/products?${qs}`);
   };
 
   return (
@@ -235,24 +234,9 @@ export default function ProductForm({ initial, onSubmit, submitLabel }) {
         )}
 
         <Card>
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-heading text-sm font-bold text-ink dark:text-white">Images</h2>
-            <Button type="button" variant="outline" onClick={addImage}><Icon.grid className="h-3.5 w-3.5" /> Add Image</Button>
-          </div>
-          <div className="flex flex-col gap-3">
-            {images.map((img, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <Input value={img.url} onChange={e => updateImage(i, { url: e.target.value })} placeholder="https://…" className="flex-1" />
-                <Input value={img.alt} onChange={e => updateImage(i, { alt: e.target.value })} placeholder="Alt text" className="w-40" />
-                <button type="button" onClick={() => setPrimary(i)} className={`shrink-0 rounded-lg px-2.5 py-2 text-[11px] font-bold ${img.is_primary ? 'bg-brand-blue text-white' : 'bg-brand-light text-slate-500 dark:bg-white/5'}`}>
-                  Primary
-                </button>
-                <button type="button" onClick={() => removeImage(i)} className="shrink-0 text-slate-500 hover:text-rose-500" aria-label="Remove image">
-                  <Icon.close className="h-4 w-4" />
-                </button>
-              </div>
-            ))}
-          </div>
+          <h2 className="mb-1 font-heading text-sm font-bold text-ink dark:text-white">Images</h2>
+          <p className="mb-4 text-xs text-slate-500 dark:text-slate-400">Select photos from your computer. The main photo is shown on product cards and listings.</p>
+          <ImageUploader images={images} onChange={setImages} productName={form.name} />
         </Card>
 
         <Card>

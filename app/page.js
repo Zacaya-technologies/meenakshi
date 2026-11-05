@@ -18,6 +18,7 @@ const HERO_STATS = [
 export default function HomePage() {
   const [featured, setFeatured] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [latest, setLatest] = useState([]);
   const [quickView, setQuickView] = useState(null);
 
   useEffect(() => {
@@ -26,6 +27,10 @@ export default function HomePage() {
         setFeatured(res.products);
       }
       setLoading(false);
+    });
+    // Newest first, so a product just added in the admin shows up here at once.
+    API.getProducts('?limit=8').then(res => {
+      if (res.success) setLatest(res.products);
     });
   }, []);
 
@@ -74,6 +79,23 @@ export default function HomePage() {
           </div>
         )}
       </section>
+
+      {latest.length > 0 && (
+        <section className="mx-auto max-w-shell px-4 pb-16 sm:px-6">
+          <div className="mb-10 text-center">
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-blue">Just In</span>
+            <h2 className="mt-2 font-heading text-4xl font-extrabold text-ink dark:text-white">New Arrivals</h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm text-slate-500 dark:text-slate-400">
+              The latest tiles and surfaces added to our showroom.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+            {latest.map(p => (
+              <ProductCard key={p.id} product={p} onQuickView={setQuickView} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <QuickView product={quickView} onClose={() => setQuickView(null)} />
     </div>

@@ -11,16 +11,28 @@ export default function AdminProductsPage() {
   const [pagination, setPagination] = useState({ total: 0, page: 1, pages: 1 });
   const [q, setQ] = useState('');
   const [loading, setLoading] = useState(true);
+  const [saved, setSaved] = useState(null);
 
   const load = useCallback(async (page = 1, query = q) => {
     setLoading(true);
-    const qs = new URLSearchParams({ limit: 20, page, ...(query ? { q: query } : {}) }).toString();
+    // include_unpublished: admins also see drafts, newest first.
+    const qs = new URLSearchParams({ limit: 20, page, include_unpublished: 1, ...(query ? { q: query } : {}) }).toString();
     const res = await API.getProducts(`?${qs}`);
     if (res.success) { setProducts(res.products); setPagination(res.pagination); }
     setLoading(false);
   }, [q]);
 
   useEffect(() => { load(1); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // After saving, the form redirects here with ?saved=<slug>&draft=1|0.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('saved');
+    if (slug !== null) {
+      setSaved({ slug, draft: params.get('draft') === '1', created: params.get('created') === '1' });
+      window.history.replaceState(null, '', '/admin/products');
+    }
+  }, []);
 
   const remove = async (p) => {
     if (!confirm(`Delete "${p.name}"? This cannot be undone.`)) return;
@@ -41,6 +53,21 @@ export default function AdminProductsPage() {
         subtitle={`${pagination.total} products in the catalog`}
         action={<Link href="/admin/products/new"><Button><Icon.grid className="h-4 w-4" /> Add Product</Button></Link>}
       />
+
+      {saved && (
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
+          <span>
+            {saved.created ? 'Product added.' : 'Product saved.'}{' '}
+            {saved.draft ? 'It is a draft — turn on “Published” to show it on the website.' : 'It is live on the website now.'}
+          </span>
+          <span className="flex items-center gap-3">
+            {saved.slug && !saved.draft && (
+              <a href={`/product/${saved.slug}`} target="_blank" rel="noreferrer" className="underline">View on website</a>
+            )}
+            <button onClick={() => setSaved(null)} aria-label="Dismiss"><Icon.close className="h-4 w-4" /></button>
+          </span>
+        </div>
+      )}
 
       <div className="mb-4 max-w-sm">
         <form onSubmit={e => { e.preventDefault(); load(1); }} className="flex gap-2">

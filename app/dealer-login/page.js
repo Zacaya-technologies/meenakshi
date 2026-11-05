@@ -1,8 +1,11 @@
-export default function DealerLogin() {
-  return (
-    <div className="min-h-screen flex items-center justify-center p-8 text-center">
-      <h1 className="text-3xl font-extrabold text-brand-blue">Dealer Login</h1>
-      <p className="mt-4 text-brand-slate">Dealer portal coming soon.</p>
-    </div>
-  );
+import DealerPortal from '@/components/dealer/DealerPortal';
+
+export const metadata = {
+  title: 'Dealer Login | Meenakshi Build World',
+  description: 'Dealer portal for Meenakshi Build World trade partners — dealer pricing, orders and account details.',
+  robots: { index: false, follow: true }
+};
+
+export default function DealerLoginPage() {
+  return <DealerPortal />;
 }

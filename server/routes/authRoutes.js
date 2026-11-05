@@ -103,4 +103,26 @@ router.get('/me', authenticateToken, async (req, res) => {
     }
 });
 
+// PUT /api/v1/auth/password - change own password
+router.put('/password', authenticateToken, async (req, res) => {
+    try {
+        const { current_password, new_password } = req.body || {};
+        if (!current_password || !new_password) {
+            return res.status(400).json({ success: false, message: 'Current and new password are required.' });
+        }
+        if (String(new_password).length < 8) {
+            return res.status(400).json({ success: false, message: 'New password must be at least 8 characters.' });
+        }
+        const user = await db.queryOne(`SELECT id, password_hash FROM users WHERE id = ?`, [req.user.id]);
+        if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+        const ok = await bcrypt.compare(String(current_password), user.password_hash);
+        if (!ok) return res.status(401).json({ success: false, message: 'Current password is incorrect.' });
+        const password_hash = await bcrypt.hash(String(new_password), 10);
+        await db.query(`UPDATE users SET password_hash = ? WHERE id = ?`, [password_hash, user.id]);
+        res.json({ success: true, message: 'Password updated.' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
 module.exports = router;

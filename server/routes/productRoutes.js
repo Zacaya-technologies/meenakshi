@@ -1,7 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
-const { authenticateToken, requireRole } = require('../middleware/auth');
+const { authenticateToken, requireRole, optionalUser } = require('../middleware/auth');
+
+// Dealer prices are trade terms: only signed-in dealers and admins get them.
+function canSeeDealerPrice(req) {
+    const u = optionalUser(req);
+    return !!u && (u.role === 'dealer' || u.role === 'admin');
+}
+function stripDealerPrice(rows) {
+    for (const r of rows) if (r) delete r.dealer_price;
+    return rows;
+}
 
 function slugify(text) {
     return text.toString().toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
@@ -42,10 +52,15 @@ router.get('/', async (req, res) => {
     try {
         const {
             q, category, area, application, size, design, type, finish, color, surface, material, brand, collection,
-            min_price, max_price, sort, featured, trending, in_stock, page = 1, limit = 12
+            min_price, max_price, sort, featured, trending, in_stock, page = 1, limit = 12, include_unpublished
         } = req.query;
 
-        const conditions = ["(p.published = 1 OR p.published = true)", "(p.is_archived = 0 OR p.is_archived = false)"];
+        // The admin product list must also show drafts (unpublished products),
+        // otherwise a product saved with "Published" off seems to vanish.
+        const viewer = optionalUser(req);
+        const showDrafts = include_unpublished && viewer && viewer.role === 'admin';
+        const conditions = ["(p.is_archived = 0 OR p.is_archived = false)"];
+        if (!showDrafts) conditions.unshift("(p.published = 1 OR p.published = true)");
         const params = [];
 
         if (q) {
@@ -123,6 +138,7 @@ router.get('/', async (req, res) => {
             LIMIT ${perPage} OFFSET ${offset}
         `;
         const products = await db.query(sql, params);
+        if (!canSeeDealerPrice(req)) stripDealerPrice(products);
 
         const countSql = `SELECT COUNT(*) as total FROM products p ${whereClause}`;
         const countRes = await db.queryOne(countSql, params);
@@ -404,6 +420,8 @@ router.get('/:slug', async (req, res) => {
             db.query(`SELECT attribute_id, attribute_value_id, custom_value FROM product_attributes WHERE product_id = ?`, [product.id])
         ]);
 
+        if (!canSeeDealerPrice(req)) stripDealerPrice([product, ...variants]);
+
         const specifications = attributeRows.map(r => ({
             name: r.unit ? `${r.attribute_name} (${r.unit})` : r.attribute_name,
             value: r.custom_value || r.attribute_value || '—'
@@ -530,7 +548,7 @@ router.put('/:id', authenticateToken, requireRole('admin'), async (req, res) => 
         const {
             name, brand_id, collection_id, price, offer_price, dealer_price, stock,
             description, is_featured, is_trending, published, seo_title, seo_description,
-            category_ids, attributes
+            category_ids, attributes, images
         } = req.body;
 
         await db.query(`
@@ -561,6 +579,32 @@ router.put('/:id', authenticateToken, requireRole('admin'), async (req, res) => 
                     req.params.id, a.attribute_id, a.attribute_value_id || null, a.custom_value || null
                 ]);
             }
+        }
+
+        // Images: the form sends the full list, so replace what is stored.
+        // (Before, edits to images were silently dropped.)
+        if (Array.isArray(images)) {
+            const list = images
+                .map(img => (typeof img === 'string' ? { url: img } : img || {}))
+                .filter(img => String(img.url || '').trim());
+            await db.query(`DELETE FROM product_images WHERE product_id = ?`, [req.params.id]);
+            const hasPrimary = list.some(img => img.is_primary);
+            const altName = name || existing.name;
+            for (let i = 0; i < list.length; i++) {
+                const img = list[i];
+                await db.query(`INSERT INTO product_images (product_id, image_url, alt_text, is_primary, display_order) VALUES (?, ?, ?, ?, ?)`, [
+                    req.params.id, String(img.url).trim(), img.alt || altName, (img.is_primary || (!hasPrimary && i === 0)) ? 1 : 0, i
+                ]);
+            }
+        }
+
+        // Keep the default variant (used by cart/compare) in step with the product.
+        const fresh = await db.queryOne(`SELECT price, offer_price, dealer_price, stock FROM products WHERE id = ?`, [req.params.id]);
+        if (fresh) {
+            await db.query(`
+                UPDATE product_variants SET price = ?, offer_price = ?, dealer_price = ?, stock = ?
+                WHERE product_id = ? AND (is_default = 1 OR is_default = true)
+            `, [fresh.price, fresh.offer_price, fresh.dealer_price, fresh.stock, req.params.id]).catch(() => {});
         }
 
         res.json({ success: true, message: 'Product updated' });
